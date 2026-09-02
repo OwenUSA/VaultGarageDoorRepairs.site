@@ -8,3 +8,6 @@ export default function robots(): MetadataRoute.Robots {
     host: site.url,
   };
 }
+
+// output: "export" cannot infer this metadata route is static; say so explicitly.
+export const dynamic = "force-static";
