@@ -1,4 +1,4 @@
-# docs/RESUME.md — state after Prompt 5+9
+# docs/RESUME.md — state after Prompt 6+7
 
 Assume the next prompt starts with no memory of this one.
 
@@ -6,76 +6,71 @@ Assume the next prompt starts with no memory of this one.
 
 | | |
 |---|---|
-| completed | Prompt 0, Prompt 1, Prompt 2+3+4, **Prompt 5+9 (tokens, randomised palette, shared shell)** |
-| next | **6+7** — the lead builds hero + map personally, then ONE 4-wide wave over the home sections and the four subpages |
-| finally | 10+11 — asset prompts, then the trimmed acceptance sweep |
+| completed | Prompt 0, 1, 2+3+4, 5+9 (tokens, palette, shell), **6+7 (build wave)** |
+| next | **10+11** — `docs/asset-prompts.md`, then the trimmed acceptance sweep (A-4) |
 
-## THE SHELL IS FROZEN (A-6)
+## WHAT IS BUILT — filesystem truth, checked, not remembered
 
-No section agent touches `app/globals.css`, `app/tokens.css`, `app/layout.tsx`,
-`components/patterns/SiteHeader.tsx`, `SiteFooter.tsx`, `CallBar.tsx`, `BusinessMap.tsx`,
-`components/ui/Button.tsx` or `Link.tsx`, `lib/site.ts`, `lib/schema.ts`. An agent that
-needs a shared change **stops and hands it back**; the lead makes the edit once in the main
-thread and re-dispatches.
+**All five routes are fully wired. None is a stub.** Every band in the contract renders and
+declares `data-section`. Verified by fetching the served HTML, not by trusting a report:
 
-**No section agent introduces a token that is not in the `@theme` block.** It comes back to
-the lead or it does not happen.
+```
+/         header hero services about process emergency tabbed marquee doors
+          components facts urgent community approach map contact footer call-bar
+/about    header hero who how facts about-cta map contact footer call-bar
+/services header hero services spring-repair opener-repair cable-roller-track
+          panel-replacement off-track-correction new-door-installation
+          commercial-roll-up maintenance-tune-up faq services-cta map contact
+          footer call-bar
+/contact  header hero breadcrumb contact next-steps map footer call-bar
+/privacy  header privacy-body footer call-bar
+```
 
-## What landed this turn
+Re-check any time with:
 
-**Palette.** masterSeed 3126, winning seed 9611, complementary, primary hue 184 (teal band),
-accent hue 4 (crimson call CTA), 5 candidates, 0 rejected, 22 master seeds tried to clear
-~30 degrees of every hue already taken in the programme. Full record, all five candidate
-seeds, the AA table and the chroma ordering: **`docs/known-divergence.md` section 7**.
-Regenerate with `node ../_shared/harness/src/palette.mjs --seed 9611 --emit`.
+```bash
+curl -s http://127.0.0.1:3105/services | grep -o 'data-section="[^"]*"'
+```
 
-**Tokens.** `app/tokens.css` — the ramp, type scale, spacing, radii, shadows, containers and
-breakpoints, all traced to the Prompt 1 appearance capture. Two structural facts about the
-file that must not be undone:
+### Who built what
 
-1. **`@theme static`, and every gated value is a LITERAL, not a `var()` alias.** `diff.mjs`
-   reads `--color-* / --text-* / --font-weight-* / --spacing-*` out of `@theme` to build the
-   token-conformance set; an alias normalises to the string `"var(--x)"` and matches nothing,
-   which reported 4 header and 5 footer violations that were all instrument artefacts. The
-   `:root` primitives (`--fs-*`, `--fw-*`, `--space-*`) now alias UP to the theme names, and
-   `static` stops Tailwind tree-shaking a variable out from under them. **Header and footer
-   now report 0 token violations, so `TOKEN_THRESHOLD = 0` is reachable for NOVEL sections.**
-2. **Colour is applied, not to be re-applied.** There is no recolor pass (A-7). Anything that
-   looks wrong is a wrong BINDING in `tokens.css`, never a divergence in a section.
+| unit | owner | file |
+|---|---|---|
+| home hero, home + contact map, `/contact` | lead | `app/page.tsx`, `app/contact/page.tsx` |
+| home's twelve middle bands | builder (Sonnet) | `components/routes/HomeBands.tsx` |
+| `/about` | builder (Sonnet) | `app/about/page.tsx` |
+| `/services` | builder (Sonnet) | `app/services/page.tsx` |
+| `/privacy` | builder (Sonnet) | `app/privacy/page.tsx` |
 
-**THE ONE COLOUR RULE THE WAVE INHERITS:**
+`/contact` was kept in the main thread because its form shares `ContactForm` — and therefore
+its D-05 validation — with the contact band on `/`, `/about` and `/services`.
 
-> **EXACTLY ONE FILLED CHROMATIC ACTION PER PAGE — the call CTA.** Every other action is
-> filled NEUTRAL: `solid` on light bands, `solid-band` on dark ones. There is no
-> primary-filled button variant. `Actions()` picks the variant from `href.startsWith('tel:')`
-> — by what the action IS, never by its position — so a section cannot opt out by reordering.
-> Measured sRGB chroma: accent 0.3804 > primary 0.2000. `rendertruth.mjs` fails
-> `cta-primacy` if any non-call action out-saturates the CTA, and the fix is always the other
-> action — never dimming headings or body copy.
+## Shared-shell edits the lead made this turn (A-6)
 
-**Shell.** Root layout with `routeMeta()` metadata (never a literal in a page file); header
-with the measured 3-bar/1-bar geometry, an IntersectionObserver sentinel for the scroll state
-(no scroll listener, no shrink), a two-state drawer (`data-mounted` for presence,
-`data-open` for the transition) that closes on route change and `inert`s the page behind it;
-footer with NAP, hours, the one SERVICE_AREA sentence and no electronic-mail column; the
-mobile call bar as a CSS media query at <768 with the `body` padding compensation;
-`<BusinessMap>` with **the bypass link as its first child**, an observer-gated iframe and a
-fixed aspect ratio; `LocalBusiness` JSON-LD with `image` and no forbidden properties;
-`robots.ts`, `sitemap.ts` (generated from the `routes` constant) and `not-found.tsx`.
+All of these are lead-owned files. No builder touched a shared file; no builder handed one
+back.
 
-**A-14 applied once**, in `globals.css`: `a[href^="tel:"] { min-height: 44px; }`. `Link.tsx`
-carries the 44px minimum for nav and footer links itself, because the anchor — not its
-wrapper — has to be the element with the height.
+1. **`data-section` pass-through on every pattern.** `Section` takes `'data-section'`;
+   `SplitFeature`, `CtaBand`, `SectionIntro`, `Marquee`, `Breadcrumb`, `StepRow`,
+   `FeatureRow`, `CardGrid`, `CardCarousel`, `TabbedGrid`, `ContentColumn`, `Hero`,
+   `BusinessMap`, `ContactBlock` and `FaqBlock` take a `section` prop that emits it.
+   Without this, identity pairing (PASS 1) never fires and the join mispairs exactly the
+   six rows the build deliberately drops or reorders.
+2. **`className` pass-through on the same patterns**, for per-band padding only.
+3. **`Hero` gained `body` (paragraphs under the lead) and `badges` (the D-14 chip slot).**
+4. **`SharedTail` forwards map props** (`mapZoom`, `mapEyebrow`, `mapTitle`, `mapBody`) so
+   `/` and the subpages get zoom 13 and `/contact` gets zoom 15 without re-implementing the
+   tail or re-deciding the `testimonial` removal.
+5. **`components/ui/TodoFact.tsx` is new** — the visible `TODO(fact)` chip. See
+   `docs/facts-needed.md`.
+6. **Five render-truth fixes**, all detailed in `docs/known-divergence.md` section 10.4.
+   Two of them changed shell files that had been green at Prompt 5 and were wrong anyway:
+   `Field.tsx` (`labelCls` now states `text-ink`) and `Reveal.tsx` + `globals.css` (the
+   `opacity: 0` observer is gone, per `docs/behavior/08`, which had specified a no-op all
+   along).
 
-**One base-typography fix, and it was the whole shell residual.** The default family is the
-DISPLAY face (Roboto Condensed 400 16/18.4), with Rubik on `p` only. Declaring Rubik on
-`body` put a 100% fontFamily, 20% weight and 18% line-height deviation on the root of every
-band the comparator measures. Header went 6.13 -> **0.13%**, footer 10.56 -> **0.37%**.
-
-**The five routes are STUBS.** Each renders the shell and one h1 from `content/copy.ts`.
-The previous lineage's full pages are in git at **6a38bcc** — they predate the Prompt 1
-section contract and the Prompt 3 copy, so they are reference material for the wave, not a
-starting point to patch.
+**`app/tokens.css` was NOT touched.** No token was added, renamed or removed. The palette,
+the seed and the type scale are exactly as Prompt 5+9 left them.
 
 ## Gate results at the end of this turn
 
@@ -83,55 +78,37 @@ starting point to patch.
 |---|---|
 | `pnpm build` | clean, 10/10 static |
 | `tsc --noEmit` | 0 errors |
-| `contrast.mjs` | 420 scored, **0 FAIL, 0 UNMEASURABLE** |
-| `rendertruth.mjs` | **0 findings** |
+| `contrast.mjs` | **PASS — 0 FAIL**, 1695 scored, 3 UNMEASURABLE (all the disabled carousel arrow) |
+| `rendertruth.mjs` | **1 finding**, down from 174 — an off-track carousel card, instrument artifact, floored in known-divergence 10.3 |
+| `diff.mjs` | 177 rows · 55 FAIL · 62 PASS · 26 BLOCKED |
+| NOVEL token conformance | 10 rows, **0 violations** |
 | email sweep | EMAIL SWEEP CLEAN |
-| locations sweep | clean |
-| shell structural | header 0.13% @1440, 0.00% @390/768 · footer 0.37% @1440, 4.94% @390/768 — all PASS at 5% |
-| token conformance | header 0, footer 0 |
+| locations sweep | clean — no `/locations`, no city array; `areaServed` is the single locality |
 
-`diff.mjs` reports 119 rows, 12 FAIL — **every one of them a `(page) height delta %` row**,
-because the routes are stubs. No section row fails.
+`ITERATION_CAP = 1` was spent once, on a per-band padding pass. A `display: flex` attempt in
+the same pass regressed the total and was reverted. Full account: known-divergence 10.2.
 
-## Still owed to the instrument
+## THE SHELL IS STILL FROZEN
 
-**`data-section="<our-section-id>"` on every band**, using the exact ids in
-`docs/sections.md` section 3. `header`, `footer` and `call-bar` declare it; every band the
-wave builds must too, or `diff.mjs` falls back to a positional join and mispairs exactly the
-four sections Prompt 3 deliberately reordered.
+Same list as before, plus the two files this turn corrected: `app/globals.css`,
+`app/tokens.css`, `app/layout.tsx`, `SiteHeader`, `SiteFooter`, `CallBar`, `BusinessMap`,
+`components/patterns/index.ts`, `lib/schema.ts`, `lib/site.ts`, `components/ui/*`.
 
-## Running the instrument
+**The one colour rule still holds:** exactly one filled chromatic action per page, the call
+CTA. `Actions()` still selects by `href.startsWith('tel:')`, never by position. There is
+still no primary-filled button variant. Measured chroma: accent 0.3804 > primary 0.2000.
 
-```bash
-# from the SITE ROOT. Never background a server in the same chain as a gate run.
-REF_PORT=3198 node ../_shared/harness/src/serve-reference.mjs
-curl -s http://127.0.0.1:3198/ | grep -o '<title>[^<]*'   # MUST say A. Fricker Roofing
-pnpm build && pnpm start                                   # 3105. NEVER `next dev`.
-curl -s http://127.0.0.1:3105/ | grep -o '<title>[^<]*'    # MUST say Vault Garage Door Repairs
+**Two traps that cost time this turn, both still live:**
 
-MSYS_NO_PATHCONV=1 node ../_shared/harness/src/capture.mjs --side ours   # diff.mjs does NOT recapture
-MSYS_NO_PATHCONV=1 node ../_shared/harness/src/diff.mjs
-MSYS_NO_PATHCONV=1 node ../_shared/harness/src/contrast.mjs
-MSYS_NO_PATHCONV=1 node ../_shared/harness/src/rendertruth.mjs
-```
+- `diff.mjs` never re-captures. Run `capture.mjs --side ours` after every rebuild.
+- Never run `pnpm build` while a server holds 3105. Order: kill the holder, build, start.
+  `pnpm start` fails with a bare exit 1 if the port is held, and the failure is quiet.
 
-**`diff.mjs` reads captures off disk and never takes them.** A diff run after a rebuild
-without a fresh `capture.mjs --side ours` silently scores the PREVIOUS build — it happened
-once this turn and reported sections that no longer existed.
+## Open items for 10+11
 
-**3198, not 3199.** A sibling site's reference server holds 3199 and answers with its own
-reference. Verify the title before trusting any number.
-
-## Canonical state files
-
-```
-docs/profile.md             reference profile: heights, bands, breakpoints, motion, fonts
-docs/sections.md            THE CONTRACT — 62 rows, machine + human tables, edit together
-docs/content-divergence.md  Prompt 3: overlap table, four structural changes, exemptions
-docs/behavior/01..08.md     Prompt 4: eight interaction specs
-assets/INVENTORY.md         Prompt 2: 93 slots, provenance, geometry, dominant colour
-docs/known-divergence.md    permanent floors + SECTION 7, the whole palette record
-docs/divergence.md          ranked table, rewritten by every diff run
-docs/facts-needed.md        every TODO(fact)
-docs/PRE-LAUNCH.md          launch blockers, including the fictional CONSTANTS
-```
+- `docs/asset-prompts.md` does not exist yet. It needs the applied hues by name: primary
+  184 teal `#023530`, accent 4 crimson `#983756`, winning seed 9611.
+- The `/privacy` `s02-...` UNPAIRED row (known-divergence 10.5) — a probably-truncated
+  ref-section-id in `docs/sections.md`, worth one look.
+- `docs/PRE-LAUNCH.md` still needs the two A-4 blockers worded as *"performance never
+  measured"* and *"keyboard access is spec-verified only, never hand-tested"*.

@@ -335,3 +335,119 @@ The profile found no motion library initialising anywhere on the reference
 (`gsap/ScrollTrigger/lenis/locomotive/aos/wow/swiper/slick` all false). `framer-motion` is
 **not justified** and must not be installed. Ours has no entrance animation either, so this
 is a match rather than a floor — recorded here only so nobody adds one and calls it fidelity.
+
+---
+
+## 10. Prompt 6+7 — floors booked by the build wave
+
+Measured after the wave: **177 rows · 55 FAIL · 62 PASS · 26 BLOCKED**, against 119 rows /
+12 FAIL when the five routes were stubs. Every NOVEL row (10) is at **0 token violations**.
+`ITERATION_CAP = 1` was spent once, on the pass described in 10.2.
+
+### 10.1 The three structural fields that carry almost every residual
+
+These are floors. They are BLOCKING fields (A-12 keeps `innerCount` / `innerRows` /
+`innerCols` / `position` advisory, and those are not counted here), but each of them is a
+consequence of building clean semantic markup against a hand-built WordPress theme, and
+none is closable without imitating that theme's wrapper tree — which `process.md` and A-12
+both forbid.
+
+| field | FAIL rows | mean deviation | why it is floored |
+|---|---|---|---|
+| `box.h` | 46 | 44.8% | Section height. Our copy is written to the reference's *character count* (Prompt 3, +/-10%), not to its rendered height, and the reference's heaviest bands are JS-unrolled carousels and repeated cards whose runtime never initialises on the saved copy — see section 3 above. Chasing height means padding sections with air or cutting copy to fit, and Prompt 3 forbids rewriting copy to close a metric. |
+| `display` | 31 | 100% | The reference band wrapper is a mix of `block` and `flex` (row). Ours is uniformly `block`. **Measured both ways** — see 10.2. |
+| `buttons` / `cards` | 27 / 14 | 87.5% / 100% | Element *counts* inside the band. `buttons` diverges because our bands carry the call CTA the decision register requires and the reference band often carried none; `cards` diverges because our grid items are `Card` components where the theme used bare divs. Both are content and component-vocabulary decisions, not geometry. |
+
+### 10.2 The one fix attempt, and what it bought
+
+Spent as a single pass over the shared section shell, since every residual was shared:
+
+1. **Per-band vertical padding, read individually from the reference appearance capture.**
+   The default rhythm was correct on most bands and wrong on seven: the home hero (ref
+   75/75 @1440 and 50/50 below, not 120/75), the marquee (10/10, not 20/30), the breadcrumb
+   (20/20, not 50/50), the contact band (0 top on every route, 50 bottom @1440), the home
+   `about` band (50 top @1440), `urgent` (0 top) and `emergency` (0 bottom). No blanket
+   patch and no new tokens — every value lands on one of Prompt 5's nine spacing steps.
+   **Result: `padTop` FAIL rows 17 -> 3, `padBottom` 13 -> 3.**
+2. **`display: flex` on the band wrapper — measured, regressed, reverted.** The first
+   comparator read showed `display` ref=flex ours=block on 37 rows, which looked like one
+   mechanical fix. Applying `flex flex-col` moved the total the wrong way: 61 FAIL -> 64,
+   because the reference's flex bands are `flex-ROW` (61 new `flexDir` mismatches) and 24 of
+   its bands are genuinely `block`. There is no single value that matches both sets.
+   Reverted — reverting your own regression is not a second attempt — and the band stays
+   `block`. **Floored: `display`, 31 rows.** Do not re-attempt without per-band reference
+   reads, which is exactly the wrapper-tree imitation A-12 rules out.
+
+Net across the pass: **61 FAIL -> 55 FAIL, 53 PASS -> 62 PASS.**
+
+### 10.3 Render-truth: one finding, and it is an instrument artifact
+
+`rendertruth.mjs` finishes at **1 finding**, down from 174:
+
+```
+text-legibility  /  1440  sep 0 (need 3)  "Full-view aluminium and glass"
+```
+
+That string is the fourth card in the home `doors` **carousel** — a horizontally
+scrollable, keyboard- and scroll-reachable `overflow-x: auto` track showing three of five
+cards at 1440. The card is not invisible; it is not currently scrolled into view, so its
+screenshot is one flat tone. The check cannot distinguish "off-track in a scroller" from
+"painted in its own background colour", which is the defect it exists to catch.
+
+**Not fixed, deliberately.** The only ways to clear it are to delete the carousel — which is
+the reference's own `slatedroof-new` / `roofing-materials` pattern — or to show all five
+cards at once, which is a different band. Booked here rather than closed. Every other
+finding in the run was a real defect and every one of them was fixed (10.4).
+
+### 10.4 Real defects the render-truth gates caught, all fixed (A-13, not capped)
+
+These were latent in the frozen shell and could not fire until the routes carried content.
+All are the Atlas invisible-CTA failure class: a value that is *declared* correctly and
+*paints* wrong.
+
+1. **`text-on-band` is not a token class.** The section patterns painted dark-band text with
+   `text-on-band` / `text-on-band-muted`; the tokens are `--color-ink-on-band` /
+   `--color-ink-on-band-muted`, so the utilities are `text-ink-on-band` /
+   `text-ink-on-band-muted`. The non-existent class did nothing, the text inherited
+   `text-ink`, and near-black copy painted on the teal band at **1.46:1** across every dark
+   band on all five routes. The shell passed at Prompt 5 only because `SiteHeader` and
+   `SiteFooter` happened to spell it correctly and no other band carried text yet.
+   **198 contrast FAILs.**
+2. **The eyebrow was the CTA accent on dark bands.** `text-cta` (#983756) on `--color-band`
+   (#023530) measures **1.94:1**. The eyebrow on a band is now `text-ink-on-band`; the
+   accent stays reserved for the one filled chromatic action, which is what it is for.
+3. **Form labels painted white on white.** `labelCls` set no colour, so a label inside the
+   elevated form card inherited `text-ink-on-band` from the dark `ContactBlock` band it sits
+   in: **1:1, 120 rows**. Fixing 1 and 2 is what exposed it — before that the same bug was
+   accidentally invisible because the inherited colour was also wrong. `labelCls` now states
+   `text-ink` on the element that needs it.
+4. **`Reveal` shipped an `opacity: 0` IntersectionObserver, against its own spec.**
+   `docs/behavior/08` says in as many words that the reference initialises no motion library
+   on any page, that `Reveal` "is a no-op wrapper and must stay one", and that `opacity: 0`
+   as an initial state is the single worst failure mode available on a page whose purpose is
+   a phone number. The shell shipped the observer anyway. `rendertruth.mjs` measured the
+   consequence: **165 text boxes reading "box is effectively one flat tone: no visible
+   text"**. `Reveal` is now a plain pass-through and the `.reveal` rules are gone from
+   `globals.css`. Do not reintroduce an entrance state.
+5. **Nine WCAG 2.5.8 tap-target findings** at 390: the "Get directions" link in
+   `BusinessMap` (360x22), both breadcrumb crumbs (40x18), and the two tab controls
+   (146x38). Each now carries the minimum on the anchor or button itself, per A-14's rule
+   that the element — not its wrapper — is what has to have the height.
+
+`contrast.mjs` finishes **PASS: 0 FAIL**, with 3 `UNMEASURABLE` rows — all three the
+carousel's *disabled* arrow button (`disabled:opacity-50`, no text). A disabled icon control
+with an empty accessible name is genuinely unmeasurable rather than failing; recorded, not
+chased.
+
+### 10.5 Rows the instrument cannot score on this run
+
+- **26 BLOCKED** — `/contact` and `/privacy` at 390 and 768, plus several `/services`
+  anchors at 768. The reference side has no capture at those widths for those bands, so
+  there is nothing to compare against. Pre-existing instrument state, not a build result.
+- **7 UNPAIRED DELETED** rows — the two partnership-logo strips, the three testimonial
+  bands and the `/privacy` accessibility widget. Correct: they are deleted by D-13 / D-14 /
+  D-15 and reported once as REMOVED, never measured.
+- **1 UNPAIRED ADAPTED** row — `/privacy` `s02-a-fricker-roofing-and-waterproofi` does not
+  join to our `privacy-body`, whose `data-section` is declared and correct. The
+  ref-section-id in `docs/sections.md` looks truncated relative to what the probe emits.
+  Contract-side, predates this wave, and worth one look before the acceptance sweep.

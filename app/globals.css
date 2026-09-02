@@ -132,20 +132,11 @@
     }
   }
 
-  /* IntersectionObserver reveal — the only motion on the site.
-     The profile found no scroll-linked motion and no timeline library, so this
-     is a one-shot opacity/translate transition and nothing more. */
-  .reveal {
-    opacity: 0;
-    transform: translateY(var(--reveal-distance));
-    transition:
-      opacity var(--duration-slow) var(--ease-standard),
-      transform var(--duration-slow) var(--ease-standard);
-  }
-  .reveal[data-visible='true'] {
-    opacity: 1;
-    transform: none;
-  }
+  /* NO SCROLL REVEAL. docs/behavior/08: the reference initialises no motion
+     library on any page, so there is no entrance state to clone. `.reveal`
+     previously set `opacity: 0` here and rendertruth.mjs measured 165 text
+     boxes painting as one flat tone. Content renders at its final opacity.
+     Do not reintroduce an entrance state. */
 }
 
 @layer components {

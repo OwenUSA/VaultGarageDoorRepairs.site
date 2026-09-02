@@ -8,6 +8,7 @@ import {
   Prose,
   Icon,
   TextLink,
+  TodoFactRow,
   type SectionTone,
 } from '@/components/ui';
 import { ContactForm } from './ContactForm';
@@ -31,6 +32,7 @@ export function ContactBlock({
   title,
   body,
   id = 'contact',
+  section = 'contact',
   headingId = 'contact-heading',
 }: {
   tone?: SectionTone;
@@ -39,20 +41,30 @@ export function ContactBlock({
   title?: ReactNode;
   body?: ReactNode;
   id?: string;
+  /** docs/sections.md our-section-id -> data-section. Required on every band. */
+  section?: string;
   headingId?: string;
 }) {
   return (
-    <Section tone={tone} id={id} aria-labelledby={headingId}>
+    /* Measured: the reference contact band pads 0 top on every route, and 50
+       bottom at 1440 rather than the 75 the default rhythm gives. */
+    <Section
+        tone={tone}
+        id={id}
+        data-section={section}
+        className="pt-0 xl:pb-section-y-tight"
+        aria-labelledby={headingId}
+      >
       <Container>
         {/* Measured: contact-new is 1645 @1024 and 677 @1440 on every profiled
             exemplar — it stacks through 1024, not through 768. */}
         <div className="grid gap-11 xl:grid-cols-2">
           <div className="flex flex-col gap-7">
-            <Eyebrow className="text-cta">{eyebrow}</Eyebrow>
+            <Eyebrow className="text-ink-on-band">{eyebrow}</Eyebrow>
             <Heading level={2} id={headingId}>
               {title ?? 'Book a garage door visit'}
             </Heading>
-            <Prose className="text-on-band-muted">
+            <Prose className="text-ink-on-band-muted">
               {body ?? `Open ${hours.label}. Tell us what the door is doing and we will call you back.`}
             </Prose>
 
@@ -67,19 +79,30 @@ export function ContactBlock({
               </li>
               <li className="flex items-start gap-5">
                 <Icon icon={Clock} className="mt-1 shrink-0 text-cta" />
-                <Prose className="text-on-band-muted">
+                <Prose className="text-ink-on-band-muted">
                   {hours.label}
                 </Prose>
               </li>
               <li className="flex items-start gap-5">
                 <Icon icon={MapPin} className="mt-1 shrink-0 text-cta" />
-                <Prose className="text-on-band-muted">
+                <Prose className="text-ink-on-band-muted">
                   {nap.address}
                   <br />
                   {nap.serviceArea}
                 </Prose>
               </li>
             </ul>
+
+            {/* D-13 / D-14. The reference contact band carries a review-rating
+                strip (424x60 @1440, 284x56 @390). Reviews and ratings are
+                forbidden outright, so the slot survives as a visible chip at
+                the same place in the flow rather than as a silent deletion.
+                Logged in docs/facts-needed.md. */}
+            <TodoFactRow
+              onBand
+              label="Facts not yet supplied"
+              items={['rating source and score', 'accreditation, if any']}
+            />
           </div>
 
           <ContactForm variant={variant} />

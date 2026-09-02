@@ -37,6 +37,7 @@ export function BusinessMap({
   eyebrow = 'Where we are',
   title = 'Find us on the map',
   body,
+  section = 'map',
   headingId = 'map-heading',
 }: {
   /** D-08: ~13 on the home page, ~15 beside the contact form. */
@@ -44,6 +45,8 @@ export function BusinessMap({
   eyebrow?: string;
   title?: string;
   body?: string;
+  /** docs/sections.md our-section-id -> data-section. Required on every band. */
+  section?: string;
   headingId?: string;
 }) {
   const frame = useRef<HTMLDivElement | null>(null);
@@ -74,7 +77,7 @@ export function BusinessMap({
   }, []);
 
   return (
-    <Section tone="surface" aria-labelledby={headingId}>
+    <Section tone="surface" data-section={section} aria-labelledby={headingId}>
       <Container>
         <a href={`#${afterMapId}`} className="map-bypass">
           Skip the map
@@ -93,7 +96,11 @@ export function BusinessMap({
             <address className="font-body text-xs not-italic leading-body text-ink-muted">
               {nap.address}
             </address>
-            <TextLink href={maps.directions}>Get directions</TextLink>
+            {/* WCAG 2.5.8: the anchor itself carries the 44px minimum, not a
+                wrapper — rendertruth measured it at 360x22 otherwise. */}
+            <TextLink href={maps.directions} className="inline-flex min-h-[44px] items-center">
+              Get directions
+            </TextLink>
           </div>
 
           {/* Fixed ratio, never a px height: the poster and the iframe occupy

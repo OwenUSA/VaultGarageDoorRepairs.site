@@ -17,9 +17,20 @@ import { ContactBlock } from './ContactBlock';
  */
 export function SharedTail({
   contactTitle,
+  contactBody,
+  mapZoom = 13,
+  mapEyebrow,
+  mapTitle,
+  mapBody,
   middle,
 }: {
   contactTitle?: string;
+  contactBody?: string;
+  /** D-08: ~13 on the home page, ~15 beside the contact form. */
+  mapZoom?: number;
+  mapEyebrow?: string;
+  mapTitle?: string;
+  mapBody?: string;
   /**
    * The target sequence on `home` is map-sec > message-owner > contact-new.
    * `middle` renders in that measured slot so no route has to re-implement the
@@ -29,9 +40,9 @@ export function SharedTail({
 }) {
   return (
     <>
-      <BusinessMap />
+      <BusinessMap zoom={mapZoom} eyebrow={mapEyebrow} title={mapTitle} body={mapBody} />
       {middle}
-      <ContactBlock title={contactTitle} />
+      <ContactBlock title={contactTitle} body={contactBody} />
     </>
   );
 }

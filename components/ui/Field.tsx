@@ -4,7 +4,12 @@ import type { ComponentPropsWithoutRef, ReactNode } from 'react';
  * Form field anatomy — reimplemented, not cloned from Gravity Forms.
  * Measured: label RC 600 14 uppercase · input 1px border, radius 4, padding 12.
  */
-const labelCls = 'block font-display font-semibold text-3xs uppercase mb-3';
+/* `text-ink` is EXPLICIT, never inherited. The form Card is always
+   `variant="elevated"` (a light surface) but it sits inside a dark ContactBlock
+   band, so an unstyled label inherits `text-ink-on-band` and paints white on
+   white — 1:1, measured on 120 rows. This is the Atlas invisible-CTA defect in
+   its form-label form; the colour is stated on the element that needs it. */
+const labelCls = 'block font-display font-semibold text-3xs uppercase mb-3 text-ink';
 
 const controlCls =
   'w-full rounded-xs border border-border bg-elevated text-ink font-body text-xs leading-body p-4 ' +

@@ -39,7 +39,8 @@ export function Tabs({
             aria-controls={`${base}-p-${i}`}
             tabIndex={active === i ? 0 : -1}
             onClick={() => setActive(i)}
-            className={`px-9 py-3 font-display text-xs font-bold uppercase leading-display transition-colors duration-[var(--duration-base)] ease-standard ${
+            /* WCAG 2.5.8: the tab measures 146x38 at 390 on its padding alone. */
+            className={`inline-flex min-h-[44px] items-center px-9 py-3 font-display text-xs font-bold uppercase leading-display transition-colors duration-[var(--duration-base)] ease-standard ${
               active === i ? 'bg-cta text-cta-ink' : 'bg-transparent hover:text-cta'
             }`}
           >

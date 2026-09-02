@@ -15,5 +15,6 @@ export { Reveal } from './Reveal';
 export { Accordion } from './Accordion';
 export { Tabs } from './Tabs';
 export { Carousel } from './Carousel';
+export { TodoFact, TodoFactRow } from './TodoFact';
 export { SkipLink } from './SkipLink';
 export { JsonLd } from './JsonLd';

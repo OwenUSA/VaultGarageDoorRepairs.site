@@ -55,6 +55,30 @@ it is saying what is not known:
 - **typical callback time** — the copy says "inside the window you chose" and never a number.
 - **service radius** — `SERVICE_AREA` is the only geographic claim.
 
+## Added by Prompt 6+7 — the chips that are now RENDERED, visibly
+
+Prompt 1's table listed `TODO(fact)` slots that were "known-needed, not yet emitted". The
+build wave emits three of them as visible chips on the page, via
+`components/ui/TodoFact.tsx`. Visible is the point: a `TODO(fact)` that lives only in a
+source comment is a fact that ships missing.
+
+| where | rendered chip | reference slot it holds | register |
+|---|---|---|---|
+| `/` hero | `TODO(fact): rating source and score` | `review-rating-strip`, 300x39 @1440 | D-13 |
+| `/` `about` band | `TODO(fact): licensed / bonded / insured status`, `TODO(fact): years in business` | `badge-signature-strip`, 252x60 | D-14 |
+| contact band, all four routes that carry it | `TODO(fact): rating source and score`, `TODO(fact): accreditation, if any` | `review-rating-strip`, 424x60 @1440 / 284x56 @390 | D-13 / D-14 |
+
+`TodoFact` paints only in existing tokens (`border-border` plus the muted ink for the band
+it sits on) and is never an action, so it cannot move `contrast.mjs` and cannot touch
+`rendertruth.mjs`'s `cta-primacy` check.
+
+**Nothing else was invented to fill a slot.** `/about` renders no credential, year-founded,
+headcount or certification chip because its Prompt 3 copy asserts none of those — the
+`facts` row there carries hours, service area and phone, all resolved through `lib/site.ts`.
+`/services` carries no price, no warranty term and no response time. The three copy-level
+facts the site deliberately does not assert (out-of-hours cover, typical callback time,
+service radius) are unchanged and still stated as unknowns rather than filled in.
+
 ## Fictional CONSTANTS that must be replaced before public launch
 
 These are ground truth for the build and are NOT `TODO(fact)`. They belong in

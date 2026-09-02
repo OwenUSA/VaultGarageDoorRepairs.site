@@ -88,13 +88,13 @@ function SectionHead({
   if (!heading && !eyebrow && !body) return null;
   return (
     <div className={`flex max-w-prose flex-col gap-5 ${center ? 'mx-auto items-center text-center' : ''}`}>
-      {eyebrow ? <Eyebrow className={onBand ? 'text-cta' : 'text-accent'}>{eyebrow}</Eyebrow> : null}
+      {eyebrow ? <Eyebrow className={onBand ? 'text-ink-on-band' : 'text-accent'}>{eyebrow}</Eyebrow> : null}
       {heading ? (
         <Heading level={2} id={headingId}>
           {heading}
         </Heading>
       ) : null}
-      {body ? <Prose className={onBand ? 'text-on-band-muted' : 'text-ink-muted'}>{body}</Prose> : null}
+      {body ? <Prose className={onBand ? 'text-ink-on-band-muted' : 'text-ink-muted'}>{body}</Prose> : null}
     </div>
   );
 }
@@ -138,6 +138,8 @@ export function SplitFeature({
   media = '4:3 card',
   mediaLabel,
   id,
+  section,
+  className,
   headingId,
   splitAt = 'lg',
   children,
@@ -152,6 +154,10 @@ export function SplitFeature({
   media?: PlaceholderKind | 'none';
   mediaLabel?: string;
   id?: string;
+  /** docs/sections.md our-section-id -> data-section. Required on every band. */
+  section?: string;
+  /** Per-band padding override where the reference band's own value differs. */
+  className?: string;
   headingId?: string;
   splitAt?: SplitAt;
   children?: ReactNode;
@@ -161,7 +167,7 @@ export function SplitFeature({
   const first = splitAt === 'xl' ? 'xl:order-1' : 'lg:order-1';
   const second = splitAt === 'xl' ? 'xl:order-2' : 'lg:order-2';
   return (
-    <Section tone={tone} id={id} aria-labelledby={headingId}>
+    <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
       <Container>
         <div className={`grid items-center gap-11 ${media === 'none' ? '' : cols}`}>
           {media !== 'none' ? (
@@ -198,6 +204,8 @@ export function CtaBand({
   body,
   actions,
   id,
+  section,
+  className,
   headingId,
 }: {
   tone?: SectionTone;
@@ -207,11 +215,15 @@ export function CtaBand({
   body?: ReactNode;
   actions?: readonly PatternAction[];
   id?: string;
+  /** docs/sections.md our-section-id -> data-section. Required on every band. */
+  section?: string;
+  /** Per-band padding override where the reference band's own value differs. */
+  className?: string;
   headingId?: string;
 }) {
   const onBand = isBand(tone);
   return (
-    <Section tone={tone} id={id} aria-labelledby={headingId}>
+    <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
       <Container>
         <Reveal>
           <div
@@ -247,6 +259,8 @@ export function SectionIntro({
   body,
   headingLevel = 2,
   id,
+  section,
+  className,
   headingId,
 }: {
   tone?: SectionTone;
@@ -255,19 +269,23 @@ export function SectionIntro({
   body?: ReactNode;
   headingLevel?: 1 | 2;
   id?: string;
+  /** docs/sections.md our-section-id -> data-section. Required on every band. */
+  section?: string;
+  /** Per-band padding override where the reference band's own value differs. */
+  className?: string;
   headingId?: string;
 }) {
   const onBand = isBand(tone);
   return (
-    <Section tone={tone} rhythm="tight" id={id} aria-labelledby={headingId}>
+    <Section tone={tone} rhythm="tight" id={id} data-section={section} className={className} aria-labelledby={headingId}>
       <Container>
         <Reveal>
           <div className="mx-auto flex max-w-prose flex-col items-center gap-5 text-center">
-            {eyebrow ? <Eyebrow className={onBand ? 'text-cta' : 'text-accent'}>{eyebrow}</Eyebrow> : null}
+            {eyebrow ? <Eyebrow className={onBand ? 'text-ink-on-band' : 'text-accent'}>{eyebrow}</Eyebrow> : null}
             <Heading level={2} as={headingLevel} id={headingId}>
               {heading}
             </Heading>
-            {body ? <Lead className={onBand ? 'text-on-band-muted' : 'text-ink-muted'}>{body}</Lead> : null}
+            {body ? <Lead className={onBand ? 'text-ink-on-band-muted' : 'text-ink-muted'}>{body}</Lead> : null}
           </div>
         </Reveal>
       </Container>
@@ -282,9 +300,9 @@ export function SectionIntro({
  * equivalent and needs no library. Halts under prefers-reduced-motion.
  * The duplicate run is aria-hidden so the list is announced once.
  */
-export function Marquee({ items }: { items: readonly string[] }) {
+export function Marquee({ items, section }: { items: readonly string[]; section?: string }) {
   return (
-    <section aria-label="Service highlights" className="overflow-hidden bg-cta py-7 text-cta-ink xl:py-9">
+    <section data-section={section} aria-label="Service highlights" className="overflow-hidden bg-cta py-3 text-cta-ink">
       <div className="flex w-max animate-marquee gap-11 motion-reduce:animate-none">
         {items.map((item) => (
           <span key={`a-${item}`} className="whitespace-nowrap font-display text-2xl font-bold uppercase leading-display">
@@ -306,9 +324,17 @@ export function Marquee({ items }: { items: readonly string[] }) {
 }
 
 /** PATTERN: breadcrumb — thin band (232 @1440 / 282 @390) */
-export function Breadcrumb({ trail }: { trail: readonly { label: string; path: string }[] }) {
+export function Breadcrumb({
+  trail,
+  section,
+}: {
+  trail: readonly { label: string; path: string }[];
+  section?: string;
+}) {
   return (
-    <Section tone="surface" rhythm="tight">
+    /* Measured: the reference breadcrumb band pads 20/20, not the 50 the
+       `tight` rhythm gives. */
+    <Section tone="surface" rhythm="none" data-section={section} className="py-7">
       <Container>
         <nav aria-label="Breadcrumb">
           <ol className="flex flex-wrap items-center gap-3">
@@ -317,13 +343,13 @@ export function Breadcrumb({ trail }: { trail: readonly { label: string; path: s
               return (
                 <li key={t.path} className="flex items-center gap-3">
                   {last ? (
-                    <span aria-current="page" className="font-display text-xs font-bold uppercase leading-display">
+                    <span aria-current="page" className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center font-display text-xs font-bold uppercase leading-display">
                       {t.label}
                     </span>
                   ) : (
                     <Link
                       href={t.path}
-                      className="font-display text-xs font-regular uppercase leading-display text-ink-muted transition-colors duration-[var(--duration-fast)] ease-standard hover:text-accent"
+                      className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center font-display text-xs font-regular uppercase leading-display text-ink-muted transition-colors duration-[var(--duration-fast)] ease-standard hover:text-accent"
                     >
                       {t.label}
                     </Link>
@@ -352,6 +378,8 @@ export function StepRow({
   heading,
   steps,
   id,
+  section,
+  className,
   headingId,
 }: {
   tone?: SectionTone;
@@ -359,11 +387,15 @@ export function StepRow({
   heading?: ReactNode;
   steps: readonly Step[];
   id?: string;
+  /** docs/sections.md our-section-id -> data-section. Required on every band. */
+  section?: string;
+  /** Per-band padding override where the reference band's own value differs. */
+  className?: string;
   headingId?: string;
 }) {
   const onBand = isBand(tone);
   return (
-    <Section tone={tone} id={id} aria-labelledby={headingId}>
+    <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
       <Container>
         <div className="flex flex-col gap-11">
           <SectionHead eyebrow={eyebrow} heading={heading} headingId={headingId} onBand={onBand} />
@@ -381,7 +413,7 @@ export function StepRow({
                     <Heading level={4} as={3}>
                       {s.title}
                     </Heading>
-                    <Prose className={onBand ? 'text-on-band-muted' : 'text-ink-muted'}>{s.body}</Prose>
+                    <Prose className={onBand ? 'text-ink-on-band-muted' : 'text-ink-muted'}>{s.body}</Prose>
                   </div>
                 </Reveal>
               </li>
@@ -411,17 +443,23 @@ export function FeatureRow({
   heading,
   facts,
   id,
+  section,
+  className,
   headingId,
 }: {
   tone?: SectionTone;
   heading?: ReactNode;
   facts: readonly Fact[];
   id?: string;
+  /** docs/sections.md our-section-id -> data-section. Required on every band. */
+  section?: string;
+  /** Per-band padding override where the reference band's own value differs. */
+  className?: string;
   headingId?: string;
 }) {
   const onBand = isBand(tone);
   return (
-    <Section tone={tone} id={id} aria-labelledby={headingId}>
+    <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
       <Container>
         <Reveal>
           <div className="flex flex-col items-center gap-9">
@@ -435,7 +473,7 @@ export function FeatureRow({
                 <div key={f.label} className="flex flex-col items-center gap-3 text-center">
                   <dt
                     className={`font-display text-3xs font-semibold uppercase leading-display tracking-tracked ${
-                      onBand ? 'text-on-band-muted' : 'text-ink-muted'
+                      onBand ? 'text-ink-on-band-muted' : 'text-ink-muted'
                     }`}
                   >
                     {f.label}
@@ -523,6 +561,8 @@ export function CardGrid({
   columns = 3,
   stackUntil = 'sm',
   id,
+  section,
+  className,
   headingId,
 }: {
   tone?: SectionTone;
@@ -534,11 +574,15 @@ export function CardGrid({
   /** Where the grid starts splitting. See `colsFor`. */
   stackUntil?: 'sm' | 'lg';
   id?: string;
+  /** docs/sections.md our-section-id -> data-section. Required on every band. */
+  section?: string;
+  /** Per-band padding override where the reference band's own value differs. */
+  className?: string;
   headingId?: string;
 }) {
   const onBand = isBand(tone);
   return (
-    <Section tone={tone} id={id} aria-labelledby={headingId}>
+    <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
       <Container>
         <div className="flex flex-col gap-11">
           <SectionHead eyebrow={eyebrow} heading={heading} body={body} headingId={headingId} onBand={onBand} />
@@ -566,6 +610,8 @@ export function CardCarousel({
   items,
   perView = { base: 1, md: 2, lg: 3 },
   id,
+  section,
+  className,
   headingId,
 }: {
   tone?: SectionTone;
@@ -575,11 +621,15 @@ export function CardCarousel({
   items: readonly GridItem[];
   perView?: { base: 1 | 2 | 3 | 4; md?: 1 | 2 | 3 | 4; lg?: 1 | 2 | 3 | 4 };
   id?: string;
+  /** docs/sections.md our-section-id -> data-section. Required on every band. */
+  section?: string;
+  /** Per-band padding override where the reference band's own value differs. */
+  className?: string;
   headingId?: string;
 }) {
   const onBand = isBand(tone);
   return (
-    <Section tone={tone} id={id} aria-labelledby={headingId}>
+    <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
       <Container>
         <div className="flex flex-col gap-11">
           <SectionHead eyebrow={eyebrow} heading={heading} body={body} headingId={headingId} onBand={onBand} />
@@ -602,6 +652,8 @@ export function TabbedGrid({
   groups,
   columns = 3,
   id,
+  section,
+  className,
   headingId,
 }: {
   tone?: SectionTone;
@@ -610,11 +662,15 @@ export function TabbedGrid({
   groups: readonly { label: string; items: readonly GridItem[] }[];
   columns?: 2 | 3 | 4;
   id?: string;
+  /** docs/sections.md our-section-id -> data-section. Required on every band. */
+  section?: string;
+  /** Per-band padding override where the reference band's own value differs. */
+  className?: string;
   headingId?: string;
 }) {
   const onBand = isBand(tone);
   return (
-    <Section tone={tone} id={id} aria-labelledby={headingId}>
+    <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
       <Container>
         <div className="flex flex-col gap-11">
           <SectionHead eyebrow={eyebrow} heading={heading} headingId={headingId} onBand={onBand} />
@@ -650,15 +706,21 @@ export function ContentColumn({
   title,
   intro,
   children,
+  section,
+  className,
   headingId = 'page-heading',
 }: {
   title: ReactNode;
   intro?: ReactNode;
   children: ReactNode;
+  /** docs/sections.md our-section-id -> data-section. Required on every band. */
+  section?: string;
+  /** Per-band padding override where the reference band's own value differs. */
+  className?: string;
   headingId?: string;
 }) {
   return (
-    <Section tone="page" aria-labelledby={headingId}>
+    <Section tone="page" data-section={section} className={className} aria-labelledby={headingId}>
       <Container>
         <div className="mx-auto flex max-w-prose flex-col gap-9">
           <Heading level={2} as={1} id={headingId}>

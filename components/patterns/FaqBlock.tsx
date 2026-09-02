@@ -12,6 +12,7 @@ export function FaqBlock({
   body,
   items,
   id,
+  section,
   headingId = 'faq-heading',
 }: {
   tone?: SectionTone;
@@ -20,21 +21,23 @@ export function FaqBlock({
   body?: ReactNode;
   items: readonly { q: string; a: ReactNode }[];
   id?: string;
+  /** docs/sections.md our-section-id -> data-section. Required on every band. */
+  section?: string;
   headingId?: string;
 }) {
   const onBand = tone === 'band' || tone === 'band-deep';
   return (
-    <Section tone={tone} id={id} aria-labelledby={headingId}>
+    <Section tone={tone} id={id} data-section={section} aria-labelledby={headingId}>
       <Container>
         <div className="flex flex-col gap-11">
           {title ? (
             <div className="flex max-w-prose flex-col gap-5">
-              {eyebrow ? <Eyebrow className={onBand ? 'text-cta' : 'text-accent'}>{eyebrow}</Eyebrow> : null}
+              {eyebrow ? <Eyebrow className={onBand ? 'text-ink-on-band' : 'text-accent'}>{eyebrow}</Eyebrow> : null}
               <Heading level={2} id={headingId}>
                 {title}
               </Heading>
               {body ? (
-                <Prose className={onBand ? 'text-on-band-muted' : 'text-ink-muted'}>{body}</Prose>
+                <Prose className={onBand ? 'text-ink-on-band-muted' : 'text-ink-muted'}>{body}</Prose>
               ) : null}
             </div>
           ) : null}
