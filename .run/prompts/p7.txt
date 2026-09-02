@@ -1,0 +1,63 @@
+PHASE 7 — cross-cutting pass.
+
+FRESH session. Bootstrap: docs/00-BRIEF.md, then CLAUDE.md. Read nothing else
+up front. Query, never cat.
+
+MAXIMUM 2 CONCURRENT AGENTS. Run the four disciplines as two pairs:
+
+  PAIR 1   AGENT SEO  +  AGENT ACCESSIBILITY
+  PAIR 2   AGENT PERFORMANCE  +  AGENT FORMS
+
+Wait for both agents in a pair before starting the next. Never 3 at once.
+PERFORMANCE runs second on purpose: Lighthouse is the most expensive step here,
+and running it after the SEO/a11y fixes have landed avoids measuring a page
+twice.
+
+--------------------------------------------------------------------------------
+AGENT SEO
+  - structured data from lib/site.ts, appropriate to SITE_CLASS = marketing and
+    to each template class. Never a schema type the business does not warrant.
+  - emit NOTHING that CONFIG FORBIDDEN excludes — no aggregateRating, no review,
+    no award, no licence, no price. This applies inside schema, alt text and
+    meta descriptions as much as in visible copy.
+  - unique title + meta description per route via generateMetadata
+  - Open Graph + Twitter card; og:image slot placeholdered at 1200x630
+  - one h1 per route, unbroken heading order
+  - canonical per route; sitemap.ts from the 17-row route map; robots.ts
+  - internal linking that matches the target's link graph shape
+
+AGENT PERFORMANCE
+  - next/image everywhere with explicit width/height or fill+sizes — zero CLS
+  - third-party embeds lazy, titled, wrapped in aspect-ratio boxes
+  - fonts already self-hosted via next/font (Roboto Condensed + Rubik, OFL),
+    display:swap — verify, do not re-wire
+  - targets LCP < 2.5s, CLS < 0.1, INP < 200ms mobile
+  - run Lighthouse per route, but report ONLY the three numbers per route.
+    Never paste a Lighthouse JSON or HTML report into context.
+
+AGENT ACCESSIBILITY
+  - axe per route per breakpoint; report violation COUNTS plus one line per
+    distinct rule violated — never the full axe JSON
+  - keyboard path through every interactive element on every route
+  - focus visible everywhere; focus order matches visual order
+  - every BEHAVIOR.md reduced-motion branch verified, not assumed
+  - fix all violations found
+
+AGENT FORMS
+  - typed schema validation client AND server. Client validation is UX, not a
+    gate. Honeypot + submit-timestamp check. No third-party captcha.
+  - transport per CONFIG FACTS mail: SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS,
+    CONTACT_TO_EMAIL. Credentials from env ONLY — never in source, never in a
+    client component, never logged. Ship .env.example with empty values and a
+    clear TODO.
+  - states idle / submitting / success / error, all visible, all announced via
+    aria-live. Never a silent failure.
+
+--------------------------------------------------------------------------------
+DELIVERABLE
+
+Each agent reports pass/fail PER ROUTE, not one global number, as a compact
+table. Write the combined result to docs/08-cross-cutting.md.
+
+`npx tsc --noEmit`, state the exit code. Chat reply under 30 lines: four small
+tables, nothing else.

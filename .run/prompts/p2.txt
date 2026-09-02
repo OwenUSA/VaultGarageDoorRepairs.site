@@ -1,0 +1,25 @@
+Prompt 2 — Harvest what exists, placeholder the rest. CLAUDE.md CONFIG is authoritative.
+
+Pull every asset the reference already serves, at the highest resolution actually
+served — not thumbnails. Sources: origin network log, <img>/<source>/srcset,
+CSS url(), <link rel=preload>, the font files themselves, inline SVG sprites.
+Harvest across ALL template class exemplars, not just home.
+
+KEEP: fonts if the license permits (check and report), icon geometry, SVG
+decorations, texture/noise overlays, layout-critical spacers.
+PLACEHOLDER per CONFIG ASSETS. Under COPY_MODE = ORIGINAL, all photography and
+all brand marks are placeholders regardless of whether you could fetch them.
+
+Inventory every slot you are NOT filling. Per slot record:
+  - selector + section + template class
+  - rendered dimensions at every breakpoint, and aspect ratio
+  - object-fit / object-position
+  - dominant color sampled from the reference, remapped to the nearest token role
+  - what it depicts structurally — wide hero, 4:3 card, square slot, full-bleed
+    band — for the generation prompt in Prompt 8
+
+Build with neutral placeholders at correct dimensions and mapped dominant color.
+Placeholder slots are a tracked gap: not a blocker, not a check-in.
+Do NOT generate or source replacements now.
+
+Deliverable: asset manifest + placeholder inventory, grouped by template class.

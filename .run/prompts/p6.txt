@@ -1,0 +1,65 @@
+PHASE 6 — behavior specs, for what a diff cannot see.
+
+FRESH session. Bootstrap: docs/00-BRIEF.md, then CLAUDE.md, then
+docs/04-behavior-profile.md. Read nothing else up front.
+
+CONTEXT DISCIPLINE: query, never cat. MAXIMUM 2 CONCURRENT AGENTS.
+
+--------------------------------------------------------------------------------
+The profile found: no scroll-linked motion, no GSAP/ScrollTrigger/Lenis, zero
+split-text spans. Time-driven reveals only. Do NOT add a motion library, and do
+NOT write a spec for an effect the profile says does not exist.
+
+Write one spec per non-obvious interaction the profile DID find — the drawer,
+the header state, the service tabs, the carousels, form field states.
+
+Write them in pairs: 2 agents at a time, wait for both, then the next 2.
+
+A spec is written ONCE and applies to every route using that pattern, because
+patterns/* is shared.
+
+ANATOMY — every spec, every time:
+  mechanism  the exact CSS property or API, and explicitly what NOT to use where
+             a plausible wrong choice exists
+  numbers    the values, PLUS why the ratio matters perceptually
+  failure    the tempting-but-wrong version and why it reads wrong
+  trigger    what fires it, once or repeating, what happens on re-entry
+  a11y       labels, hidden state, focus, prefers-reduced-motion
+
+Two specimens, for the level of specificity required:
+
+  Header shrink: toggle a boolean class at scrollY > 80, transition height
+  88->64px and padding-block 20->12px. NOT scroll-linked interpolation — the
+  reference is a threshold toggle, and interpolating produces a header that
+  breathes continuously during scroll, which reads jittery on trackpads. 0.22s
+  ease-out: fast enough to feel like a state change, slow enough not to snap.
+  Hysteresis — shrink at 80, restore at 60; without the 20px gap a scroll resting
+  near 80 flickers. Logo scales via transform, not width — width triggers layout
+  every frame. Trigger: passive scroll listener, rAF-throttled, repeating both
+  directions. a11y: sticky in both states, focus ring unchanged, reduced-motion
+  snaps.
+
+  Mobile nav drawer: translateX(100%) -> 0. NOT display:none -> block, NOT a
+  height animation — the first kills the transition, the second reflows the page.
+  0.3s cubic-bezier(0.4,0,0.2,1); overlay fades 0 -> ink@55% over the same 0.3s.
+  Matching durations matter — a faster overlay reads as two separate events.
+  Failure mode: animating "right" or "width" — janks on mobile Safari, neither is
+  compositor-only. transform and opacity only. Trigger: button click, repeating;
+  on close, focus returns to the trigger. Body scroll locks via overflow:hidden +
+  scroll restore, NOT position:fixed on body — that loses scroll position on
+  close. a11y: aria-expanded on trigger, aria-controls -> panel id, inert when
+  closed, focus trapped while open, Escape closes. Reduced-motion: instant
+  show/hide, overlay still fades (opacity is safe).
+
+The measured drawer travel is -390px -> 0. Use the profile's real numbers, not
+these examples' numbers.
+
+--------------------------------------------------------------------------------
+DELIVERABLE
+
+Write every spec to BEHAVIOR.md in the repo root, then IMPLEMENT them all in
+components/patterns/* and components/ui/* (lead owns those files — implement
+serially, never let 2 agents edit the same shared component at once).
+
+Verify each reduced-motion branch rather than assuming it. `npx tsc --noEmit`,
+state the exit code. Chat reply under 25 lines: one line per spec implemented.

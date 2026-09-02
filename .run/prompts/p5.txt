@@ -1,0 +1,56 @@
+PHASE 5 — converge.
+
+FRESH session. Bootstrap: docs/00-BRIEF.md, then CLAUDE.md, then
+docs/07-build-report.md (Phase 4's output — this is your work queue).
+Read nothing else up front.
+
+CONTEXT DISCIPLINE: query, never cat (see 00-BRIEF). One breakpoint per query.
+Numbers, never screenshots — STRUCTURAL gates and it is text. Open a screenshot
+only for a section that has failed twice where the numbers do not explain why.
+
+MAXIMUM 2 CONCURRENT AGENTS. Dispatch 2, wait for both, then the next 2.
+
+--------------------------------------------------------------------------------
+LOOP — no check-ins. ROUND_CAP = 3 rounds.
+
+Take from docs/07-build-report.md every section over THRESHOLD (2% structural
+divergence per section per breakpoint) that is NOT already FLOORED, CAPPED or
+DEVIATION. Rank by worst breakpoint, descending.
+
+  Round 1: dispatch the worst 2. Wait for both. Re-diff each as it returns.
+           Continue in pairs until every section over threshold has had a pass.
+  Round 2: same, in pairs, for everything still over.
+  Round 3: same. STOP after round 3 regardless.
+
+  Never more than 2 agents live at once, in any round.
+
+Because Phase 4 built by CLASS, a fix belongs to the class, not the route. Fix it
+once on the class and re-diff every member route bound to it — not just the one
+that reported. A patterns/* change propagates further still: re-diff every route
+using that pattern.
+
+Serialize only when two sections need the same shared-file change: lead makes
+that edit alone, then both resume.
+
+A section at ITER_CAP (4 lifetime diff iterations) is frozen and reported at
+whatever number it holds. Caps are stop conditions, not a reason to keep working.
+
+--------------------------------------------------------------------------------
+REPORT CATEGORIES — never blend these
+
+  PASS       <= THRESHOLD at every breakpoint
+  FLOORED    blocked by a placeholder asset; area excluded from measurement
+  CAPPED     hit ITER_CAP; frozen at its number
+  DEVIATION  FORBIDDEN slot removed; report the pixel cost, never a divergence
+  FAILED     over threshold, not floored, not capped, not a deviation
+
+--------------------------------------------------------------------------------
+DELIVERABLE
+
+Write the final table to CONVERGENCE.md in the repo root:
+
+  ROUTE / SECTION            MODE    390   640   768  1024  1440   STATUS
+
+Then `npx tsc --noEmit` and state the exit code.
+Chat reply: under 30 lines — the counts per category, the shared-file changes
+made, and anything frozen with the reason. No prose recap.

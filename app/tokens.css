@@ -1,0 +1,200 @@
+/* ============================================================================
+ * tokens.css — the approved binding. THE single source of design values.
+ *
+ * Every value traces to docs/03-design-system.md, measured from the target
+ * (12 exemplars x 5 breakpoints, ~46k element dumps). Nothing here is invented,
+ * and nothing downstream may restate a raw value.
+ *
+ * COLOR_MODE = REMAP. Comments record what the reference used; the token binds
+ * to the CONFIG PALETTE. A colour that looks wrong is a wrong BINDING here,
+ * never a divergence in a section.
+ *
+ * Scale names are t-shirt sizes; the comment on each line carries the MEASURED
+ * px value it binds to, so the SYNTHESIZE system-compliance check ("every
+ * font-size / padding / gap exists in the extracted scale") stays checkable.
+ *
+ * LEAD OWNS THIS FILE. Section agents never edit it — they request a change.
+ * ========================================================================= */
+
+:root {
+  /* ---- PALETTE (CONFIG, verbatim) ------------------------------------- */
+  --vault-ink: #0b1220;
+  --vault-navy: #14213d;
+  --vault-blue: #1d4ed8;
+  --vault-blue-deep: #1739a8;
+  --signal-amber: #f59e0b;
+  --paper: #ffffff;
+  --steel-50: #f1f5f9;
+  --steel-200: #e2e8f0;
+  --steel-500: #64748b;
+
+  /* ---- COLOR ROLES (the binding) --------------------------------------
+   * role                    target value      elements   binds
+   * accent / dark band bg   #263e86           1254+673   vault-navy
+   * secondary / CTA         #fecc32           606+360    signal-amber
+   * page-bg / elevated      #ffffff           484+4156   paper
+   * ink                     #000000           1618       vault-ink
+   * surface                 #f7f7f7           114        steel-50
+   * border                  #e4e4e4           115        steel-200
+   * accent-hover            #3d58a9           34         vault-blue-deep
+   * ink-muted               #333333           40         steel-500
+   * deep surface            #08090e           85         vault-ink
+   * overlay                 rgba(0,0,0,.2)    64         vault-ink / 20%
+   * -------------------------------------------------------------------- */
+  --color-page-bg: var(--paper);
+  --color-surface: var(--steel-50);
+  --color-elevated: var(--paper);
+  --color-band: var(--vault-navy);
+  --color-band-deep: var(--vault-ink);
+  --color-ink: var(--vault-ink);
+  --color-ink-muted: var(--steel-500);
+  --color-ink-on-band: var(--paper);
+  --color-ink-on-band-muted: rgba(255, 255, 255, 0.72);
+  --color-accent: var(--signal-amber);
+  --color-accent-hover: #d98806; /* signal-amber shaded */
+  --color-cta: var(--signal-amber); /* target #fecc32 button fill */
+  --color-cta-ink: var(--vault-navy); /* target #263e86 button label */
+  --color-link: var(--vault-blue);
+  --color-link-hover: var(--vault-blue-deep);
+  --color-border: var(--steel-200);
+  --color-border-on-band: rgba(255, 255, 255, 0.18);
+  --color-overlay: rgba(11, 18, 32, 0.2);
+  --color-overlay-strong: rgba(11, 18, 32, 0.65);
+  --color-focus: var(--vault-blue);
+
+  /* ---- TYPE FAMILIES ---------------------------------------------------
+   * Both OFL 1.1, both on Google Fonts — verified in the Prompt 2 licence
+   * check. next/font injects these variables; no substitution, no binaries.
+   * -------------------------------------------------------------------- */
+  --font-display: var(--font-roboto-condensed), "Roboto Condensed", sans-serif;
+  --font-body: var(--font-rubik), "Rubik", sans-serif;
+
+  /* ---- TYPE SIZE LADDER — measured: 14 15 16 18 19 20 21 24 28 32 60 --- */
+  --fs-3xs: 0.875rem; /* 14 — eyebrow, label, fine print */
+  --fs-2xs: 0.9375rem; /* 15 — small nav */
+  --fs-xs: 1rem; /* 16 — BODY BASE, nav, button label */
+  --fs-sm: 1.125rem; /* 18 — h4, lead paragraph */
+  --fs-md: 1.1875rem; /* 19 — card heading */
+  --fs-lg: 1.25rem; /* 20 — h4 emphatic, body large */
+  --fs-xl: 1.3125rem; /* 21 — h4 */
+  --fs-2xl: 1.5rem; /* 24 — h3 */
+  --fs-3xl: 1.75rem; /* 28 — h2 alt */
+  --fs-4xl: 2rem; /* 32 — H2, section heading */
+  --fs-5xl: 2.625rem; /* 42 — H1 @1440 on serviceouter-one / serviceinner-one,
+                          measured. The design-system census rounded this and the
+                          home hero into a single 60px row; the target renders two
+                          distinct sizes and both are reproduced exactly. */
+  --fs-6xl: 3.625rem; /* 58 — H1 @1440 on hero-new (home), measured 58/700 lh 69.6 */
+
+  /* ---- LINE HEIGHTS — exactly two families, plus flat --------------- */
+  --lh-display: 1.15; /* Roboto Condensed */
+  --lh-body: 1.4; /* Rubik */
+  --lh-flat: 1; /* icons, single-line chrome */
+
+  /* ---- WEIGHTS --------------------------------------------------------- */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* ---- LETTER SPACING — normal everywhere except two ------------------- */
+  --ls-normal: normal;
+  --ls-tracked: 0.35px; /* the one tracked label */
+  --ls-tight: -0.287px; /* the one fluid pull-quote */
+
+  /* ---- SPACING SCALE — measured gap + padding values ------------------- */
+  --space-1: 4px;
+  --space-2: 6px;
+  --space-3: 10px; /* 1043 uses — the dominant gap */
+  --space-4: 12px; /* form control padding */
+  --space-5: 15px; /* 610 uses */
+  --space-6: 16px;
+  --space-7: 20px;
+  --space-8: 25px;
+  --space-9: 30px; /* grid gutter */
+  --space-10: 40px;
+  --space-11: 50px;
+  --space-12: 75px; /* section rhythm base */
+  --space-13: 100px;
+  --space-14: 120px; /* hero scale */
+
+  --section-y: var(--space-12); /* 75 — 41 sections use this */
+  --section-y-hero: var(--space-14); /* 120 */
+  --section-y-tight: var(--space-11); /* 50 */
+
+  /* ---- CONTAINER — measured inner width per breakpoint ----------------- */
+  --container-390: 360px;
+  --container-640: 610px;
+  --container-768: 720px;
+  --container-1024: 930px;
+  --container-1440: 1120px;
+  --container-gutter: var(--space-5); /* 15 */
+
+  /* ---- RADII ----------------------------------------------------------- */
+  --radius-none: 0px; /* every button variant */
+  --radius-xs: 4px; /* form controls */
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 20px; /* 750 uses — dominant card radius */
+  --radius-2xl: 30px;
+  --radius-card: 5px 20px 5px 5px; /* 251 uses — signature corner */
+  --radius-circle: 50%;
+  --radius-full: 100%;
+
+  /* ---- SHADOWS --------------------------------------------------------- */
+  --shadow-card: 0 0 10px rgba(11, 18, 32, 0.1);
+  --shadow-elevated: -1px 1px 4px rgba(11, 18, 32, 0.1),
+    4px 4px 50px rgba(11, 18, 32, 0.25);
+  --shadow-float: 4px 4px 24px rgba(11, 18, 32, 0.25);
+  --shadow-inverse: -4px -4px 15px rgba(11, 18, 32, 0.15);
+  --shadow-soft: 4px 4px 15px rgba(11, 18, 32, 0.1);
+  --shadow-diffuse: 0 4px 54px rgba(11, 18, 32, 0.05);
+
+  /* ---- GRADIENTS — the target uses these as tints, not transitions ----- */
+  --tint-light: linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.1)
+  );
+  --tint-dark: linear-gradient(
+    0deg,
+    rgba(11, 18, 32, 0.2),
+    rgba(11, 18, 32, 0.2)
+  );
+  --gradient-hero: linear-gradient(
+    275deg,
+    rgba(11, 18, 32, 0) 16.36%,
+    rgba(11, 18, 32, 0.65) 41.38%,
+    var(--vault-navy) 100%
+  );
+
+  /* ---- CHROME ---------------------------------------------------------- */
+  --bar-ribbon: 41px;   /* measured: emergency ribbon @1440 */
+  --bar-contact: 78px;  /* measured: contact bar @1440 */
+  --bar-nav: 46px;      /* measured: nav bar @1440 */
+  --header-height: 110px; /* measured <=1024, single bar */
+  --header-height-lg: 170px; /* measured @1440, three stacked bars */
+  --z-header: 50;
+  --z-drawer: 60;
+  --z-skip: 100;
+
+  /* ---- MOTION ----------------------------------------------------------
+   * The profile found no scroll-linked motion, no GSAP, no split-text.
+   * IntersectionObserver + transition only. Nothing else is permitted.
+   * -------------------------------------------------------------------- */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 400ms;
+  --reveal-distance: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+    --reveal-distance: 0px;
+  }
+}

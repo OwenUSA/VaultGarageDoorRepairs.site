@@ -1,0 +1,59 @@
+PHASE 8 — close the asset gap. Last phase.
+
+FRESH session. Bootstrap: docs/00-BRIEF.md, then CLAUDE.md. Read nothing else
+up front.
+
+CONTEXT DISCIPLINE: the placeholder inventory is 573 KB and docs/assets.md is
+214 KB. NEVER read either. Query:
+    node .harness/q.mjs slots                    # per-template counts
+    node .harness/q.mjs slots <template> [sec]   # the slots themselves
+
+MAXIMUM 2 CONCURRENT AGENTS. Dispatch 2, wait for both, then the next 2.
+
+--------------------------------------------------------------------------------
+DEDUPE FIRST — this is most of the work
+
+213 placeholder slots exist, but they are not 213 distinct images. Slots recur
+across template classes and across member routes. Before writing any prompt,
+group the inventory by (section, aspect ratio, depicts) and collapse duplicates.
+A slot group gets ONE prompt and ONE file, reused everywhere it appears.
+
+Expect the 213 to collapse to a few dozen groups. Report the collapse ratio.
+
+Skip every slot whose disposition is `removed` — those are CONFIG FORBIDDEN and
+are gone by design, not gaps to fill.
+
+--------------------------------------------------------------------------------
+ONE PROMPT PER GROUP
+
+Subject matter is CONFIG VERTICAL (garage door repair). Art direction is the
+reference's — derive it from the slot's recorded `depicts`, aspect ratio,
+objectFit/objectPosition, and mapped token, not from imagination.
+
+Shape:
+
+  SLOT hero-bg | used by: home, service-outer | 2400x1350 (16:9) | pos 50% 40%
+  Wide exterior shot at golden hour, subject centered-right, camera low and
+  slightly off-axis at roughly 35mm, warm low-angle light raking from frame
+  left, long soft shadows. Palette bound to CONFIG PALETTE. Fine natural film
+  grain, no HDR, no lens flare, no text, no visible branding. Lower third holds
+  detail but stays quiet enough for an overlay at 55% opacity.
+
+Every prompt must carry: exact output dimensions, aspect ratio, object-position,
+the routes/templates that use it, and the target filename in public/.
+
+FORBIDDEN applies to imagery too: no people identifiable as named staff, no
+awards, badges, certifications, rating stars, or brand marks of any kind.
+
+--------------------------------------------------------------------------------
+DELIVERABLE
+
+Write every group prompt to ASSET-PROMPTS.md in the repo root, ordered by how
+much page area the group covers (biggest visual impact first). The user runs
+them; do not attempt to generate images.
+
+Then report the final build status table, marking which sections remain FLOORED
+pending generated imagery, and state what the numbers would become once the
+placeholders are replaced.
+
+`npx tsc --noEmit`, state the exit code. Chat reply under 30 lines.

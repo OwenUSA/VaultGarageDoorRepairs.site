@@ -1,0 +1,102 @@
+PHASE 4 — build the sections, by template class.
+
+You are a FRESH session. Bootstrap yourself in this order, and read nothing else:
+  1. docs/00-BRIEF.md      <- state, route map, query tool, context rules
+  2. CLAUDE.md             <- CONFIG: FACTS, FORBIDDEN, caps, ownership
+  3. docs/03-design-system.md
+  4. docs/02-template-classes.md
+
+Phases 0-3 are DONE. The foundation exists and typechecks. Do not rebuild it.
+
+--------------------------------------------------------------------------------
+CONTEXT DISCIPLINE — this phase failed once by ignoring it
+
+Never read profile.json, slots-raw.json, inventory.json, placeholder-inventory.json
+or docs/assets.md. Query them:
+    node .harness/q.mjs sections <alias>
+    node .harness/q.mjs section  <alias> <i> <bp>
+    node .harness/q.mjs type     <alias> <i> <bp>
+    node .harness/q.mjs slots    <template> [section]
+One breakpoint per query. Never put a screenshot in context to judge a diff —
+run the structural diff and read the numbers. STRUCTURAL gates (it is text);
+perceptual SSIM is advisory under REMAP, so compute it, report it, never view it.
+
+--------------------------------------------------------------------------------
+MAXIMUM 2 CONCURRENT AGENTS. Dispatch 2, wait for both, dispatch the next 2.
+This is a hard limit. Never 3.
+
+--------------------------------------------------------------------------------
+BUILD BY CLASS, NOT BY ROUTE
+
+Three classes cover all 13 CLONE routes. Converge the class against its exemplar
+once; members then differ only in copy, pulled from lib/site.ts.
+
+Run these pairs in order. Wait for both agents in a pair before starting the next.
+
+  PAIR 1   home           alias home           -> /
+           service-outer  alias service-outer  -> 6 member routes
+
+  PAIR 2   service-inner  alias service-inner  -> 6 member routes
+           so-material    alias so-material    -> /residential-garage-doors
+             (a service-outer variant; diff against its OWN exemplar)
+
+  PAIR 3   si-commercial  alias si-commercial  -> /commercial-garage-door-services/repair
+             (a service-inner variant; diff against its OWN exemplar)
+           /contact       SYNTHESIZE
+
+     For both variants: report only where the variant genuinely deviates from its
+     base class. If it is within tolerance of the base, say so and reuse the base
+     — do not rebuild it.
+
+  PAIR 4   /service-areas SYNTHESIZE
+           /faqs          SYNTHESIZE
+
+  PAIR 5   /privacy-policy SYNTHESIZE
+           member-route copy binding, all 12 remaining CLONE members in ONE agent
+
+     Member routes are a content pass, not layout work: bind each to its already
+     converged class and write per-route copy from lib/site.ts. No member route
+     re-derives geometry — it inherits the class. One agent handles all of them
+     sequentially; do not spawn one agent per route.
+
+  SYNTHESIZE routes have nothing to diff. Gate them on SYSTEM COMPLIANCE: zero
+  raw hex/rgb/px in component code, every type pair and every spacing value drawn
+  from the extracted scales, every section built only from components/patterns/*
+  and components/ui/*. Report the violation count, which must be zero. Do not
+  invent a divergence number for these.
+
+--------------------------------------------------------------------------------
+EACH AGENT, per section it owns
+
+  1. Query its own section only, at one breakpoint at a time.
+  2. Build from components/patterns/* and components/ui/*. Never a new primitive.
+  3. Copy per COPY_MODE = ORIGINAL — own words, target structure. Never clone
+     body copy, headlines, or brand marks.
+  4. Every business fact from lib/site.ts. Never hardcoded.
+  5. Any slot requiring a CONFIG FORBIDDEN item is REMOVED or repurposed, and
+     reported as an intentional structural deviation with its pixel cost.
+  6. Measure at all five breakpoints (390/640/768/1024/1440), then classify:
+       (a) blocked by placeholder asset    -> list, exclude the area, move on
+       (b) measurable but unmeasured       -> measure it
+       (c) layout / type / spacing / state -> fix it
+       (d) intentional deviation           -> list with cost, never "fix"
+     Fix (b) and (c) ONCE. List (a) and (d).
+  7. Report ONE LINE per section:
+       class/route · section · MODE · 390 640 768 1024 1440 · maxΔpx · status
+     Plus, only if non-empty: shared-file changes needed, (a) and (d) counts.
+     No prose. No recap of these instructions.
+
+Agents NEVER edit shared files (tokens.css, globals.css, tailwind config,
+layout.tsx, ui/*, patterns/*, lib/*). They stop and request the change. Lead
+applies it once and rebroadcasts. If two agents need the same change, lead makes
+it before dispatching either.
+
+Cap: 1 build + 1 fix pass per agent, then report whatever the number is.
+
+--------------------------------------------------------------------------------
+DELIVERABLE
+
+Write the full per-section table to docs/07-build-report.md, and keep the chat
+reply under 40 lines: the table summary, the shared-file changes you applied,
+and the counts of FLOORED / CAPPED / DEVIATION. Run `npx tsc --noEmit` before
+reporting and state its exit code.

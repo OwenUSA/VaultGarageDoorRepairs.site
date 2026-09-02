@@ -1,0 +1,76 @@
+GATE DECISION — the user has answered the Phase gate. Two rulings, both binding:
+
+RULING 1 — ROUTE_POLICY changes from MIRROR to SUBSET.
+Your flag #1 in docs/05-route-map.md is accepted. Keep rows 1-4, 9-14, 20-21 and
+24 only. Drop rows 5-8, 15-19, 22, 23, 25 entirely — they are structure looking
+for content and CONFIG forbids inventing it. That resolves your weakest binding
+(row 25, roof-coating -> opener-repair) by deletion.
+
+Also accepted: your flag #4. Add all four SYNTHESIZE rows.
+
+The final route table is 17 rows:
+
+  #   OUR ROUTE                                                MODE        CLASS
+  1   /                                                        CLONE       home
+  2   /emergency-garage-door-repair                            CLONE       service-outer
+  3   /residential-garage-door-services                        CLONE       service-outer
+  4   /residential-garage-doors                                CLONE       service-outer
+  9   /residential-garage-door-services/maintenance-tune-up    CLONE       service-inner
+  10  /residential-garage-door-services/spring-repair          CLONE       service-inner
+  11  /residential-garage-door-services/panel-replacement      CLONE       service-inner
+  12  /residential-garage-door-services/new-door-installation  CLONE       service-inner
+  13  /residential-garage-door-services/off-track-cable-repair CLONE       service-outer
+  14  /commercial-garage-door-services                         CLONE       service-outer
+  20  /commercial-garage-door-services/inspection              CLONE       service-inner
+  21  /commercial-garage-door-services/repair                  CLONE       service-inner
+  24  /commercial-garage-door-services/maintenance-program     CLONE       service-outer
+  --  /contact                                                 SYNTHESIZE  breadcrumb + contact-one + map-sec
+  --  /service-areas                                           SYNTHESIZE  serviceareaouter-one + map-sec
+  --  /faqs                                                    SYNTHESIZE  faq-one + faq-two
+  --  /privacy-policy                                          SYNTHESIZE  blankpage
+
+Opener repair is a CONFIG FACTS service and must still be reachable — fold it
+into /residential-garage-door-services rather than resurrecting row 25.
+
+Rewrite docs/05-route-map.md to this resolved table before you build anything.
+
+RULING 2 — Prompt 2 is complete. Your STEP E harvest already delivered it
+(29 SVGs kept, 213 placeholders, 55 FORBIDDEN slots removed). Do not re-run it.
+
+Your two open items are now closed. Proceed. No further check-ins exist.
+
+================================================================================
+
+Prompt 3 — Shared foundation, lead alone, before any fan-out.
+
+You (lead) build these yourself, before dispatching anyone. Serialized on purpose
+— every parallel agent depends on them.
+
+  tokens.css            approved binding as CSS custom properties + full type
+                        scale + spacing scale + radii/shadows. No magic numbers
+                        downstream, anywhere, ever.
+  tailwind config       bind tokens; no raw hex permitted in component code
+  app/layout.tsx        html/body shell, next/font, skip-link, header, footer
+  components/ui/*       every primitive from the extraction, all states
+  components/patterns/* every SECTION PATTERN from the extraction, as a
+                        configurable component. This is the vocabulary
+                        SYNTHESIZE routes are built from — build them all, even
+                        patterns only one route uses.
+  lib/site.ts           SINGLE source of every CONFIG FACTS value
+  lib/schema.ts         structured data built from lib/site.ts
+  app/not-found.tsx, robots.ts, sitemap.ts
+
+Fonts: Roboto Condensed + Rubik are OFL per your license check — use
+next/font/google directly, no substitution.
+
+Apply the shared-tail contraction once, as lead, before dispatch: the FORBIDDEN
+removals collapse the universal tail to map-sec > contact-new across all 10
+affected routes. You identified this as a shared change; make it now.
+
+Motion library ONLY if the profile found motion CSS cannot do. Your profile found
+no scroll-linked motion, no GSAP, no split-text — so use IntersectionObserver +
+transition, nothing more.
+
+Route skeleton, empty but routable, one file per row in the 17-row table above.
+
+Then dispatch. Do not build sections yourself.

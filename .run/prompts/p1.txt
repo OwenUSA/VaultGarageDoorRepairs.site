@@ -1,0 +1,95 @@
+Read CLAUDE.md in the repo root first — its CONFIG block is authoritative for every value referenced below.
+
+TARGET_URL, CRAWL_DEPTH, CRAWL_LIMIT per CONFIG.
+Build the capture harness FIRST. No page code until it works.
+Run STEP A and STEP E concurrently.
+
+STEP A — PAGE INVENTORY
+Crawl internal links to CRAWL_DEPTH, capped at CRAWL_LIMIT. Per page record URL,
+title, h1, section count, and page height. Note pages behind auth, geo, or
+pagination and mark them UNREACHABLE rather than guessing.
+
+STEP B — TEMPLATE CLASSES  ← this is what makes the clone reusable
+Do not treat every page as its own design problem. Cluster the inventory into
+template classes by shared section sequence and shared layout skeleton. Most
+sites have 3-6. Typical classes: home, listing/index, detail, generic-content,
+form/contact, legal.
+Per class report:
+  - class name
+  - member URLs, and which member is the canonical exemplar (the richest one)
+  - the ordered section sequence
+  - which sections are fixed across members and which vary
+  - the page-level chrome: container width, grid, header/footer variant
+Then classify SITE_CLASS if CONFIG says auto, and state the decomposition unit
+you will use — for marketing that is the section; for docs it is the content
+column plus persistent nav; for commerce it is the template plus its data shape;
+for app it is the routed pane. Say which and why.
+
+STEP C — DESIGN SYSTEM EXTRACTION
+This is extracted once, site-wide, and every route inherits it.
+  - TYPE SCALE: every distinct font-size/weight/letter-spacing/line-height
+    combination, with the selector that owns it and where it is used
+  - SPACING SCALE: distinct section padding, gap, container max-width, and
+    vertical rhythm values
+  - COLOR ROLES: cluster every computed color into roles — page-bg, surface,
+    elevated, ink, ink-muted, accent, accent-hover, border, overlay — with the
+    element count using each
+  - RADII, BORDERS, SHADOWS, GRADIENTS: distinct values, with usage counts
+  - SECTION PATTERNS: the reusable section archetypes (hero, split, grid-of-N,
+    band, stat-row, accordion, form-block, footer). Give each a name and record
+    its geometry at every breakpoint. SYNTHESIZE routes are built only from
+    these, so this list is the vocabulary for the whole build.
+  - UI PRIMITIVES: button variants and their states, link styles, card variants,
+    form field anatomy, icon sizing
+  - BREAKPOINTS: every breakpoint in the CSS, read from the stylesheets
+
+STEP D — BEHAVIOR PROFILE, per template class
+  - motion: scroll-linked or time-driven, per section
+  - content static or fetched
+  - state: menus, tabs, carousels, accordions, forms, sticky/shrink headers
+Then name the axes that actually matter for THIS site and state which you capture
+and which you SKIP, with reasons. Do not default to a motion-heavy capture on a
+site whose difficulty is layout, density, or state.
+
+STEP E — dispatch asset harvest now (Prompt 2). Do not serialize it.
+
+HARNESS — build for the chosen axes. Always capture, per section:
+  - Geometry: box, position, z-order, overflow
+  - Static appearance: resolved font-family, weight, size, letter-spacing,
+    line-height, rest opacity, border, radius, shadow geometry, gradient stops.
+    Geometry-only audits are blind to most of what makes a section read wrong.
+  - Responsive: the same pass at EVERY breakpoint from STEP C.
+Add only per profile:
+  - Scroll-linked motion -> sample by requestAnimationFrame during a slow
+    programmatic scroll, ~2-4px/frame. Never step to fixed scroll offsets; offset
+    stepping cannot see staggers, easing, or sub-step transitions. If you write
+    scrollTo(y) in a loop, stop.
+  - Text effects -> count "h1 span, h2 span, [class*=char], [class*=word]" per
+    heading and dump each heading's outerHTML. A visually-hidden duplicate of the
+    text is a split-library signature, not an accessibility copy.
+  - Interactive state -> capture each state as its own reference, not just the
+    default render.
+  - Data-driven lists -> real item count, plus empty/loading states if reachable.
+
+COMPARISON — two channels, gated per COLOR_MODE:
+  STRUCTURAL: diff the DOM property dumps. Per section per breakpoint output max
+    box delta px, elements over tolerance, typography mismatches, divergent area %.
+  PERCEPTUAL: SSIM. Under REMAP, recolor the reference through the token map first.
+  Screenshot both sides at matched SECTION-RELATIVE progress — page heights
+  differ, absolute scrollY is meaningless.
+  Rank sections by the gating channel, descending.
+
+ROUTE MAP — resolve CONFIG ROUTES against the template classes:
+  ROUTE_POLICY MIRROR -> emit one row per crawled page, mode CLONE
+  ROUTE_POLICY SUBSET -> emit rows only for pages the user kept
+  ROUTE_POLICY CUSTOM -> bind each requested route to its named template class;
+    any route with no plausible class becomes SYNTHESIZE, and you propose which
+    section patterns compose it
+Report the resolved table. Flag any binding you think is wrong.
+
+Harness gets HARNESS_CAP passes. Rough is fine. Refine only if it produces a
+number you can prove is wrong.
+
+Deliverable: page inventory, template classes, design system, behavior profile,
+resolved route map, ranked table, raw traces. Continue straight into Prompt 2's
+inventory — do not stop here.

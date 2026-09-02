@@ -1,0 +1,34 @@
+🚦 GATE report.
+
+Post all seven items below. Then CONTINUE — the user has pre-approved this gate
+and instructed the run to proceed unattended. Do not stop and wait.
+
+1. Page inventory + template classes + SITE_CLASS with decomposition unit
+2. Resolved route map — every binding, every SYNTHESIZE composition, every flag
+3. Design system: type scale, spacing scale, section patterns, primitives
+4. Token binding proposal (REMAP) with contrast check
+5. Axes chosen and axes skipped, with reasons
+6. Placeholder inventory count
+7. Harness output: ranked table, reference vs blank scaffold
+
+Shape of the token binding (COLOR_MODE = REMAP):
+
+ROLE           REFERENCE        ->  OURS               NOTE
+page-bg        <ref hex>        ->  <hex> <name>
+surface        <ref hex>        ->  <hex> @60%         subtle lift
+elevated       <ref hex>        ->  <hex>              cards stay near-white
+ink            <ref hex>        ->  <hex>
+ink-muted      <ref hex>        ->  <hex>
+accent         <ref hex>        ->  <hex>
+accent-hover   <ref hex>        ->  <hex>
+border         <ref hex>        ->  <hex> @30%
+overlay        <ref rgba>       ->  <hex> @55%
+
+CONTRAST (AA — 4.5:1 body, 3:1 large) — every bound pair, computed.
+Any FAIL gets a derived substitute value, listed explicitly with its ratio.
+
+Deviations from CONFIG PALETTE are limited to the derived values above and are
+listed here rather than applied silently.
+
+Bind every role from the CONFIG PALETTE in CLAUDE.md. Write the approved binding
+to GATE.md in the repo root so Prompt 3 can build tokens.css from it.
