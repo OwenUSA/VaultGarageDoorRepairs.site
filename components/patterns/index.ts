@@ -65,6 +65,7 @@ export { FaqBlock } from './FaqBlock';
 
 export { SiteHeader } from './SiteHeader';
 export { SiteFooter } from './SiteFooter';
+export { CallBar } from './CallBar';
 
 /**
  * SHARED TAIL — the contraction applied once by the lead, per the gate ruling.

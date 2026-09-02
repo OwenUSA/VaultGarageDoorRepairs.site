@@ -25,14 +25,22 @@
     }
   }
 
+  /* THE DEFAULT FAMILY IS THE DISPLAY FACE, not the paragraph face.
+     Measured on the reference: every band root resolves to
+     `"Roboto Condensed", sans-serif` 400 16/18.4, and Rubik is bound to
+     `--paragraph-font` and applied to PARAGRAPHS only (docs/profile.md 7,
+     docs/03-design-system.md type rows 1 and 2). Declaring Rubik on `body`
+     instead put a 100% fontFamily deviation, a 20% weight deviation and an
+     18% line-height deviation on the root of every section the structural
+     comparator measures — header and footer included, on all five routes. */
   body {
     margin: 0;
     background-color: var(--color-page-bg);
     color: var(--color-ink);
-    font-family: var(--font-body);
+    font-family: var(--font-display);
     font-size: var(--fs-xs);
-    font-weight: var(--fw-medium);
-    line-height: var(--lh-body);
+    font-weight: var(--fw-regular);
+    line-height: var(--lh-display);
     -webkit-font-smoothing: antialiased;
   }
 
@@ -48,8 +56,12 @@
     line-height: var(--lh-display);
   }
 
+  /* Rubik owns paragraphs and nothing else: type row 2, 500 16/22.4. */
   p {
     margin: 0;
+    font-family: var(--font-body);
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-body);
   }
 
   a {
@@ -72,9 +84,22 @@
     min-height: 44px;
   }
 
+  /* Anchor targets must clear the sticky header. Set once, in the shell, on
+     every [id] -- not per section (docs/behavior/02, failure mode 2). */
+  [id] {
+    scroll-margin-top: calc(var(--header-height) + var(--space-4));
+  }
+
+  /* FOCUS IS TWO LAYERS, and it has to be, because one token cannot hold 3:1
+     against both a white page and a saturated CTA fill:
+       box-shadow  -- a page-coloured HALO immediately outside the element
+       outline     -- the dark RING outside the halo
+     Gated in harness.config.mjs as focus-ring-on-page (13.39:1),
+     focus-halo-on-cta (6.96:1), focus-halo-on-band (13.51:1). */
   :focus-visible {
     outline: 2px solid var(--color-focus);
-    outline-offset: 2px;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px var(--color-focus-halo);
   }
 }
 
@@ -120,5 +145,98 @@
   .reveal[data-visible='true'] {
     opacity: 1;
     transform: none;
+  }
+}
+
+@layer components {
+  /* MOBILE STICKY CALL BAR -- docs/behavior/03. Shown below 768 by MEDIA QUERY,
+     never by a JS breakpoint check (that flashes the bar on desktop during
+     hydration). It never auto-hides on scroll: the whole point is that the
+     number is reachable without hunting for it. It leaves only for the drawer,
+     whose own call CTA it would otherwise stack on top of. */
+  .call-bar {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: var(--z-callbar);
+    display: flex;
+    padding-bottom: max(var(--space-3), env(safe-area-inset-bottom));
+    transform: translateY(0);
+    transition: transform 200ms cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .call-bar[data-hidden='true'] {
+    transform: translateY(100%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .call-bar {
+      transition-duration: 0ms;
+    }
+  }
+  /* Without this the bar covers the last section on every page -- the map on
+     /contact, the footer on /. Compensated only where the bar exists. */
+  body {
+    padding-bottom: var(--call-bar-h);
+  }
+  @media (min-width: 768px) {
+    .call-bar {
+      display: none;
+    }
+    body {
+      padding-bottom: 0;
+    }
+  }
+
+  /* MAP BYPASS -- docs/behavior/07. NOT display:none and NOT visibility:hidden;
+     both remove it from the tab order, which is the entire point of it. */
+  .map-bypass {
+    position: absolute;
+    left: -9999px;
+  }
+  .map-bypass:focus-visible {
+    position: static;
+    left: auto;
+    display: inline-block;
+    padding: var(--space-2) var(--space-3);
+  }
+}
+
+@layer components {
+  /* MOBILE NAV DRAWER -- docs/behavior/01.
+     `data-open` on the element is the source of truth; CSS, the route-change
+     effect and the Playwright gate all read the same attribute.
+     TRANSFORM, never `left`: `left` is not compositor-accelerated and animating
+     it triggers layout on every frame of a panel containing the phone number.
+     `visibility` (not `display`) parks the closed drawer: display is not
+     animatable, and a drawer parked with a transform alone stays in the tab
+     order, stays in the accessibility tree, and is still sampled by the
+     render-truth gate at an offscreen box. Visibility is instant on the way in
+     and delayed by the slide-out on the way back. */
+  [data-drawer] {
+    visibility: hidden;
+    transition: visibility 0s linear var(--duration-drawer-out);
+  }
+  [data-drawer][data-mounted='true'] {
+    visibility: visible;
+    transition: visibility 0s;
+  }
+  [data-drawer] .drawer-panel {
+    transform: translateX(-100%);
+    transition: transform var(--duration-drawer-out) var(--ease-drawer);
+  }
+  [data-drawer][data-open='true'] .drawer-panel {
+    transform: translateX(0);
+    transition-duration: var(--duration-drawer-in);
+  }
+  [data-drawer] .drawer-overlay {
+    opacity: 0;
+    transition: opacity var(--duration-drawer-out) linear;
+  }
+  [data-drawer][data-open='true'] .drawer-overlay {
+    opacity: 1;
+  }
+
+  /* The call bar leaves when the drawer opens: its CTA would otherwise stack on
+     the drawer's own call button and be announced twice in a row. */
+  body[data-drawer='open'] .call-bar {
+    transform: translateY(100%);
   }
 }

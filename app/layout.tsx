@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Roboto_Condensed, Rubik } from 'next/font/google';
 import './globals.css';
 import { SkipLink, JsonLd } from '@/components/ui';
-import { SiteHeader, SiteFooter } from '@/components/patterns';
+import { SiteHeader, SiteFooter, CallBar } from '@/components/patterns';
 import { site } from '@/lib/site';
 import { localBusinessSchema, websiteSchema } from '@/lib/schema';
 
@@ -54,6 +54,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
         <main id="main">{children}</main>
         <SiteFooter />
+        {/* LAST in the DOM on purpose (docs/behavior/03): the bar must not
+            intercept the reading order, and CSS alone pulls it into place. */}
+        <CallBar />
         <JsonLd data={localBusinessSchema()} />
         <JsonLd data={websiteSchema()} />
       </body>

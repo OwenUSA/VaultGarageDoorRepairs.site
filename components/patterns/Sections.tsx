@@ -37,11 +37,17 @@ function Actions({ actions, onBand }: { actions?: readonly PatternAction[]; onBa
   if (!actions?.length) return null;
   return (
     <div className="flex flex-wrap gap-5">
-      {actions.map((a, i) => (
+      {actions.map((a) => (
         <ButtonLink
           key={a.href + a.label}
           href={a.href}
-          variant={i === 0 ? 'primary' : onBand ? 'phone' : 'inverse'}
+          /* The variant is chosen by WHAT THE ACTION IS, never by its position
+             in the list: a `tel:` action is the filled chromatic CTA and every
+             other action is filled neutral. This is the one-filled-chromatic-
+             action rule from components/ui/Button.tsx, encoded so a section
+             cannot opt out of it. Ordering the CTA first is still right, but it
+             is a layout decision, not a colour one. */
+          variant={a.href.startsWith('tel:') ? 'call' : onBand ? 'solid-band' : 'solid'}
         >
           {a.label}
         </ButtonLink>

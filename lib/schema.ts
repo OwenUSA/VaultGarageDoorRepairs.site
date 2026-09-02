@@ -30,6 +30,10 @@ export function localBusinessSchema() {
     url: site.url,
     telephone: nap.phone,
     description: site.description,
+    /* TODO(fact): logo asset. `logo-wordmark` is a REPLACE slot in
+       assets/INVENTORY.md and the prompt for it is written in Prompt 10; until
+       the file is handed back this points at the placeholder that ships. */
+    image: abs('/placeholders/logo-wordmark.svg'),
     address: {
       '@type': 'PostalAddress',
       streetAddress: nap.street,

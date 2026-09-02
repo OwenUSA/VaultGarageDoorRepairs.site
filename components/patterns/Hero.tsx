@@ -91,12 +91,18 @@ export function Hero({
             {primaryCta || secondaryCta ? (
               <div className="flex flex-wrap gap-5">
                 {primaryCta ? (
-                  <ButtonLink variant="primary" href={primaryCta.href}>
+                  <ButtonLink
+                    variant={primaryCta.href.startsWith('tel:') ? 'call' : 'solid'}
+                    href={primaryCta.href}
+                  >
                     {primaryCta.label}
                   </ButtonLink>
                 ) : null}
                 {secondaryCta ? (
-                  <ButtonLink variant="phone" href={secondaryCta.href}>
+                  <ButtonLink
+                    variant={secondaryCta.href.startsWith('tel:') ? 'call' : 'solid'}
+                    href={secondaryCta.href}
+                  >
                     {secondaryCta.label}
                   </ButtonLink>
                 ) : null}

@@ -289,6 +289,96 @@ export default {
     'partner-logo-strip': true, 'testimonial-band-bg': true, 'header-topbar-texture': true,
   },
 
-  masterSeed: 3105,
+  // ---------------------------------------------------------------------------
+  // PROMPT 5+9 -- PALETTE. Randomized at token-write time (A-7).
+  //
+  // referenceRamp: the reference's OWN measured values, one per structural slot. The
+  // rotation holds every L and C exactly and re-derives H, so what this table fixes is the
+  // LIGHTNESS/CHROMA STRUCTURE, not the colours.
+  //
+  // ONE extraction judgement is recorded here rather than buried. The reference's CTA fill
+  // is #fecc32, a light amber at OKLCH L 0.87. Held at that L, a CTA fill measures 1.51:1
+  // against a white page AT EVERY HUE, so `CTA fill separates from the page (>=3:1)` is
+  // unsatisfiable for any candidate and the generator would reject 4000 rolls in a row.
+  // The reference gets away with it by placing its amber almost exclusively on its own dark
+  // navy band. Ours is gated on the page surface, so the CTA slot takes the reference's
+  // most chromatic INTERACTIVE value instead -- #3d58a9, its measured accent-hover -- and
+  // the label goes white. Structure preserved, constraint satisfiable, and recorded in
+  // docs/known-divergence.md rather than silently fudged.
+  referenceRamp: {
+    accent:      '#3d58a9', // measured accent-hover, 34 uses -> the CALL CTA fill
+    accentDeep:  '#263e86', // measured --primary, 1254 bg + 673 ink -> CTA hover/pressed
+    primary:     '#093145', // measured --primary-light -> the structural dark band
+    primaryDeep: '#0b2434', // measured deep surface, 85 uses -> the deeper band
+    neutral0:    '#ffffff', // measured page-bg, 484 bg + 4156 ink
+    neutral200:  '#f7f7f7', // measured surface, 114 uses
+    neutral400:  '#e4e4e4', // measured border, 115 uses
+    neutral600:  '#333333', // measured ink-muted, 40 uses
+    neutral900:  '#08090e', // measured deepest ink/surface
+  },
+
+  // EXEMPT from the hue rotation (A-7). A randomly green error state is a bug.
+  semantic: { error: '#b3261e', success: '#1b7f4b', warning: '#8a5200' },
+
+  // What the SHELL ACTUALLY RENDERS, not the ramp in theory. Every row here maps to a real
+  // fg/bg combination in tokens.css + the shell components. Gradient bands are declared as
+  // one gradient row, never as two flat rows -- that flat model is how Atlas shipped an
+  // invisible CTA that "passed AA".
+  pairsInUse: [
+    // body and headings on the light surfaces
+    { name: 'ink-on-page',            fg: 'neutral900', bg: 'neutral0',   min: 4.5 },
+    { name: 'ink-muted-on-page',      fg: 'neutral600', bg: 'neutral0',   min: 4.5 },
+    { name: 'ink-on-surface',         fg: 'neutral900', bg: 'neutral200', min: 4.5 },
+    { name: 'ink-muted-on-surface',   fg: 'neutral600', bg: 'neutral200', min: 4.5 },
+    // dark bands
+    { name: 'on-band',                fg: 'neutral0',   bg: 'primary',     min: 4.5 },
+    { name: 'on-band-muted',          fg: 'neutral200', bg: 'primary',     min: 4.5 },
+    { name: 'on-band-deep',           fg: 'neutral0',   bg: 'primaryDeep', min: 4.5 },
+    { name: 'on-band-deep-muted',     fg: 'neutral200', bg: 'primaryDeep', min: 4.5 },
+    // the hero overlay is a gradient, sampled on its worst stop
+    { name: 'hero-overlay-text',      fg: 'neutral0',   bg: { gradient: ['primary', 'primaryDeep'] }, min: 4.5 },
+    // the call CTA -- the only filled chromatic action on any page
+    { name: 'cta-label',   kind: 'cta', fg: 'neutral0', bg: 'accent',      min: 4.5 },
+    { name: 'cta-hover-label',         fg: 'neutral0',  bg: 'accentDeep',  min: 4.5 },
+    // the secondary action is filled NEUTRAL, never primary: a primary fill can out-chroma
+    // the CTA in the sRGB terms rendertruth measures and fail cta-primacy on every route.
+    { name: 'solid-label',             fg: 'neutral0',   bg: 'neutral900', min: 4.5 },
+    { name: 'solid-band-label',        fg: 'neutral900', bg: 'neutral200', min: 4.5 },
+    // links
+    { name: 'link-on-page',            fg: 'accent',     bg: 'neutral0',   min: 4.5 },
+    { name: 'link-hover-on-page',      fg: 'accentDeep', bg: 'neutral0',   min: 4.5 },
+    { name: 'link-on-surface',         fg: 'accent',     bg: 'neutral200', min: 4.5 },
+    // UI edges a user has to perceive
+    { name: 'input-border-on-page',    fg: 'borderStrong', bg: 'neutral0',   min: 3 },
+    { name: 'input-border-on-surface', fg: 'borderStrong', bg: 'neutral200', min: 3 },
+    // focus is TWO layers: a page-coloured inner HALO sitting immediately outside the
+    // element and the dark RING outside that (globals.css: box-shadow halo + outline ring
+    // at a matching offset). So the ring is never gated against a saturated fill it never
+    // touches -- it is gated against the halo, and the halo against whatever it sits on.
+    // Gating focus vs the CTA fill directly is unsatisfiable at every hue (both are
+    // mid-dark by construction) and rejected 800 of 800 rolls before this was corrected.
+    { name: 'focus-ring-on-page', kind: 'focus', fg: 'focus',    bg: 'neutral0',     min: 3 },
+    { name: 'focus-halo-on-cta',  kind: 'focus', fg: 'neutral0', bg: 'accent',       min: 3 },
+    { name: 'focus-halo-on-band', kind: 'focus', fg: 'neutral0', bg: 'primary',      min: 3 },
+    { name: 'focus-halo-on-deep', kind: 'focus', fg: 'neutral0', bg: 'primaryDeep',  min: 3 },
+    // semantic text, on the surfaces the form actually renders them on
+    { name: 'error-on-page',           fg: 'error',   bg: 'neutral0', min: 4.5 },
+    { name: 'success-on-page',         fg: 'success', bg: 'neutral0', min: 4.5 },
+    { name: 'warning-on-page',         fg: 'warning', bg: 'neutral0', min: 4.5 },
+  ],
+
+  // masterSeed 3126 -- steered, not selected. The auto-selection rule is untouched (highest
+  // CTA contrast, ties to the lowest seed); only the master seed moved, 22 master seeds
+  // tried, until the WINNER's primary and accent hues both cleared ~30 degrees from every
+  // hue already taken in this programme (332 plum, 270 violet-slate, 252 navy, 217 teal,
+  // ~150 green, 46 amber). Winner: seed 9611, complementary, primary hue 184 (deep
+  // teal-green band), accent hue 4 (crimson-rose CTA). Nearest neighbours are 33 deg
+  // (184 vs Titan's 217) and 32 deg (4 vs Atlas's 332), and the two sites differ in ROLE as
+  // well: Atlas is plum-dominant, ours is teal-dominant with a crimson call CTA.
+  // A stricter >=40 deg search was run and does exist (masterSeed 5378, seed 49048, primary
+  // hue 109, accent 79) but 2274 master seeds in, and the >=40 window on this fleet is only
+  // hue 82-114 wide -- an olive band with an analogous bronze CTA, 30 deg apart, which is a
+  // weaker hierarchy than a complementary pair. Recorded in docs/known-divergence.md.
+  masterSeed: 3126,
   gradientSamples: 5,
 };

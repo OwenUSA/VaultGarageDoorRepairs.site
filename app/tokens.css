@@ -1,45 +1,69 @@
-/* ============================================================================
- * tokens.css — the approved binding. THE single source of design values.
- *
- * Every value traces to docs/03-design-system.md, measured from the target
- * (12 exemplars x 5 breakpoints, ~46k element dumps). Nothing here is invented,
- * and nothing downstream may restate a raw value.
- *
- * COLOR_MODE = REMAP. Comments record what the reference used; the token binds
- * to the CONFIG PALETTE. A colour that looks wrong is a wrong BINDING here,
- * never a divergence in a section.
- *
- * Scale names are t-shirt sizes; the comment on each line carries the MEASURED
- * px value it binds to, so the SYNTHESIZE system-compliance check ("every
- * font-size / padding / gap exists in the extracted scale") stays checkable.
- *
- * LEAD OWNS THIS FILE. Section agents never edit it — they request a change.
- * ========================================================================= */
-
 :root {
-  /* ---- PALETTE (CONFIG, verbatim) ------------------------------------- */
-  --vault-ink: #0b1220;
-  --vault-navy: #14213d;
-  --vault-blue: #1d4ed8;
-  --vault-blue-deep: #1739a8;
-  --signal-amber: #f59e0b;
-  --paper: #ffffff;
-  --steel-50: #f1f5f9;
-  --steel-200: #e2e8f0;
-  --steel-500: #64748b;
+  /* ---- RANDOMIZED PALETTE (A-7) - generated, not chosen ----------------
+   * `node ../_shared/harness/src/palette.mjs --seed 9611 --emit` reproduces
+   * every value below exactly. masterSeed 3126, 5 candidates generated and
+   * gated programmatically, 0 rejected, winner seed 9611 on the highest CTA
+   * contrast (6.96:1). All five candidate seeds are in
+   * docs/known-divergence.md together with the seed-steering record.
+   *
+   * The reference ramp (harness.config.mjs `referenceRamp`) is converted to
+   * OKLCH, every L and C is HELD EXACTLY, and only the hue is re-derived from
+   * a random primary. Neutrals keep a 3.6% chroma tint of the primary hue;
+   * pure grey reads cheap. Semantic colours are EXEMPT from the rotation and
+   * keep conventional hues - a randomly green error state is a bug.
+   *
+   * COLOUR DIVERGENCE FROM THE REFERENCE IS INTENTIONAL AND IS PERMANENTLY
+   * EXCLUDED FROM EVERY DIFF AND EVERY THRESHOLD (A-8). A section is never
+   * failed, and never iterated on, for a colour delta.
+   * -------------------------------------------------------------------- */
 
-  /* ---- COLOR ROLES (the binding) --------------------------------------
-   * role                    target value      elements   binds
-   * accent / dark band bg   #263e86           1254+673   vault-navy
-   * secondary / CTA         #fecc32           606+360    signal-amber
-   * page-bg / elevated      #ffffff           484+4156   paper
-   * ink                     #000000           1618       vault-ink
-   * surface                 #f7f7f7           114        steel-50
-   * border                  #e4e4e4           115        steel-200
-   * accent-hover            #3d58a9           34         vault-blue-deep
-   * ink-muted               #333333           40         steel-500
-   * deep surface            #08090e           85         vault-ink
-   * overlay                 rgba(0,0,0,.2)    64         vault-ink / 20%
+  /* palette - seed 9611, complementary (+180deg), primary hue 184, tint 0.036 */
+  --ramp-primary: oklch(29.63% 0.0510 184.60);
+  --ramp-primary-deep: oklch(24.93% 0.0431 184.70);
+  --ramp-accent: oklch(48.26% 0.1326 3.71);
+  --ramp-accent-deep: oklch(38.92% 0.1248 4.01);
+  --ramp-neutral-0: oklch(100.00% 0.0000 89.88);
+  --ramp-neutral-200: oklch(97.64% 0.0327 184.93);
+  --ramp-neutral-400: oklch(91.79% 0.0351 185.49);
+  --ramp-neutral-600: oklch(32.04% 0.0359 184.20);
+  --ramp-neutral-900: oklch(14.25% 0.0258 180.19);
+  --ramp-border: oklch(91.79% 0.0351 185.49);
+  --ramp-border-strong: oklch(32.04% 0.0359 184.20);
+  --ramp-focus: oklch(32.10% 0.1205 3.92);
+  /* semantic - EXEMPT from hue rotation, conventional hues held */
+  --ramp-error: oklch(50.13% 0.1783 28.70);
+  --ramp-success: oklch(52.82% 0.1205 154.90);
+  --ramp-warning: oklch(49.21% 0.1095 66.01);
+
+  /* ---- ROLE BINDINGS ---------------------------------------------------
+   * role                    reference value   elements   ramp slot
+   * dark band bg            #093145           (band)     primary
+   * deeper band bg          #0b2434           85         primary-deep
+   * CALL CTA fill           #3d58a9           34         accent
+   * CTA hover / pressed     #263e86           1254+673   accent-deep
+   * page bg / elevated      #ffffff           484+4156   neutral-0
+   * tinted surface          #f7f7f7           114        neutral-200
+   * hairline border         #e4e4e4           115        neutral-400
+   * ink-muted / strong edge #333333           40         neutral-600
+   * ink                     #000000/#08090e   1618       neutral-900
+   *
+   * ONE role moved, deliberately, and it is recorded in
+   * docs/known-divergence.md: the reference CTA fill is a LIGHT amber
+   * (#fecc32, OKLCH L 0.87). Held at that L it measures 1.51:1 against a
+   * white page at EVERY hue, so "the CTA fill separates from the page (3:1)"
+   * is unsatisfiable for any candidate - 800 of 800 rolls rejected. The CTA
+   * slot therefore takes the reference most-chromatic INTERACTIVE value, its
+   * measured accent-hover, and the label goes white.
+   *
+   * THE SHELL RULE THAT FOLLOWS FROM THIS, and that the build wave inherits:
+   * EXACTLY ONE FILLED CHROMATIC ACTION PER PAGE - the call CTA. Every other
+   * action is filled NEUTRAL (`solid` / `solid-band`). rendertruth.mjs scores
+   * CTA salience as sRGB chroma dominance, and a primary-filled button is how
+   * a sibling site failed `cta-primacy` on all five routes.
+   * Measured sRGB chroma on the winning palette:
+   *   accent 0.380 > primary 0.200 > neutral-200 0.122 > neutral-900 0.051
+   *   (accent-deep 0.349 is a hover state and never paints at rest)
+   * The call CTA is the loudest paintable action by 0.18, not by 0.02.
    * -------------------------------------------------------------------- */
 
   /* ---- TYPE FAMILIES ---------------------------------------------------
@@ -120,14 +144,17 @@
   );
   --tint-dark: linear-gradient(
     0deg,
-    rgba(11, 18, 32, 0.2),
-    rgba(11, 18, 32, 0.2)
+    color-mix(in oklab, var(--ramp-neutral-900) 20%, transparent),
+    color-mix(in oklab, var(--ramp-neutral-900) 20%, transparent)
   );
+  /* the reference one real gradient, re-derived on the rotated ramp. Declared
+     to the palette gate as ONE gradient pair (primary -> primary-deep), gated on
+     its worst sample, never as two flat rows. */
   --gradient-hero: linear-gradient(
     275deg,
-    rgba(11, 18, 32, 0) 16.36%,
-    rgba(11, 18, 32, 0.65) 41.38%,
-    var(--vault-navy) 100%
+    transparent 16.36%,
+    var(--ramp-primary) 41.38%,
+    var(--ramp-primary-deep) 100%
   );
 
   /* ---- CHROME ---------------------------------------------------------- */
@@ -136,8 +163,11 @@
   --bar-nav: 46px;      /* measured: nav bar @1440 */
   --header-height: 110px; /* measured <=1024, single bar */
   --header-height-lg: 170px; /* measured @1440, three stacked bars */
+  --call-bar-h: 56px; /* docs/behavior/03 -- 44px tap target + room for the label */
+  /* Stacking is fixed HERE so no section can invent its own (behavior 03). */
   --z-header: 50;
-  --z-drawer: 60;
+  --z-callbar: 60;
+  --z-drawer: 70;
   --z-skip: 100;
 
   /* ---- MOTION ----------------------------------------------------------
@@ -147,6 +177,11 @@
   --duration-fast: 150ms;
   --duration-base: 250ms;
   --duration-slow: 400ms;
+  /* docs/behavior/01 -- asymmetric on purpose. The panel travels the full
+     viewport width: below ~200ms a full-width slide reads as a cut, and the
+     close is faster because the user has already decided. */
+  --duration-drawer-in: 260ms;
+  --duration-drawer-out: 200ms;
   --reveal-distance: 16px;
 }
 
@@ -155,6 +190,8 @@
     --duration-fast: 0ms;
     --duration-base: 0ms;
     --duration-slow: 0ms;
+    --duration-drawer-in: 0ms;
+    --duration-drawer-out: 0ms;
     --reveal-distance: 0px;
   }
 }
@@ -178,33 +215,60 @@
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1440px;
 
-  /* ---- COLOR ROLES ---------------------------------------------------- */
-  --color-page-bg: var(--paper);
-  --color-surface: var(--steel-50);
-  --color-elevated: var(--paper);
-  --color-band: var(--vault-navy);
-  --color-band-deep: var(--vault-ink);
-  --color-ink: var(--vault-ink);
-  --color-ink-muted: var(--steel-500);
-  --color-ink-on-band: var(--paper);
-  --color-ink-on-band-muted: rgba(255, 255, 255, 0.72);
-  --color-accent: var(--signal-amber);
-  --color-accent-hover: #d98806; /* signal-amber shaded */
-  --color-cta: var(--signal-amber); /* target #fecc32 button fill */
-  --color-cta-ink: var(--vault-navy); /* target #263e86 button label */
-  --color-link: var(--vault-blue);
-  --color-link-hover: var(--vault-blue-deep);
-  --color-border: var(--steel-200);
-  --color-border-on-band: rgba(255, 255, 255, 0.18);
-  --color-overlay: rgba(11, 18, 32, 0.2);
-  --color-overlay-strong: rgba(11, 18, 32, 0.65);
-  --color-focus: var(--vault-blue);
+  /* ---- COLOR ROLES ----------------------------------------------------
+   * Every colour utility on the site resolves to one of these. Nothing
+   * downstream may restate a raw colour value.
+   * -------------------------------------------------------------------- */
+  --color-primary: var(--ramp-primary);
+  --color-primary-deep: var(--ramp-primary-deep);
+  --color-accent: var(--ramp-accent);
+  --color-accent-deep: var(--ramp-accent-deep);
+  --color-neutral-0: var(--ramp-neutral-0);
+  --color-neutral-200: var(--ramp-neutral-200);
+  --color-neutral-400: var(--ramp-neutral-400);
+  --color-neutral-600: var(--ramp-neutral-600);
+  --color-neutral-900: var(--ramp-neutral-900);
 
-  /* raw palette, addressable as utilities where a role does not fit */
-  --color-paper: var(--paper);
-  --color-steel-50: var(--steel-50);
-  --color-steel-200: var(--steel-200);
-  --color-steel-500: var(--steel-500);
+  --color-page-bg: var(--color-neutral-0);
+  --color-surface: var(--color-neutral-200);
+  --color-elevated: var(--color-neutral-0);
+  --color-band: var(--color-primary);
+  --color-band-deep: var(--color-primary-deep);
+  --color-ink: var(--color-neutral-900);
+  --color-ink-muted: var(--color-neutral-600);
+  --color-ink-on-band: var(--color-neutral-0);
+  --color-ink-on-band-muted: var(--color-neutral-200);
+
+  /* the ONE filled chromatic action: the call CTA. See the shell rule above. */
+  --color-cta: var(--color-accent);
+  --color-cta-ink: var(--color-neutral-0);
+  --color-cta-hover: var(--color-accent-deep);
+  /* every other action is filled NEUTRAL, on light bands and dark alike */
+  --color-solid: var(--color-neutral-900);
+  --color-solid-ink: var(--color-neutral-0);
+  --color-solid-band: var(--color-neutral-200);
+  --color-solid-band-ink: var(--color-neutral-900);
+
+  --color-link: var(--color-accent);
+  --color-link-hover: var(--color-accent-deep);
+  --color-accent-hover: var(--color-accent-deep);
+
+  --color-border: var(--ramp-border);
+  --color-border-strong: var(--ramp-border-strong);
+  --color-border-on-band: color-mix(in oklab, var(--color-neutral-0) 22%, transparent);
+  --color-overlay: color-mix(in oklab, var(--color-neutral-900) 20%, transparent);
+  --color-overlay-strong: color-mix(in oklab, var(--color-neutral-900) 65%, transparent);
+
+  /* focus is TWO layers - a page-coloured halo against the element, then the
+     dark ring outside it. One token cannot hold 3:1 against both a white page
+     and a saturated fill; two can, and globals.css paints them together. */
+  --color-focus: var(--ramp-focus);
+  --color-focus-halo: var(--color-neutral-0);
+
+  /* semantic - EXEMPT from the hue rotation */
+  --color-error: var(--ramp-error);
+  --color-success: var(--ramp-success);
+  --color-warning: var(--ramp-warning);
 
   /* ---- TYPE FAMILIES --------------------------------------------------- */
   --font-display: var(--font-roboto-condensed), "Roboto Condensed", sans-serif;
@@ -263,6 +327,7 @@
   --spacing-bar-ribbon: var(--bar-ribbon);
   --spacing-bar-contact: var(--bar-contact);
   --spacing-bar-nav: var(--bar-nav);
+  --spacing-call-bar: var(--call-bar-h);
 
   /* ---- CONTAINER WIDTHS (max-w-*) ------------------------------------- */
   --container-prose: 72ch;
@@ -280,13 +345,13 @@
   --radius-full: 100%;
 
   /* ---- SHADOWS --------------------------------------------------------- */
-  --shadow-card: 0 0 10px rgba(11, 18, 32, 0.1);
-  --shadow-elevated: -1px 1px 4px rgba(11, 18, 32, 0.1),
-    4px 4px 50px rgba(11, 18, 32, 0.25);
-  --shadow-float: 4px 4px 24px rgba(11, 18, 32, 0.25);
-  --shadow-inverse: -4px -4px 15px rgba(11, 18, 32, 0.15);
-  --shadow-soft: 4px 4px 15px rgba(11, 18, 32, 0.1);
-  --shadow-diffuse: 0 4px 54px rgba(11, 18, 32, 0.05);
+  --shadow-card: 0 0 10px color-mix(in oklab, var(--ramp-neutral-900) 10%, transparent);
+  --shadow-elevated: -1px 1px 4px color-mix(in oklab, var(--ramp-neutral-900) 10%, transparent),
+    4px 4px 50px color-mix(in oklab, var(--ramp-neutral-900) 25%, transparent);
+  --shadow-float: 4px 4px 24px color-mix(in oklab, var(--ramp-neutral-900) 25%, transparent);
+  --shadow-inverse: -4px -4px 15px color-mix(in oklab, var(--ramp-neutral-900) 15%, transparent);
+  --shadow-soft: 4px 4px 15px color-mix(in oklab, var(--ramp-neutral-900) 10%, transparent);
+  --shadow-diffuse: 0 4px 54px color-mix(in oklab, var(--ramp-neutral-900) 5%, transparent);
 
   /* ---- ASPECT RATIOS --------------------------------------------------- */
   --aspect-hero: 16 / 7;
@@ -300,6 +365,9 @@
    * z-/duration-[var(--duration-*)] so prefers-reduced-motion can zero them.
    * -------------------------------------------------------------------- */
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  /* fast start, long settle -- a drawer that decelerates into place reads as
+     physical; ease-in-out reads as mechanical over this distance. */
+  --ease-drawer: cubic-bezier(0.2, 0.7, 0.3, 1);
   --animate-marquee: marquee 40s linear infinite;
 
   @keyframes marquee {
