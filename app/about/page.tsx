@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { routeMeta } from '@/content/copy';
 import { JsonLd } from '@/components/ui';
 import { Breadcrumb, Hero, SplitFeature, StepRow, FeatureRow, CtaBand, SharedTail, type Step } from '@/components/patterns';
 import { breadcrumbSchema } from '@/lib/schema';
@@ -14,11 +15,9 @@ import { hours, nap, site } from '@/lib/site';
  * Every claim here is capability or process. No years in business, no team
  * size, no credentials, no review counts, no response times (D-14, D-17).
  */
-export const metadata: Metadata = {
-  title: 'About',
-  description: `${site.name}. ${site.tagline} ${nap.serviceArea}`,
-  alternates: { canonical: '/about' },
-};
+// Metadata is NOT declared here. content/copy.ts is the single source, and the
+// lexical gate measures it there. See CLAUDE.md and docs/content-divergence.md.
+export const metadata: Metadata = routeMeta('/about');
 
 const trail = [
   { label: 'Home', path: '/' },

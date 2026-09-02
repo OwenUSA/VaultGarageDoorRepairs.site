@@ -28,6 +28,33 @@ rediscover them one at a time.
 | any warranty slot | warranty terms, guarantees | D-14 |
 | response-time copy anywhere | same-day availability, emergency dispatch window, service radius | D-06 / D-17 |
 
+## Added by Prompt 2 — asset slots that cannot be filled without a fact
+
+| slot ID | route / section | fact needed | register |
+|---|---|---|---|
+| `logo-wordmark` | header, all routes, 160x64 at 1440 / 100x40 at 390-768 | **the logo asset itself.** Rendered as a wordmark in the display font until a file exists. No icon, no lockup, no invented emblem. | D-09 / D-17 |
+| `logo-footer` | footer, all routes, 185x80 | the same logo, footer lockup | D-09 / D-17 |
+| `badge-bbb` | footer, 200x42 | accreditation, if any. A `TODO(fact)` chip holds the box. | D-14 |
+| `badge-signature-strip` | `/` about band, 252x60 | credential or signature lockup | D-14 |
+| `review-rating-strip` | `/` hero and `/` contact band, 300x39 / 424x60 / 284x56 | rating source and score | D-13 — forbidden outright, the geometry survives as a `TODO(fact)` chip row |
+| `partner-logo-strip` | `/` and `/services`, 13 marks at 150x100 | manufacturer partnerships, dealer status | D-14 — band DELETED |
+| `icon-social` | footer, 2 marks at 50x50 | **social profiles, if any.** None exist, so no social links are shipped. | D-17 |
+| `community-photo`, `approach-photo`, `who-photo`, `emergency-vehicle`, `breadcrumb-vehicle` | `/`, `/about`, `/contact` | these are their staff, owner and branded-vehicle shots. Ours are generated as non-identifying, unbranded equivalents. No named people, no portraits. | D-09 / D-17 |
+
+Full geometry for every slot is in `assets/INVENTORY.md`.
+
+## Added by Prompt 3 — facts the copy deliberately does not assert
+
+`content/copy.ts` contains no credential, no year count, no job count, no review, no price,
+no warranty term, no response time and no team size. Every one of those was available as an
+easy sentence and none was written. The proposition is transparency, and the honest form of
+it is saying what is not known:
+
+- **out-of-hours cover** — the `emergency` band on `/` states that outside 7am-7pm the phone
+  reaches nobody. If cover ever exists, that sentence is the one that changes.
+- **typical callback time** — the copy says "inside the window you chose" and never a number.
+- **service radius** — `SERVICE_AREA` is the only geographic claim.
+
 ## Fictional CONSTANTS that must be replaced before public launch
 
 These are ground truth for the build and are NOT `TODO(fact)`. They belong in

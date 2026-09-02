@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { routeMeta } from '@/content/copy';
 import { JsonLd } from '@/components/ui';
 import { Breadcrumb, ContactBlock, BusinessMap, Hero, StepRow, type Step } from '@/components/patterns';
 import { breadcrumbSchema } from '@/lib/schema';
@@ -21,11 +22,9 @@ import { hours, nap, site } from '@/lib/site';
  * NO SUBMISSION TARGET. The form is client-side only (D-05). There is no API
  * route, no transport, and no electronic-mail anywhere on this site (D-03).
  */
-export const metadata: Metadata = {
-  title: 'Contact',
-  description: `Request a callback. Open ${hours.label}. Call ${nap.phone} or send the form and we will ring you back in the window you pick.`,
-  alternates: { canonical: '/contact' },
-};
+// Metadata is NOT declared here. content/copy.ts is the single source, and the
+// lexical gate measures it there. See CLAUDE.md and docs/content-divergence.md.
+export const metadata: Metadata = routeMeta('/contact');
 
 const trail = [
   { label: 'Home', path: '/' },

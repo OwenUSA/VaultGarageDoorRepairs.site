@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { routeMeta } from '@/content/copy';
 import type { ReactNode } from 'react';
 import { ContentColumn, ProseBlock } from '@/components/patterns';
 import { Heading, TextLink } from '@/components/ui';
@@ -26,11 +27,9 @@ import { nap, hours, site } from '@/lib/site';
  * No GDPR or CCPA compliance is claimed. The contact clause lists a phone
  * number and a postal address and nothing else.
  */
-export const metadata: Metadata = {
-  title: 'Privacy Policy',
-  description: `How ${nap.name} handles the information you share when you request garage door service through this website.`,
-  alternates: { canonical: '/privacy' },
-};
+// Metadata is NOT declared here. content/copy.ts is the single source, and the
+// lexical gate measures it there. See CLAUDE.md and docs/content-divergence.md.
+export const metadata: Metadata = routeMeta('/privacy');
 
 function Paras({ children }: { children: ReactNode }) {
   return <div className="flex flex-col gap-5">{children}</div>;

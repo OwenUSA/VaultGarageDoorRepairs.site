@@ -91,14 +91,14 @@ NOVEL and DELETED rows collapse to one pass at the canonical breakpoint (A-9).
 | /services | s05-we-love-hearing-from-our-customers | testimonial | DELETED | reviews and ratings (D-13) |
 | /services | s06-contact-form | contact | ADAPTED | shared contact band |
 | /services | s07-service-areas | footer | ADAPTED | shared shell |
-| /services | | spring-repair | ADAPTED | repeat of s04-let-us-handle-your-commercial-roof, anchor 1 of 8 |
-| /services | | opener-repair | ADAPTED | repeat of s04, anchor 2 of 8 |
-| /services | | cable-roller-track | ADAPTED | repeat of s04, anchor 3 of 8 |
-| /services | | panel-replacement | ADAPTED | repeat of s04, anchor 4 of 8 |
-| /services | | off-track-correction | ADAPTED | repeat of s04, anchor 5 of 8 |
-| /services | | new-door-installation | ADAPTED | repeat of s04, anchor 6 of 8 |
-| /services | | commercial-roll-up | ADAPTED | repeat of s04, anchor 7 of 8 |
-| /services | | maintenance-tune-up | ADAPTED | repeat of s04, anchor 8 of 8 |
+| /services | s04-let-us-handle-your-commercial-roof | spring-repair | ADAPTED | repeat of s04-let-us-handle-your-commercial-roof, anchor 1 of 8 |
+| /services | s04-let-us-handle-your-commercial-roof | opener-repair | ADAPTED | repeat of s04, anchor 2 of 8 |
+| /services | s04-let-us-handle-your-commercial-roof | cable-roller-track | ADAPTED | repeat of s04, anchor 3 of 8 |
+| /services | s04-let-us-handle-your-commercial-roof | panel-replacement | ADAPTED | repeat of s04, anchor 4 of 8 |
+| /services | s04-let-us-handle-your-commercial-roof | off-track-correction | ADAPTED | repeat of s04, anchor 5 of 8 |
+| /services | s04-let-us-handle-your-commercial-roof | new-door-installation | ADAPTED | repeat of s04, anchor 6 of 8 |
+| /services | s04-let-us-handle-your-commercial-roof | commercial-roll-up | ADAPTED | repeat of s04, anchor 7 of 8 |
+| /services | s04-let-us-handle-your-commercial-roof | maintenance-tune-up | ADAPTED | repeat of s04, anchor 8 of 8 |
 | /services | | faq | NOVEL | the FAQ route is deleted (D-01); it lives here in-page and has no reference band |
 | /services | | services-cta | NOVEL | bridges the accordion into the shared tail |
 | /services | | map | NOVEL | shared tail coordinate map (D-08) |
@@ -119,6 +119,12 @@ Totals: 62 rows — 0 FIDELITY, 47 ADAPTED, 9 NOVEL, 6 DELETED, across 5 routes.
 ## 4. The same rows, human-readable
 
 ### `/` — home, 19 reference bands + 1 of ours
+
+**Prompt 3 reordered three of them.** Our render order is header, hero, **services**,
+about, process, **emergency**, tabbed, marquee, doors, components, **facts**, urgent,
+community, approach, map, contact, footer. Relative to the reference that moves `services`
+from 11th to 2nd, `emergency` from 13th to 5th, and `facts` ahead of `urgent`. Reordering
+is **not** a class change and none of these rows was reclassified.
 
 The reference home page is 19 bands. Sixteen are retained and adapted, three are deleted
 (two partnership-logo strips and the testimonial band), and one band of ours has no
@@ -144,7 +150,28 @@ This route absorbs everything the pre-existing build spread across nine per-serv
 plus a separate FAQ page. D-01 permits sections inside a page but not extra routes, so each
 service is an in-page anchor and the FAQ is an in-page accordion. The single reference
 detail band `serviceouter-three` is repeated eight times, once per service anchor; each
-repeat is measured against the same reference band.
+repeat is measured against the same reference band. **Prompt 3 filled in that band's id on
+all eight rows** — they previously carried an empty ref-section-id, which left them paired
+against nothing and silently exempt from both the structural comparison and the length rule.
+That is a contract correction, not a reclassification: the class on all eight was and
+remains ADAPTED.
+
+The grid above them is regrouped by **symptom** rather than by system or material, into
+**five cards — the same card count the reference grid already has** (Roof Repair,
+Replacement, New Installation, Coating, Inspection), so the regrouping costs nothing
+geometrically. All eight CONSTANTS services appear exactly once, each under one symptom
+group and each with its own anchor section below:
+
+| symptom card | services it covers |
+|---|---|
+| It will not close | off-track and misaligned door correction; cable, roller and track repair |
+| It came down hard and now it will not lift | spring repair and replacement |
+| The opener runs but the door does not | opener repair and installation |
+| Something hit it | panel replacement; new residential door installation |
+| It is loud, it is slow, or the bay door has stopped | annual maintenance and tune-up; commercial and roll-up doors |
+
+The home `services` grid shows **three of those five symptom cards** as a teaser and
+enumerates no services of its own, which is why the eight still appear exactly once.
 
 ### `/contact` — 4 reference bands, 3 of ours
 
@@ -168,3 +195,30 @@ a band — which is what this build is required to do on 6 of the 62 rows.
 
 As of Prompt 1 no component declares it yet. That is the first task of the build wave, and
 it is a shared-shell edit for header and footer, so the lead makes it.
+
+
+---
+
+## 6. Prompt 3 — what changed in this file, and what deliberately did not
+
+**Reclassifications: zero.** Every retained band still has a structurally comparable
+counterpart, and `process.md` names ADAPTED -> NOVEL as the move to avoid. The candidates
+were checked one at a time and all were rejected:
+
+| row | why it looked like a candidate | why it stays ADAPTED |
+|---|---|---|
+| `/` `facts` | reference counters (job counts, years) are gone under D-14; ours carries hours, area and phone | still a short heading-only row of the same shape; the geometry is fully comparable |
+| `/` `community` | "giving back" copy replaced by the service-area sentence | the reversed split is retained intact; only the words moved |
+| `/` `approach` | owner portrait and signature removed under D-17 | the band, its split and its type scale survive; a portrait is an asset slot, not a class |
+| `/` `doors` | roof materials become door styles | same carousel, same card count, same measurement |
+| `/about` `how` | a service list becomes a how-we-work step row | same step row, same item count; ADAPTED is exactly what "content deliberately swapped" means |
+| `/services` `services` | five service cards become five symptom cards | card count and grid geometry unchanged; the regrouping is content, not class |
+
+**One contract correction**, described above: the eight `/services` anchor rows now carry
+`s04-let-us-handle-your-commercial-roof` as their ref-section-id in both tables.
+
+Reordering (3 rows), dropping (`logos-strip`, `brand-logo-strip`, `testimonial`) and
+regrouping the services by symptom are content and layout decisions. **None of them is a
+class change**, and none of them was used as a reason to move a row out of ADAPTED.
+
+Totals are unchanged: 62 rows, 0 FIDELITY, 47 ADAPTED, 9 NOVEL, 6 DELETED.

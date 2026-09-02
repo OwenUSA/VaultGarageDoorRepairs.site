@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { routeMeta } from '@/content/copy';
 import {
   Hero,
   SplitFeature,
@@ -41,12 +42,9 @@ import { nap, hours, services, site } from '@/lib/site';
  * Every CONFIG FACTS value comes from lib/site.ts.
  * All photography is a <Placeholder> inside the patterns — a tracked gap.
  */
-export const metadata: Metadata = {
-  title: 'Garage Door Repair, Installation and Maintenance',
-  description:
-    site.description,
-  alternates: { canonical: '/' },
-};
+// Metadata is NOT declared here. content/copy.ts is the single source, and the
+// lexical gate measures it there. See CLAUDE.md and docs/content-divergence.md.
+export const metadata: Metadata = routeMeta('/');
 
 /* --------------------------------------------------------------- content */
 

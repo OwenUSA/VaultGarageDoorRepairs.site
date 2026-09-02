@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { routeMeta } from '@/content/copy';
 import { JsonLd } from '@/components/ui';
 import {
   Breadcrumb,
@@ -24,11 +25,9 @@ import { services, faqs, hours, nap, site } from '@/lib/site';
  * is legal, the anchors resolve and the build is clean. Prompt 6+7 rebuilds it
  * against the reference section contract in docs/sections.md.
  */
-export const metadata: Metadata = {
-  title: 'Services',
-  description: site.description,
-  alternates: { canonical: '/services' },
-};
+// Metadata is NOT declared here. content/copy.ts is the single source, and the
+// lexical gate measures it there. See CLAUDE.md and docs/content-divergence.md.
+export const metadata: Metadata = routeMeta('/services');
 
 const trail = [
   { label: 'Home', path: '/' },

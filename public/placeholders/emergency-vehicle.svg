@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="233" viewBox="0 0 720 233" role="img" aria-label="emergency-vehicle placeholder">
+  <rect width="720" height="233" fill="#5c6169"/>
+  <text x="50%" y="50%" fill="#ffffff" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="19" font-weight="600" text-anchor="middle" dominant-baseline="middle">emergency-vehicle</text>
+  <text x="50%" y="50%" dy="25" fill="#ffffff" fill-opacity="0.78" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="14" text-anchor="middle" dominant-baseline="middle">720x233</text>
+  <text x="50%" y="50%" dy="50" fill="#ffffff" fill-opacity="0.6" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="11" text-anchor="middle" dominant-baseline="middle">sampled #fffefc - UNMEASURABLE</text>
+</svg>

@@ -1,4 +1,4 @@
-# docs/RESUME.md — state after Prompt 1
+# docs/RESUME.md — state after Prompt 2+3+4
 
 Assume the next prompt starts with no memory of this one.
 
@@ -6,41 +6,42 @@ Assume the next prompt starts with no memory of this one.
 
 | | |
 |---|---|
-| completed | Prompt 0 (CLAUDE.md), **Prompt 1 (compliance demolition + reference profile + section contract)** |
-| next | Prompt 2+3+4 — assets, copy and divergence gates, behavior specs |
-| then | Prompt 5+9 — tokens, randomized palette, shared shell (the shell freezes at the end of it, A-6) |
+| completed | Prompt 0, Prompt 1 (demolition + reference profile + section contract), **Prompt 2+3+4 (assets, copy and divergence gates, behavior specs)** |
+| next | **Prompt 5+9** — tokens, randomized palette, shared shell. The shell freezes at the end of it (A-6). |
+| then | 6+7 — lead builds hero + map, then ONE 4-wide wave over home sections and the four subpages |
+| finally | 10+11 — asset prompts, then the trimmed acceptance sweep |
 
-## What Prompt 1 removed, and what stands
+## What landed this turn
 
-**Removed** — all recoverable from commit `3c22ada` (baseline of the pre-existing build):
+**Prompt 2 — assets.** `assets/INVENTORY.md` (regenerated, never hand-edited; narrative in
+`assets/INVENTORY.head.md` / `INVENTORY.tail.md`). 93 slots: **69 REPLACE, 24 DELETED, 0
+reference files downloaded**. 127 placeholder SVGs in `public/placeholders/`, file name =
+slot ID. Slot classification is entirely in `harness.config.mjs` `slotRules` /
+`sharedSlots`. Fonts are Roboto Condensed + Rubik, both OFL, both via `next/font` —
+**no font-substitution floor is booked and none may be.**
 
-- `app/api/contact/route.ts` and the `nodemailer` + `@types/nodemailer` dependencies
-- 12 routes: `commercial-garage-door-services` and its three children,
-  `residential-garage-door-services` and its five children plus `_service-inner`,
-  `residential-garage-doors`, `emergency-garage-door-repair`, `faqs`, `service-areas`
-- `components/patterns/ServiceAreaMap.tsx` (city grid, D-02) — replaced by `BusinessMap.tsx`
-- `.env.example` (SMTP variables), `tailwind.config.ts` (v3 JS config)
-- every email affordance in `ContactBlock`, `SiteFooter`, `ContactForm`, `privacy`,
-  `lib/site.ts`, `lib/schema.ts`, and the `mailto:` branch of three `ui/` link primitives
+**Prompt 3 — copy.** `content/copy.ts`, 58 sections, `tsc --strict` clean, `pnpm build`
+clean. Gates: **58/58 5-gram, 58/58 trigram, 32/32 length** (10 EXEMPT, two register-driven
+rows applied across five routes). Metadata moved out of the page files: every
+`app/**/page.tsx` now calls `routeMeta(route)` from `content/copy.ts`. Full record in
+`docs/content-divergence.md`.
 
-**Stands**: exactly five `page.tsx` under `app/` — `/`, `/about`, `/services`, `/contact`,
-`/privacy`. `pnpm build` clean on Next 15.5.4 / React 19.1.1 / Tailwind 4.1.13.
+**Prompt 4 — behavior.** Eight specs in `docs/behavior/`, `01`…`08`.
 
-## Scaffolding that Prompt 6+7 must rebuild
+## Two things the next turns must not undo
 
-`/about` and `/services` did not exist before this turn and were written as **minimum-legal
-scaffolding**, not as clone work: enough to make the route set legal, resolve every anchor
-and keep the build clean. Both say so at the top of the file. `/` and `/contact` are the
-pre-existing lineage's pages with dead routes and non-compliant facts patched out — they
-are also not clone work.
+1. **`docs/behavior/07-map-lazy-mount.md` puts the map bypass link in the component's own
+   spec, as its first child, with acceptance criteria.** Three sibling sites shipped a
+   keyboard trap because that requirement lived in a different document from the map.
+   `<BusinessMap>` is a shared-shell file: the **lead** builds it, in the main thread.
+2. **`framer-motion` is not justified and must not be installed.** `Reveal.tsx` stays a
+   no-op wrapper. See `docs/behavior/08-scroll-reveal.md`.
 
-## Two things the build wave owes the instrument
+## Still owed to the instrument (unchanged from Prompt 1)
 
-1. **`data-section="<our-section-id>"` on every band**, using the exact ids in
-   `docs/sections.md` section 3. Only `header` and `footer` declare it today; everything else
-   reports `UNDECLARED` in `docs/divergence.md` and falls through to the page-progress join.
-2. **The eight `/services` anchors** each repeat the same reference band
-   (`s04-let-us-handle-your-commercial-roof`); they currently pair against nothing.
+**`data-section="<our-section-id>"` on every band**, using the exact ids in
+`docs/sections.md` section 3. Only `header` and `footer` declare it today. First task of the
+build wave, and a shared-shell edit for those two, so the lead makes it.
 
 ## Running the instrument
 
@@ -49,48 +50,40 @@ are also not clone work.
 REF_PORT=3198 node ../_shared/harness/src/serve-reference.mjs
 curl -s http://127.0.0.1:3198/ | grep -o '<title>[^<]*'      # MUST say A. Fricker Roofing
 pnpm dev                                                      # port 3105
-MSYS_NO_PATHCONV=1 node ../_shared/harness/src/capture.mjs --side ref  --bp 1440
-MSYS_NO_PATHCONV=1 node ../_shared/harness/src/capture.mjs --side ours --bp 1440
+MSYS_NO_PATHCONV=1 node ../_shared/harness/src/similarity.mjs           # lexical gate
 MSYS_NO_PATHCONV=1 node ../_shared/harness/src/diff.mjs --bp 1440 [--route /about]
+MSYS_NO_PATHCONV=1 node ../_shared/harness/src/contrast.mjs
+MSYS_NO_PATHCONV=1 node ../_shared/harness/src/rendertruth.mjs
 ```
 
-**3198, not 3199.** A sibling site's reference server held 3199 and answered with its own
+**3198, not 3199.** A sibling site's reference server holds 3199 and answers with its own
 reference. Verify the title before trusting any number.
 
-A full three-breakpoint capture is slow when several sibling sites are building at once —
-it stalled for 11 minutes under load. Scope with `--bp` and `--route` while iterating; the
-one full sweep happens in Prompt 11.
+### Regenerating the asset inventory
 
-## The legacy `.harness/` scripts are SUPERSEDED — delete them
+The stock asset probe records NitroPack's 1x1 lazy placeholder for 220 of 220 images on the
+home page. This turn forced `nitro-lazy-src` into `src` before measuring, which took home
+from 15 resolved images to 108. **That un-lazy pass was a one-off script in the scratchpad
+and is not in the repo.** If `.harness/assets/*.json` is ever regenerated with the stock
+`assets.mjs`, the geometry in `assets/INVENTORY.md` degrades to placeholder boxes. The
+current JSON is on disk and correct; leave it unless you are prepared to redo the pass.
 
-`.harness/` still holds 46 ad-hoc scripts from the previous lineage, alongside the shared
-harness's own output directories. **Do not run or extend any of them.** The instrument is
-`../_shared/harness`, configured by `./harness.config.mjs` (A-11).
+## The legacy `.harness/` scripts are GONE
 
-Delete on sight, at the next convenient turn:
-
-```
-analyze.mjs audit.mjs bp640.mjs bp640b.mjs classify.mjs classmap.json compliance.mjs
-crawl.mjs css.mjs diag-inner.mjs docs.mjs fetchcss.mjs final.mjs fonts.mjs harvest.mjs
-hdr.mjs home-final.mjs home-measure.mjs lib.mjs m.mjs measure-service-inner.mjs
-measure-service-outer.mjs measure-so-residential.mjs measure-so-target.mjs
-patch-embedded.mjs pp-privacy.mjs probe.mjs profile.mjs q.mjs refadj.mjs regen.mjs
-resolve-lazy.mjs retry.mjs routes.json sample-two.mjs settle.mjs settle2.mjs shot.mjs
-shot2.mjs skel.mjs slots.mjs srcset-check.mjs state.mjs sweep.mjs synth-check.mjs
-synth-responsive.mjs targets.json target-service-outer.json theme.js verify-home.mjs
-verify-inner.mjs node_modules/ out/ package.json package-lock.json
-```
-
-Keep `.harness/profile/` and `.harness/cap/` — those are the shared harness's own output.
-`.harness/` is gitignored, so none of this is in version control either way.
+55 ad-hoc scripts from the previous lineage were deleted this turn. `.harness/` now holds
+only shared-harness output: `assets/ cap/ diff/ profile/ inventory.json refcopy.json
+simtable.txt`. The instrument is `../_shared/harness` (A-11).
 
 ## Canonical state files
 
 ```
-docs/profile.md            reference profile: heights, bands, breakpoints, motion, fonts
-docs/sections.md           THE CONTRACT — 62 rows, machine + human tables, edit together
-docs/divergence.md         ranked table, rewritten by every diff run
-docs/known-divergence.md   permanent floors (colour, JS-unrolled bands, placeholders)
-docs/facts-needed.md       every TODO(fact)
-docs/PRE-LAUNCH.md         launch blockers, including the fictional CONSTANTS
+docs/profile.md             reference profile: heights, bands, breakpoints, motion, fonts
+docs/sections.md            THE CONTRACT — 62 rows, machine + human tables, edit together
+docs/content-divergence.md  Prompt 3: overlap table, four structural changes, exemptions
+docs/behavior/01..08.md     Prompt 4: eight interaction specs
+assets/INVENTORY.md         Prompt 2: 93 slots, provenance, geometry, dominant colour
+docs/divergence.md          ranked table, rewritten by every diff run
+docs/known-divergence.md    permanent floors (colour, JS-unrolled bands, placeholders)
+docs/facts-needed.md        every TODO(fact)
+docs/PRE-LAUNCH.md          launch blockers, including the fictional CONSTANTS
 ```

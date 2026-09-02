@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="720" viewBox="0 0 720 720" role="img" aria-label="who-photo placeholder">
+  <rect width="720" height="720" fill="#415082"/>
+  <text x="50%" y="50%" fill="#ffffff" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="28" font-weight="600" text-anchor="middle" dominant-baseline="middle">who-photo</text>
+  <text x="50%" y="50%" dy="34" fill="#ffffff" fill-opacity="0.75" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="20" text-anchor="middle" dominant-baseline="middle">720x720</text>
+</svg>
