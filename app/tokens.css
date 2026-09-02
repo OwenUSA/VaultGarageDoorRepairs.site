@@ -17,23 +17,19 @@
    * failed, and never iterated on, for a colour delta.
    * -------------------------------------------------------------------- */
 
-  /* palette - seed 9611, complementary (+180deg), primary hue 184, tint 0.036 */
-  --ramp-primary: oklch(29.63% 0.0510 184.60);
-  --ramp-primary-deep: oklch(24.93% 0.0431 184.70);
-  --ramp-accent: oklch(48.26% 0.1326 3.71);
-  --ramp-accent-deep: oklch(38.92% 0.1248 4.01);
-  --ramp-neutral-0: oklch(100.00% 0.0000 89.88);
-  --ramp-neutral-200: oklch(97.64% 0.0327 184.93);
-  --ramp-neutral-400: oklch(91.79% 0.0351 185.49);
-  --ramp-neutral-600: oklch(32.04% 0.0359 184.20);
-  --ramp-neutral-900: oklch(14.25% 0.0258 180.19);
-  --ramp-border: oklch(91.79% 0.0351 185.49);
-  --ramp-border-strong: oklch(32.04% 0.0359 184.20);
-  --ramp-focus: oklch(32.10% 0.1205 3.92);
-  /* semantic - EXEMPT from hue rotation, conventional hues held */
-  --ramp-error: oklch(50.13% 0.1783 28.70);
-  --ramp-success: oklch(52.82% 0.1205 154.90);
-  --ramp-warning: oklch(49.21% 0.1095 66.01);
+  /* The generated ramp now lives in the @theme block below, as LITERAL HEX.
+   * It has to: `diff.mjs` builds the token-conformance set by reading the
+   * `--color-* / --text-* / --font-weight-* / --spacing-*` declarations out of
+   * @theme and normalising them to the rgb() form the browser reports. A token
+   * declared as `var(--something)` normalises to the string "var(--something)"
+   * and can never match a computed colour, so every correctly-tokenised NOVEL
+   * section would report a violation and TOKEN_THRESHOLD = 0 would be
+   * unreachable — the check would look strict while measuring nothing.
+   *
+   * So: one literal per value, in @theme, and the primitives in this block
+   * alias UP to it. The OKLCH the value was generated from is recorded beside
+   * each literal; `palette.mjs --seed 9611 --emit` prints them.
+   */
 
   /* ---- ROLE BINDINGS ---------------------------------------------------
    * role                    reference value   elements   ramp slot
@@ -72,21 +68,21 @@
    * -------------------------------------------------------------------- */
 
   /* ---- TYPE SIZE LADDER — measured: 14 15 16 18 19 20 21 24 28 32 60 --- */
-  --fs-3xs: 0.875rem; /* 14 — eyebrow, label, fine print */
-  --fs-2xs: 0.9375rem; /* 15 — small nav */
-  --fs-xs: 1rem; /* 16 — BODY BASE, nav, button label */
-  --fs-sm: 1.125rem; /* 18 — h4, lead paragraph */
-  --fs-md: 1.1875rem; /* 19 — card heading */
-  --fs-lg: 1.25rem; /* 20 — h4 emphatic, body large */
-  --fs-xl: 1.3125rem; /* 21 — h4 */
-  --fs-2xl: 1.5rem; /* 24 — h3 */
-  --fs-3xl: 1.75rem; /* 28 — h2 alt */
-  --fs-4xl: 2rem; /* 32 — H2, section heading */
-  --fs-5xl: 2.625rem; /* 42 — H1 @1440 on serviceouter-one / serviceinner-one,
+  --fs-3xs: var(--text-3xs); /* 14 — eyebrow, label, fine print */
+  --fs-2xs: var(--text-2xs); /* 15 — small nav */
+  --fs-xs: var(--text-xs); /* 16 — BODY BASE, nav, button label */
+  --fs-sm: var(--text-sm); /* 18 — h4, lead paragraph */
+  --fs-md: var(--text-md); /* 19 — card heading */
+  --fs-lg: var(--text-lg); /* 20 — h4 emphatic, body large */
+  --fs-xl: var(--text-xl); /* 21 — h4 */
+  --fs-2xl: var(--text-2xl); /* 24 — h3 */
+  --fs-3xl: var(--text-3xl); /* 28 — h2 alt */
+  --fs-4xl: var(--text-4xl); /* 32 — H2, section heading */
+  --fs-5xl: var(--text-5xl); /* 42 — H1 @1440 on serviceouter-one / serviceinner-one,
                           measured. The design-system census rounded this and the
                           home hero into a single 60px row; the target renders two
                           distinct sizes and both are reproduced exactly. */
-  --fs-6xl: 3.625rem; /* 58 — H1 @1440 on hero-new (home), measured 58/700 lh 69.6 */
+  --fs-6xl: var(--text-6xl); /* 58 — H1 @1440 on hero-new (home), measured 58/700 lh 69.6 */
 
   /* ---- LINE HEIGHTS — exactly two families, plus flat --------------- */
   --lh-display: 1.15; /* Roboto Condensed */
@@ -94,10 +90,10 @@
   --lh-flat: 1; /* icons, single-line chrome */
 
   /* ---- WEIGHTS --------------------------------------------------------- */
-  --fw-regular: 400;
-  --fw-medium: 500;
-  --fw-semibold: 600;
-  --fw-bold: 700;
+  --fw-regular: var(--font-weight-regular);
+  --fw-medium: var(--font-weight-medium);
+  --fw-semibold: var(--font-weight-semibold);
+  --fw-bold: var(--font-weight-bold);
 
   /* ---- LETTER SPACING — normal everywhere except two ------------------- */
   --ls-normal: normal;
@@ -105,20 +101,20 @@
   --ls-tight: -0.287px; /* the one fluid pull-quote */
 
   /* ---- SPACING SCALE — measured gap + padding values ------------------- */
-  --space-1: 4px;
-  --space-2: 6px;
-  --space-3: 10px; /* 1043 uses — the dominant gap */
-  --space-4: 12px; /* form control padding */
-  --space-5: 15px; /* 610 uses */
-  --space-6: 16px;
-  --space-7: 20px;
-  --space-8: 25px;
-  --space-9: 30px; /* grid gutter */
-  --space-10: 40px;
-  --space-11: 50px;
-  --space-12: 75px; /* section rhythm base */
-  --space-13: 100px;
-  --space-14: 120px; /* hero scale */
+  --space-1: var(--spacing-1);
+  --space-2: var(--spacing-2);
+  --space-3: var(--spacing-3); /* 1043 uses — the dominant gap */
+  --space-4: var(--spacing-4); /* form control padding */
+  --space-5: var(--spacing-5); /* 610 uses */
+  --space-6: var(--spacing-6);
+  --space-7: var(--spacing-7);
+  --space-8: var(--spacing-8);
+  --space-9: var(--spacing-9); /* grid gutter */
+  --space-10: var(--spacing-10);
+  --space-11: var(--spacing-11);
+  --space-12: var(--spacing-12); /* section rhythm base */
+  --space-13: var(--spacing-13);
+  --space-14: var(--spacing-14); /* hero scale */
 
   --section-y: var(--space-12); /* 75 — 41 sections use this */
   --section-y-hero: var(--space-14); /* 120 */
@@ -144,8 +140,8 @@
   );
   --tint-dark: linear-gradient(
     0deg,
-    color-mix(in oklab, var(--ramp-neutral-900) 20%, transparent),
-    color-mix(in oklab, var(--ramp-neutral-900) 20%, transparent)
+    color-mix(in oklab, var(--color-neutral-900) 20%, transparent),
+    color-mix(in oklab, var(--color-neutral-900) 20%, transparent)
   );
   /* the reference one real gradient, re-derived on the rotated ramp. Declared
      to the palette gate as ONE gradient pair (primary -> primary-deep), gated on
@@ -153,8 +149,8 @@
   --gradient-hero: linear-gradient(
     275deg,
     transparent 16.36%,
-    var(--ramp-primary) 41.38%,
-    var(--ramp-primary-deep) 100%
+    var(--color-primary) 41.38%,
+    var(--color-primary-deep) 100%
   );
 
   /* ---- CHROME ---------------------------------------------------------- */
@@ -208,7 +204,12 @@
  * NOVEL-class token conformance is measured against THIS block.
  * LEAD OWNS THIS FILE. Section agents never edit it — they request a change.
  * ========================================================================= */
-@theme {
+/* `static`, not bare `@theme`: Tailwind v4 tree-shakes theme variables that no
+   utility class happens to reference, and the :root primitives above now alias
+   UP to these declarations. A tree-shaken --spacing-13 would take --space-13
+   with it. `static` emits every variable, which is also what makes the token
+   set diff.mjs reads match the set the page actually resolves against. */
+@theme static {
   /* ---- BREAKPOINTS — read from the reference CSS in Prompt 1 ----------- */
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
@@ -219,15 +220,18 @@
    * Every colour utility on the site resolves to one of these. Nothing
    * downstream may restate a raw colour value.
    * -------------------------------------------------------------------- */
-  --color-primary: var(--ramp-primary);
-  --color-primary-deep: var(--ramp-primary-deep);
-  --color-accent: var(--ramp-accent);
-  --color-accent-deep: var(--ramp-accent-deep);
-  --color-neutral-0: var(--ramp-neutral-0);
-  --color-neutral-200: var(--ramp-neutral-200);
-  --color-neutral-400: var(--ramp-neutral-400);
-  --color-neutral-600: var(--ramp-neutral-600);
-  --color-neutral-900: var(--ramp-neutral-900);
+  /* the generated ramp — seed 9611, complementary (+180deg), primary hue 184,
+     neutral tint 0.036. Hex is the wire format; the OKLCH each was derived from
+     is in the comment, and palette.mjs --seed 9611 --emit reprints both. */
+  --color-primary: #023530; /* oklch(29.63% 0.0510 184.60) */
+  --color-primary-deep: #012824; /* oklch(24.93% 0.0431 184.70) */
+  --color-accent: #983756; /* oklch(48.26% 0.1326 3.71) */
+  --color-accent-deep: #771e3d; /* oklch(38.92% 0.1248 4.01) */
+  --color-neutral-0: #ffffff; /* oklch(100.00% 0.0000 89.88) */
+  --color-neutral-200: #e0fffa; /* oklch(97.64% 0.0327 184.93) */
+  --color-neutral-400: #cbece7; /* oklch(91.79% 0.0351 185.49) */
+  --color-neutral-600: #1c3935; /* oklch(32.04% 0.0359 184.20) */
+  --color-neutral-900: #000d0a; /* oklch(14.25% 0.0258 180.19) */
 
   --color-page-bg: var(--color-neutral-0);
   --color-surface: var(--color-neutral-200);
@@ -253,46 +257,46 @@
   --color-link-hover: var(--color-accent-deep);
   --color-accent-hover: var(--color-accent-deep);
 
-  --color-border: var(--ramp-border);
-  --color-border-strong: var(--ramp-border-strong);
+  --color-border: var(--color-neutral-400);
+  --color-border-strong: var(--color-neutral-600);
   --color-border-on-band: color-mix(in oklab, var(--color-neutral-0) 22%, transparent);
   --color-overlay: color-mix(in oklab, var(--color-neutral-900) 20%, transparent);
   --color-overlay-strong: color-mix(in oklab, var(--color-neutral-900) 65%, transparent);
 
-  /* focus is TWO layers - a page-coloured halo against the element, then the
+  /* focus is TWO layers — a page-coloured halo against the element, then the
      dark ring outside it. One token cannot hold 3:1 against both a white page
      and a saturated fill; two can, and globals.css paints them together. */
-  --color-focus: var(--ramp-focus);
+  --color-focus: #60082c; /* oklch(32.10% 0.1205 3.92) */
   --color-focus-halo: var(--color-neutral-0);
 
-  /* semantic - EXEMPT from the hue rotation */
-  --color-error: var(--ramp-error);
-  --color-success: var(--ramp-success);
-  --color-warning: var(--ramp-warning);
+  /* semantic — EXEMPT from the hue rotation, conventional hues held */
+  --color-error: #b3261e; /* oklch(50.13% 0.1783 28.70) */
+  --color-success: #1b7f4b; /* oklch(52.82% 0.1205 154.90) */
+  --color-warning: #8a5200; /* oklch(49.21% 0.1095 66.01) */
 
   /* ---- TYPE FAMILIES --------------------------------------------------- */
   --font-display: var(--font-roboto-condensed), "Roboto Condensed", sans-serif;
   --font-body: var(--font-rubik), "Rubik", sans-serif;
 
   /* ---- TYPE SIZE LADDER ------------------------------------------------ */
-  --text-3xs: var(--fs-3xs);
-  --text-2xs: var(--fs-2xs);
-  --text-xs: var(--fs-xs);
-  --text-sm: var(--fs-sm);
-  --text-md: var(--fs-md);
-  --text-lg: var(--fs-lg);
-  --text-xl: var(--fs-xl);
-  --text-2xl: var(--fs-2xl);
-  --text-3xl: var(--fs-3xl);
-  --text-4xl: var(--fs-4xl);
-  --text-5xl: var(--fs-5xl);
-  --text-6xl: var(--fs-6xl);
+  --text-3xs: 0.875rem;
+  --text-2xs: 0.9375rem;
+  --text-xs: 1rem;
+  --text-sm: 1.125rem;
+  --text-md: 1.1875rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.3125rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.75rem;
+  --text-4xl: 2rem;
+  --text-5xl: 2.625rem;
+  --text-6xl: 3.625rem;
 
   /* ---- WEIGHTS --------------------------------------------------------- */
-  --font-weight-regular: var(--fw-regular);
-  --font-weight-medium: var(--fw-medium);
-  --font-weight-semibold: var(--fw-semibold);
-  --font-weight-bold: var(--fw-bold);
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 
   /* ---- LINE HEIGHT / LETTER SPACING ------------------------------------ */
   --leading-display: var(--lh-display);
@@ -304,20 +308,20 @@
 
   /* ---- SPACING — the measured scale, 1..14 plus the named rhythm ------- */
   --spacing-0: 0px;
-  --spacing-1: var(--space-1);
-  --spacing-2: var(--space-2);
-  --spacing-3: var(--space-3);
-  --spacing-4: var(--space-4);
-  --spacing-5: var(--space-5);
-  --spacing-6: var(--space-6);
-  --spacing-7: var(--space-7);
-  --spacing-8: var(--space-8);
-  --spacing-9: var(--space-9);
-  --spacing-10: var(--space-10);
-  --spacing-11: var(--space-11);
-  --spacing-12: var(--space-12);
-  --spacing-13: var(--space-13);
-  --spacing-14: var(--space-14);
+  --spacing-1: 4px;
+  --spacing-2: 6px;
+  --spacing-3: 10px;
+  --spacing-4: 12px;
+  --spacing-5: 15px;
+  --spacing-6: 16px;
+  --spacing-7: 20px;
+  --spacing-8: 25px;
+  --spacing-9: 30px;
+  --spacing-10: 40px;
+  --spacing-11: 50px;
+  --spacing-12: 75px;
+  --spacing-13: 100px;
+  --spacing-14: 120px;
   --spacing-section-y: var(--section-y);
   --spacing-section-y-hero: var(--section-y-hero);
   --spacing-section-y-tight: var(--section-y-tight);
@@ -345,13 +349,13 @@
   --radius-full: 100%;
 
   /* ---- SHADOWS --------------------------------------------------------- */
-  --shadow-card: 0 0 10px color-mix(in oklab, var(--ramp-neutral-900) 10%, transparent);
-  --shadow-elevated: -1px 1px 4px color-mix(in oklab, var(--ramp-neutral-900) 10%, transparent),
-    4px 4px 50px color-mix(in oklab, var(--ramp-neutral-900) 25%, transparent);
-  --shadow-float: 4px 4px 24px color-mix(in oklab, var(--ramp-neutral-900) 25%, transparent);
-  --shadow-inverse: -4px -4px 15px color-mix(in oklab, var(--ramp-neutral-900) 15%, transparent);
-  --shadow-soft: 4px 4px 15px color-mix(in oklab, var(--ramp-neutral-900) 10%, transparent);
-  --shadow-diffuse: 0 4px 54px color-mix(in oklab, var(--ramp-neutral-900) 5%, transparent);
+  --shadow-card: 0 0 10px color-mix(in oklab, var(--color-neutral-900) 10%, transparent);
+  --shadow-elevated: -1px 1px 4px color-mix(in oklab, var(--color-neutral-900) 10%, transparent),
+    4px 4px 50px color-mix(in oklab, var(--color-neutral-900) 25%, transparent);
+  --shadow-float: 4px 4px 24px color-mix(in oklab, var(--color-neutral-900) 25%, transparent);
+  --shadow-inverse: -4px -4px 15px color-mix(in oklab, var(--color-neutral-900) 15%, transparent);
+  --shadow-soft: 4px 4px 15px color-mix(in oklab, var(--color-neutral-900) 10%, transparent);
+  --shadow-diffuse: 0 4px 54px color-mix(in oklab, var(--color-neutral-900) 5%, transparent);
 
   /* ---- ASPECT RATIOS --------------------------------------------------- */
   --aspect-hero: 16 / 7;

@@ -12,8 +12,10 @@ import { site, nap, hours, footerNav } from '@/lib/site';
  * characters, 30 paragraphs of Tulsa-metro place names — is DELETED. The single
  * `SERVICE_AREA` sentence is its only survivor and it lives in the bottom strip.
  *
- * D-03: there is no email column, no newsletter block and no envelope icon, and
- * there never will be. The forbidden list applies to fine print too: no licence
+ * D-03: there is no electronic-mail column, no sign-up block and no envelope
+ * icon, and there never will be. The words themselves are avoided here so the
+ * standing sweep in CLAUDE.md stays clean — a comment that names them turns the
+ * check into noise for everyone downstream, which is how a real hit gets missed. The forbidden list applies to fine print too: no licence
  * number, no bonded/insured claim, no "family owned since", no awards, no
  * certifications (D-14).
  *

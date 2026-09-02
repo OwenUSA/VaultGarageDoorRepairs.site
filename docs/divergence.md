@@ -1,6 +1,6 @@
 # docs/divergence.md — ranked divergence table
 
-Generated 2026-09-02T02:54:01.500Z by `src/diff.mjs`.
+Generated 2026-09-02T04:35:31.159Z by `src/diff.mjs`.
 Rewritten each convergence loop. Ranked worst-first, normalized against each row's own threshold.
 
 Rows: 119 · FAIL: 12 · PASS: 20 · BLOCKED: 10
@@ -34,17 +34,7 @@ route | section | bp | class | metric | value | threshold | status | advisory
 /about | (page) | 1440 | PAGE | height delta % | 74.9 | 5 | FAIL | -
 /about | (page) | 390 | PAGE | height delta % | 73.19 | 5 | FAIL | -
 /contact | (page) | 1440 | PAGE | height delta % | 64.52 | 5 | FAIL | -
-/services | footer | 768 | ADAPTED | token violations (advisory, no reference side) | 5 | - | REPORTED | -
-/contact | footer | 390 | ADAPTED | token violations (advisory, no reference side) | 5 | - | REPORTED | -
-/contact | footer | 768 | ADAPTED | token violations (advisory, no reference side) | 5 | - | REPORTED | -
-/privacy | footer | 390 | ADAPTED | token violations (advisory, no reference side) | 5 | - | REPORTED | -
-/privacy | footer | 768 | ADAPTED | token violations (advisory, no reference side) | 5 | - | REPORTED | -
 / | s09-our-expertise-in-roofing-mater | 390 | ADAPTED | structural deviation % | 20.75 | 5 | FAIL | advisory: innerCols ref=1 ours=3 (66.67%), innerRows ref=7 ours=2 (71.43%), innerCount ref=9 ours=3 (66.67%), position ref=relative ours=fixed (100%)
-/services | header | 768 | ADAPTED | token violations (advisory, no reference side) | 4 | - | REPORTED | -
-/contact | header | 390 | ADAPTED | token violations (advisory, no reference side) | 4 | - | REPORTED | -
-/contact | header | 768 | ADAPTED | token violations (advisory, no reference side) | 4 | - | REPORTED | -
-/privacy | header | 390 | ADAPTED | token violations (advisory, no reference side) | 4 | - | REPORTED | -
-/privacy | header | 768 | ADAPTED | token violations (advisory, no reference side) | 4 | - | REPORTED | -
 /services | s04-let-us-handle-your-commercial- | 390 | ADAPTED | structural deviation % | 16.13 | 5 | FAIL | advisory: innerCols ref=2 ours=3 (33.33%), innerRows ref=1 ours=2 (50%), innerCount ref=2 ours=3 (33.33%), position ref=relative ours=fixed (100%)
 / | s18-service-areas | 390 | ADAPTED | structural deviation % | 4.94 | 5 | PASS | advisory: innerRows ref=5 ours=3 (40%), innerCount ref=6 ours=4 (33.33%)
 / | s18-service-areas | 768 | ADAPTED | structural deviation % | 4.94 | 5 | PASS | advisory: innerRows ref=5 ours=3 (40%), innerCount ref=6 ours=4 (33.33%)
@@ -123,7 +113,9 @@ route | section | bp | class | metric | value | threshold | status | advisory
 /services | s01-commercial-roofing-services-in | 390 | ADAPTED | no counterpart in build | null | - | UNPAIRED | -
 /services | s03-our-commercial-roofing-service | 390 | ADAPTED | no counterpart in build | null | - | UNPAIRED | -
 /services | s06-contact-form | 390 | ADAPTED | no counterpart in build | null | - | UNPAIRED | -
+/services | header | 768 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
 /services | header | 768 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
+/services | footer | 768 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
 /services | footer | 768 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
 /services | s01-commercial-roofing-services-in | 1440 | ADAPTED | no counterpart in build | null | - | UNPAIRED | -
 /services | s02-partnering-with-tulsa-s-best | 1440 | DELETED | no counterpart in build | null | - | UNPAIRED | -
@@ -131,15 +123,23 @@ route | section | bp | class | metric | value | threshold | status | advisory
 /services | s04-let-us-handle-your-commercial- | 1440 | ADAPTED | no counterpart in build | null | - | UNPAIRED | -
 /services | s05-we-love-hearing-from-our-custo | 1440 | DELETED | no counterpart in build | null | - | UNPAIRED | -
 /services | s06-contact-form | 1440 | ADAPTED | no counterpart in build | null | - | UNPAIRED | -
+/contact | header | 390 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
 /contact | header | 390 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
+/contact | footer | 390 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
 /contact | footer | 390 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
+/contact | header | 768 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
 /contact | header | 768 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
+/contact | footer | 768 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
 /contact | footer | 768 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
 /contact | s01-contact-us | 1440 | ADAPTED | no counterpart in build | null | - | UNPAIRED | -
 /contact | s02-contact-form | 1440 | ADAPTED | no counterpart in build | null | - | UNPAIRED | -
+/privacy | header | 390 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
 /privacy | header | 390 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
+/privacy | footer | 390 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
 /privacy | footer | 390 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
+/privacy | header | 768 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
 /privacy | header | 768 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
+/privacy | footer | 768 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
 /privacy | footer | 768 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
 /privacy | s00 | 1440 | DELETED | no counterpart in build | null | - | UNPAIRED | -
 /privacy | s02-a-fricker-roofing-and-waterpro | 1440 | ADAPTED | no counterpart in build | null | - | UNPAIRED | -
