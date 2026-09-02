@@ -39,6 +39,20 @@ export default function HomePage() {
         body={hero?.body}
         primaryCta={{ href: nap.phoneHref, label: hero?.cta?.[0] ?? 'Call now' }}
         secondaryCta={{ href: '/services', label: hero?.cta?.[1] ?? 'See what we work on' }}
+        /* The reference's vertical flag beside the h1. "Free estimate" is the
+           one claim of its kind CLAUDE.md D-12 allows, so it is the only thing
+           that can honestly go here. */
+        tab="Free estimate"
+        /* The hero bullet list the reference carries under its subheading.
+           Every line is a CONSTANTS fact or a statement about our own process —
+           nothing here is a credential, a rating or a response time (D-14). */
+        bullets={[
+          'Broken Arrow and the greater Tulsa metro',
+          'Open seven days, 7:00 AM to 7:00 PM',
+          'Springs, openers, cables, rollers, track and panels',
+          'Residential, commercial and roll-up doors',
+          'The finding named before any figure',
+        ]}
         mediaLabel="Garage door technician at a residential door, Broken Arrow"
         /* D-13 / D-14. The reference hero carries a review-rating strip
            (300x39 @1440). Reviews, ratings and review counts are forbidden

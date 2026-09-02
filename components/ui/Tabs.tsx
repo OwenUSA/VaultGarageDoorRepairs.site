@@ -40,8 +40,14 @@ export function Tabs({
             tabIndex={active === i ? 0 : -1}
             onClick={() => setActive(i)}
             /* WCAG 2.5.8: the tab measures 146x38 at 390 on its padding alone. */
-            className={`inline-flex min-h-[44px] items-center px-9 py-3 font-display text-xs font-bold uppercase leading-display transition-colors duration-[var(--duration-base)] ease-standard ${
-              active === i ? 'bg-cta text-cta-ink' : 'bg-transparent hover:text-cta'
+            /* The inactive tab carries a border rather than only a colour
+               change. On the dark band it would otherwise be white type on the
+               band with no boundary at all — indistinguishable from a heading,
+               and the tab strip stops reading as a control. */
+            className={`inline-flex min-h-[44px] items-center border-2 px-9 py-3 font-display text-xs font-bold uppercase leading-display transition-colors duration-[var(--duration-base)] ease-standard ${
+              active === i
+                ? 'border-cta bg-cta text-cta-ink'
+                : 'border-current bg-transparent opacity-70 hover:opacity-100'
             }`}
           >
             {t.label}

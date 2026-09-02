@@ -140,6 +140,30 @@
 }
 
 @layer components {
+  /* The reference's contact band sits on a dark masonry photograph. We have no
+     photograph, so the texture is drawn: a running-bond course built from two
+     repeating gradients. It is decorative and sits at ~4% contrast against the
+     band, well under anything that could interfere with the copy on top of it,
+     and it is what stops the largest dark band on the page from reading as a
+     flat rectangle. */
+  .texture-brick::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        color-mix(in oklab, var(--color-neutral-0) 5%, transparent) 0 1px,
+        transparent 1px 34px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--color-neutral-0) 5%, transparent) 0 1px,
+        transparent 1px 96px
+      );
+  }
+
   /* MOBILE STICKY CALL BAR -- docs/behavior/03. Shown below 768 by MEDIA QUERY,
      never by a JS breakpoint check (that flashes the bar on desktop during
      hydration). It never auto-hides on scroll: the whole point is that the

@@ -1,3 +1,5 @@
+import { ArtPanel, type ArtKind } from './ArtPanel';
+
 /**
  * Placeholder — a neutral slot at correct dimensions and mapped token colour.
  *
@@ -38,12 +40,30 @@ const tones = {
   border: 'bg-border',
 } as const;
 
+/**
+ * Every slot now DRAWS something (see ArtPanel). The flat tinted rectangle this
+ * used to paint was technically neutral and practically wrong: on an image-led
+ * layout it read as a broken page rather than an unfinished one. `art` picks
+ * the scene; the default per `kind` is the sensible one for a box that shape.
+ */
+const artFor: Record<PlaceholderKind, ArtKind> = {
+  'wide hero': 'house',
+  '4:3 card': 'door',
+  'square slot': 'panel',
+  'full-bleed band': 'house',
+  '16:9 media': 'door-open',
+  'portrait card': 'interior',
+  'logo lockup': 'panel',
+  icon: 'panel',
+};
+
 export function Placeholder({
   kind = '4:3 card',
   tone = 'surface',
   className = '',
   label,
   fill = false,
+  art,
 }: {
   kind?: PlaceholderKind;
   tone?: keyof typeof tones;
@@ -51,15 +71,17 @@ export function Placeholder({
   label?: string;
   /** true = stretch to the parent box instead of holding its own ratio */
   fill?: boolean;
+  /** Override the scene the slot draws. Defaults per `kind`. */
+  art?: ArtKind;
 }) {
   return (
     <div
-      role="img"
-      aria-label={label ?? 'Placeholder image'}
       data-placeholder={kind}
-      className={`overflow-hidden rounded-xl ${tones[tone]} ${
-        fill ? 'absolute inset-0 h-full w-full rounded-none' : `w-full ${ratios[kind]}`
+      className={`relative overflow-hidden ${tones[tone]} ${
+        fill ? 'absolute inset-0 h-full w-full' : `w-full rounded-xl ${ratios[kind]}`
       } ${className}`}
-    />
+    >
+      <ArtPanel kind={art ?? artFor[kind]} label={label} fill rounded={false} />
+    </div>
   );
 }

@@ -10,6 +10,8 @@ export { TextInput, TextArea, Select, FieldShell } from './Field';
 export { Icon } from './Icon';
 export { TextLink } from './Link';
 export { Placeholder } from './Placeholder';
+export { ArtPanel } from './ArtPanel';
+export type { ArtKind } from './ArtPanel';
 export type { PlaceholderKind } from './Placeholder';
 export { Reveal } from './Reveal';
 export { Accordion } from './Accordion';

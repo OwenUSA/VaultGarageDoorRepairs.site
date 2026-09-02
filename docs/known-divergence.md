@@ -573,3 +573,64 @@ recorded because the prose form is typed as a literal in `content/copy.ts` and o
 allows a drift later. **Not fixed here:** changing it edits rendered copy length after the
 final diff, and `ITERATION_CAP` is spent. Fix it at asset drop-in, when the affected bands
 are being re-diffed anyway.
+
+---
+
+## 2026-09-02 — the randomized palette is withdrawn; imagery is drawn, not blank
+
+Two owner-directed changes, recorded here because both contradict something
+earlier in this file and in `CLAUDE.md`.
+
+### 1. Palette: generated ramp → reference-aligned navy / amber
+
+**Was:** A-7 randomized the hue at token-write time (masterSeed 3126, winner
+seed 9611, teal primary + maroon accent) so each of the 30 domains in the
+programme would be hue-unique. `palette.mjs --seed 9611 --emit` still
+reproduces that ramp exactly and the seed record above is unchanged.
+
+**Now:** the brief changed. The site is required to *read like the reference*,
+and colour was the single largest reason it did not. The ramp is now taken from
+the reference's own roles: deep navy bands, a brand navy for nav and links, an
+amber CTA/rule colour, and the red emergency ribbon.
+
+**What did not change, and must not be quietly relaxed later:**
+
+- Colour is still excluded from every structural diff and threshold (A-8).
+- Still exactly one filled chromatic action per page — the call CTA.
+- `contrast.mjs` and `rendertruth.mjs` both read 0 FAIL / 0 findings on all
+  five routes after the swap. These were re-run, not assumed.
+
+**The one thing the reference does that we cannot copy:** its amber buttons on
+a white page. Amber is ~1.5:1 against white at every usable lightness, so the
+fill can never carry the 3:1 a control needs. The reference gets away with it
+because its amber buttons always sit inside a navy container. Ours do not, so
+the call button carries a 2px brand-navy border and the separation comes from
+the boundary. Do not remove that border to "clean up" the button.
+
+Consequently `--color-accent` is the brand NAVY, not the amber: it is what every
+`text-accent` on the site resolves to, and amber type would fail all of them.
+The amber is `--color-amber` / `--color-cta` and is only ever a fill or a rule.
+
+### 2. Photographic slots draw a scene instead of painting a rectangle
+
+**Was:** `Placeholder` painted a flat tinted rectangle. 213 inventoried photo
+slots, all of them empty, on a layout that is image-led throughout.
+
+**Now:** `components/ui/ArtPanel.tsx` draws a garage-door scene per slot, in
+site tokens, with no network request and no literal hex. `Placeholder` routes
+through it and picks a default scene per slot `kind`; call sites override with
+`art=`.
+
+This is still a **tracked gap, not a resolution**. D-09 and OVERRIDE 3 stand:
+when real photography is supplied, it replaces the `art=` prop at the call site
+and this entry is what says so. Nothing here is passed off as a photograph.
+
+Two things learned drawing them, both of which cost a build to find:
+
+- The scene must be composed for the CROP, not the viewBox. The roofline scene
+  centre-cropped into a 4:3 card framed empty sky and painted as a flat navy
+  rectangle — the exact failure ArtPanel exists to remove. It is anchored
+  `xMidYMax` and its subjects are scaled to the box.
+- The hero cannot use a single-subject scene. At ~1440x760 the door scene
+  slices to about 3x and body copy lands on the door's near-white panels at
+  ~2:1. The hero uses the uniformly dark roofline scene.

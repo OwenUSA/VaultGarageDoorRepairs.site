@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
-import { Container, Heading, Eyebrow, Lead, Prose, Placeholder, ButtonLink } from '@/components/ui';
+import { Check } from 'lucide-react';
+import { Container, Heading, Eyebrow, Lead, Prose, Placeholder, ButtonLink, Icon } from '@/components/ui';
 import type { SplitAt } from './Sections';
 
 /**
@@ -25,6 +26,7 @@ export function Hero({
   secondaryCta,
   aside,
   badges,
+  tab,
   mediaLabel = 'Garage door service placeholder',
   id,
   section,
@@ -43,6 +45,8 @@ export function Hero({
   aside?: ReactNode;
   /** D-14 slot: the reference rating strip survives as visible TODO(fact) chips. */
   badges?: ReactNode;
+  /** The vertical label tab beside the h1 (the reference FREE ESTIMATES flag). */
+  tab?: string;
   mediaLabel?: string;
   id?: string;
   /** docs/sections.md our-section-id -> data-section. Required on every band. */
@@ -73,20 +77,46 @@ export function Hero({
       data-section={section}
       className={`relative overflow-hidden bg-band text-ink-on-band ${rhythm}`}
     >
-      {/* full-bleed media slot behind the copy — placeholder, tracked gap */}
+      {/* full-bleed media slot behind the copy. The scene is drawn (ArtPanel);
+          the overlay above it is what actually buys the contrast the copy needs,
+          so it stays even when real photography lands here. */}
       <div aria-hidden="true" className="absolute inset-0">
-        <Placeholder kind="full-bleed band" tone="band-deep" fill label={mediaLabel} />
-        <div className="absolute inset-0 bg-[image:var(--gradient-hero)]" />
+        {/* `house`, not `door`. The hero box is roughly 1440x760 — a scene whose
+            subject is a single door gets sliced to about 3x and the copy then
+            runs across the door's own near-white panels at ~2:1. The roofline
+            scene is uniformly dark at any crop, so it reads as a picture behind
+            the words instead of competing with them. */}
+        <Placeholder kind="full-bleed band" art="house" tone="band-deep" fill label={mediaLabel} />
+        <div className="absolute inset-0 bg-[image:var(--gradient-hero)] opacity-80" />
+        <div className="absolute inset-0 bg-overlay" />
       </div>
 
       <Container className="relative">
         <div className={`grid gap-11 ${aside ? asideCols : ''} items-center`}>
           <div className="flex flex-col gap-7">
             {eyebrow ? <Eyebrow className="text-ink-on-band">{eyebrow}</Eyebrow> : null}
-            <Heading level={1} as={1} display={display}>
-              {title}
-            </Heading>
-            {subtitle ? <Lead className="text-ink-on-band-muted">{subtitle}</Lead> : null}
+
+            {/* The reference's vertical tab beside the h1. Purely a label, so
+                it is aria-hidden and the same words are in the eyebrow above —
+                a rotated string is announced letter-perfect but read aloud in a
+                place that makes no sense in the reading order. */}
+            <div className="flex items-stretch gap-7">
+              {tab ? (
+                <span
+                  aria-hidden="true"
+                  className="hidden shrink-0 items-center justify-center bg-cta px-3 py-5 font-display text-3xs font-bold uppercase leading-display tracking-tracked text-cta-ink [writing-mode:vertical-rl] [transform:rotate(180deg)] sm:flex"
+                >
+                  {tab}
+                </span>
+              ) : null}
+              <Heading level={1} as={1} display={display}>
+                {title}
+              </Heading>
+            </div>
+
+            {subtitle ? (
+              <Lead className="self-start bg-accent px-7 py-4 text-ink-on-band">{subtitle}</Lead>
+            ) : null}
 
             {body?.length ? (
               <Prose className="flex flex-col gap-5 text-ink-on-band-muted">
@@ -96,14 +126,22 @@ export function Hero({
               </Prose>
             ) : null}
 
+            {/* The reference's amber check discs. A filled disc, not a bare
+                glyph: an amber tick alone is 1.9:1 on the hero overlay, and the
+                disc is what makes the mark visible rather than the tick. */}
             {bullets?.length ? (
-              <ul className="flex flex-col gap-3">
+              <ul className="flex flex-col gap-5">
                 {bullets.map((b) => (
-                  <li
-                    key={b}
-                    className="font-display text-xs font-regular uppercase leading-display before:mr-3 before:text-cta before:content-['\\2713']"
-                  >
-                    {b}
+                  <li key={b} className="flex items-center gap-5">
+                    <span
+                      aria-hidden="true"
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-circle bg-cta text-cta-ink"
+                    >
+                      <Icon icon={Check} size="sm" />
+                    </span>
+                    <span className="font-body text-xs font-medium leading-body text-ink-on-band">
+                      {b}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -121,7 +159,7 @@ export function Hero({
                 ) : null}
                 {secondaryCta ? (
                   <ButtonLink
-                    variant={secondaryCta.href.startsWith('tel:') ? 'call' : 'solid'}
+                    variant={secondaryCta.href.startsWith('tel:') ? 'call' : 'outline-band'}
                     href={secondaryCta.href}
                   >
                     {secondaryCta.label}

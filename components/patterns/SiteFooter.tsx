@@ -32,7 +32,7 @@ export function SiteFooter() {
   return (
     <footer
       data-section="footer"
-      className="bg-band-deep pt-section-y-tight pb-0 text-ink-on-band"
+      className="border-t-4 border-cta bg-band-deep pt-section-y-tight pb-0 text-ink-on-band"
     >
       <Container className="pb-section-y">
         <div className="grid gap-11 lg:grid-cols-3">
@@ -70,7 +70,9 @@ export function SiteFooter() {
 
           {footerNav.map((col) => (
             <nav key={col.heading} aria-label={col.heading} className="flex flex-col gap-5">
-              <Heading level={4}>{col.heading}</Heading>
+              <Heading level={4} className="text-cta">
+                {col.heading}
+              </Heading>
               <ul className="flex flex-col gap-3">
                 {col.links.map((l) => (
                   <li key={`${col.heading}-${l.path}-${l.label}`}>

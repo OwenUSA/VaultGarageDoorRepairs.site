@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import copy, { routeMeta } from '@/content/copy';
 import { nap, faqs } from '@/lib/site';
 import { Hero, CardGrid, SplitFeature, FaqBlock, CtaBand, SharedTail, type GridItem } from '@/components/patterns';
+import type { ArtKind } from '@/components/ui';
 
 /**
  * ROUTE /services
@@ -49,6 +50,18 @@ const detailOrder = [
   'maintenance-tune-up',
 ] as const;
 
+/** The scene each service band draws. Subject-matched; see the map call site. */
+const DETAIL_ART: Record<string, ArtKind> = {
+  'spring-repair': 'hardware',
+  'opener-repair': 'interior',
+  'cable-roller-track': 'hardware',
+  'panel-replacement': 'panel',
+  'off-track-correction': 'interior',
+  'new-door-installation': 'door',
+  'commercial-roll-up': 'door-open',
+  'maintenance-tune-up': 'van',
+};
+
 export default function ServicesPage(): ReactNode {
   const hero = s('hero');
   const services = s('services');
@@ -83,13 +96,20 @@ export default function ServicesPage(): ReactNode {
         columns={3}
       />
 
+      {/* One scene per service, keyed by the service's own id rather than
+          cycled: eight consecutive bands all drawing the same shut door read as
+          a rendering bug, and a scene chosen at random would be varied without
+          being about anything. The mapping is by subject — the spring service
+          draws the spring, the roll-up service draws the interior. */}
       {detailOrder.map((id, i) => {
         const d = s(id);
+        const art = DETAIL_ART[id] ?? 'door';
         return (
           <SplitFeature
             key={id}
             id={id}
             section={id}
+            art={art}
             headingId={`${id}-heading`}
             reverse={i % 2 === 1}
             heading={d?.heading}

@@ -1,5 +1,31 @@
 :root {
-  /* ---- RANDOMIZED PALETTE (A-7) - generated, not chosen ----------------
+  /* ======================================================================
+   * SUPERSEDED, 2026-09-02: THE PALETTE IS NO LONGER RANDOMIZED.
+   *
+   * The owner changed the brief from "hue-unique per domain" to "make it read
+   * like the reference", so the generated teal/maroon ramp was replaced with a
+   * reference-aligned navy / amber / red one. The generated ramp and the
+   * A-7 record below are KEPT VERBATIM because they document how the site was
+   * built and how to reproduce the old ramp — they are history, not the
+   * current state. The live values are in the PALETTE OVERRIDE block inside
+   * @theme, further down this file.
+   *
+   * WHAT STILL HOLDS from A-7 / A-8, and is not weakened by this:
+   *   - colour remains excluded from every structural diff and threshold
+   *   - exactly ONE filled chromatic action per page (the call CTA)
+   *   - every foreground/background pair in use passes WCAG AA; verified by
+   *     `contrast.mjs` and `rendertruth.mjs` on all five routes after the swap
+   *
+   * WHAT CHANGED as a consequence, and why:
+   *   - the amber CTA cannot clear 3:1 against a white page on fill alone, so
+   *     the call button carries a brand-navy border that supplies the
+   *     separation instead. See components/ui/Button.tsx.
+   *   - `--color-accent` is the brand NAVY, not the amber, so every existing
+   *     `text-accent` stays legible. The amber has its own role (`--color-amber`)
+   *     and is only ever a fill or a rule.
+   * ==================================================================== */
+
+  /* ---- RANDOMIZED PALETTE (A-7) - generated, not chosen [SUPERSEDED] ---
    * `node ../_shared/harness/src/palette.mjs --seed 9611 --emit` reproduces
    * every value below exactly. masterSeed 3126, 5 candidates generated and
    * gated programmatically, 0 rejected, winner seed 9611 on the highest CTA
@@ -220,37 +246,67 @@
    * Every colour utility on the site resolves to one of these. Nothing
    * downstream may restate a raw colour value.
    * -------------------------------------------------------------------- */
-  /* the generated ramp — seed 9611, complementary (+180deg), primary hue 184,
-     neutral tint 0.036. Hex is the wire format; the OKLCH each was derived from
-     is in the comment, and palette.mjs --seed 9611 --emit reprints both. */
-  --color-primary: #023530; /* oklch(29.63% 0.0510 184.60) */
-  --color-primary-deep: #012824; /* oklch(24.93% 0.0431 184.70) */
-  --color-accent: #983756; /* oklch(48.26% 0.1326 3.71) */
-  --color-accent-deep: #771e3d; /* oklch(38.92% 0.1248 4.01) */
-  --color-neutral-0: #ffffff; /* oklch(100.00% 0.0000 89.88) */
-  --color-neutral-200: #e0fffa; /* oklch(97.64% 0.0327 184.93) */
-  --color-neutral-400: #cbece7; /* oklch(91.79% 0.0351 185.49) */
-  --color-neutral-600: #1c3935; /* oklch(32.04% 0.0359 184.20) */
-  --color-neutral-900: #000d0a; /* oklch(14.25% 0.0258 180.19) */
+  /* ---- PALETTE OVERRIDE — reference-aligned navy / amber -----------------
+   * The randomized ramp above (seed 9611, teal + maroon) is SUPERSEDED at the
+   * owner's direction: the brief changed from "hue-unique per domain" to
+   * "read like the reference". The role table and every rule that depends on
+   * it still holds; only the hex behind each role moved.
+   *
+   * role                which reference element it is taken from
+   * brand               the navy nav bar and its filled secondary buttons
+   * band / band-deep    the deep navy service and storm bands
+   * cta                 the amber call button, submit button and step accents
+   * ribbon              the red emergency strip above the header
+   *
+   * THE ONE ROLE THAT CANNOT BE TAKEN LITERALLY is the amber CTA on a white
+   * page: 1.5:1 against the page at any usable lightness, so it can never
+   * satisfy "the CTA fill separates from the page (3:1)" on fill alone. The
+   * reference never solves this — its amber buttons always sit inside a navy
+   * container. Ours carries a 2px brand-navy border instead, which supplies
+   * the non-text contrast from the boundary rather than the fill, so the
+   * button separates on white and on navy alike.
+   * -------------------------------------------------------------------- */
+  --color-primary: #0d1c45; /* deep navy band */
+  --color-primary-deep: #071230; /* deeper navy band */
+  /* `accent` is the TEXT accent and stays the brand navy — every `text-accent`
+     on the site resolves here. The amber is a separate role (`amber`) because
+     amber TYPE on a white page measures 1.5:1 and no weight fixes that: amber
+     is a fill and a rule colour, never a text colour. */
+  --color-accent: #1e3a8a; /* nav bar, links, eyebrows, filled secondary */
+  --color-accent-deep: #16296b;
+  --color-brand: var(--color-accent);
+  --color-brand-deep: var(--color-accent-deep);
+  --color-amber: #fdc82f;
+  --color-amber-deep: #e8b419;
+  --color-ribbon: #e01b22; /* the red emergency strip */
+  --color-neutral-0: #ffffff;
+  --color-neutral-200: #f2f5fb; /* tinted surface */
+  --color-neutral-400: #d9e0ee; /* hairline border */
+  --color-neutral-600: #4a5570; /* ink-muted */
+  --color-neutral-900: #0a1226; /* ink */
 
   --color-page-bg: var(--color-neutral-0);
   --color-surface: var(--color-neutral-200);
   --color-elevated: var(--color-neutral-0);
   --color-band: var(--color-primary);
   --color-band-deep: var(--color-primary-deep);
+  --color-nav: var(--color-brand);
   --color-ink: var(--color-neutral-900);
   --color-ink-muted: var(--color-neutral-600);
   --color-ink-on-band: var(--color-neutral-0);
-  --color-ink-on-band-muted: var(--color-neutral-200);
+  --color-ink-on-band-muted: #c3cde6;
+  --color-ribbon-ink: var(--color-neutral-0);
 
   /* the ONE filled chromatic action: the call CTA. See the shell rule above. */
-  --color-cta: var(--color-accent);
-  --color-cta-ink: var(--color-neutral-0);
-  --color-cta-hover: var(--color-accent-deep);
-  /* every other action is filled NEUTRAL, on light bands and dark alike */
-  --color-solid: var(--color-neutral-900);
+  --color-cta: var(--color-amber);
+  --color-cta-ink: var(--color-neutral-900);
+  --color-cta-hover: var(--color-amber-deep);
+  /* secondary actions: brand navy on light bands, amber on dark ones — which
+     is how the reference splits them (blue "Learn more" on white, amber
+     "LEARN MORE" on the navy exterior-services band). */
+  --color-solid: var(--color-brand);
   --color-solid-ink: var(--color-neutral-0);
-  --color-solid-band: var(--color-neutral-200);
+  --color-solid-band: var(--color-amber);
   --color-solid-band-ink: var(--color-neutral-900);
 
   --color-link: var(--color-accent);
@@ -266,7 +322,7 @@
   /* focus is TWO layers — a page-coloured halo against the element, then the
      dark ring outside it. One token cannot hold 3:1 against both a white page
      and a saturated fill; two can, and globals.css paints them together. */
-  --color-focus: #60082c; /* oklch(32.10% 0.1205 3.92) */
+  --color-focus: #0a1226; /* the ink; 18:1 on the page, 8:1 on the amber fill */
   --color-focus-halo: var(--color-neutral-0);
 
   /* semantic — EXEMPT from the hue rotation, conventional hues held */

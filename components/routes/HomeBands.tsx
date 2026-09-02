@@ -55,30 +55,50 @@ export function HomeBands(): ReactNode {
   const approach = s('approach');
 
   /* 1 — services: CardGrid columns=3, 3 symptom cards */
-  const servicesItems: GridItem[] = (services?.items ?? []).map((it) => ({
+  /* The scene per card is chosen to match the symptom, not cycled: the card
+     about a door that will not close draws a shut door, the spring card draws
+     the spring. A rotating scene would look varied and mean nothing. */
+  const servicesArt = ['door', 'hardware', 'interior'] as const;
+  const servicesItems: GridItem[] = (services?.items ?? []).map((it, i) => ({
     title: it.heading,
     body: it.note ? `${it.body ?? ''} ${it.note}`.trim() : it.body,
+    media: '16:9 media',
+    art: servicesArt[i % servicesArt.length],
   }));
 
   /* 5 — tabbed: 2 tabs (Residential, Commercial), each carrying the 4 cards
      (Diagnosis, Repair, Replacement, Maintenance) from copy.items[2..5] */
+  const tabbedArt = ['interior', 'hardware', 'panel', 'door-open'] as const;
   const tabbedCards: GridItem[] = (tabbed?.items ?? [])
     .slice(2)
-    .map((it) => ({ title: it.heading, body: it.body }));
+    .map((it, i) => ({
+      title: it.heading,
+      body: it.body,
+      media: '16:9 media' as const,
+      art: tabbedArt[i % tabbedArt.length],
+    }));
 
   /* 6 — marquee: the 10 item headings */
   const marqueeItems = (marquee?.items ?? []).map((it) => it.heading);
 
   /* 7 — doors: 5 items -> CardCarousel */
-  const doorsItems: GridItem[] = (doors?.items ?? []).map((it) => ({
+  const doorsArt = ['door', 'panel', 'door-open', 'house', 'interior'] as const;
+  const doorsItems: GridItem[] = (doors?.items ?? []).map((it, i) => ({
     title: it.heading,
     body: it.body,
+    media: '16:9 media',
+    art: doorsArt[i % doorsArt.length],
   }));
 
-  /* 8 — components: 7 heading-only items, no body, no media */
-  const componentsItems: GridItem[] = (components?.items ?? []).map((it) => ({
+  /* 8 — components: 7 heading-only items. The reference band in this slot is a
+     row of captioned photo tiles, so the cards carry a scene even though they
+     carry no body copy — heading-only cards with no media collapsed into a row
+     of thin chips that read as a tag list rather than a gallery. */
+  const componentsArt = ['hardware', 'panel', 'interior', 'door'] as const;
+  const componentsItems: GridItem[] = (components?.items ?? []).map((it, i) => ({
     title: it.heading,
-    media: 'none',
+    media: '16:9 media',
+    art: componentsArt[i % componentsArt.length],
   }));
 
   /* 9 — facts: 6 heading-only strings paired sensibly, values stay qualitative */
@@ -105,6 +125,7 @@ export function HomeBands(): ReactNode {
         body={services?.subheading}
         items={servicesItems}
         columns={3}
+        center
       />
 
       {/* 2. about */}
@@ -114,6 +135,7 @@ export function HomeBands(): ReactNode {
            default rhythm gives. Below 1440 the default already matches. */
         className="xl:pt-section-y-tight"
         headingId="about-heading"
+        art="interior"
         heading={about?.heading}
         body={<Paragraphs body={about?.body} />}
         actions={[{ href: '/about', label: about?.cta?.[0] ?? 'How we work' }]}
@@ -137,7 +159,8 @@ export function HomeBands(): ReactNode {
 
       {/* 4. emergency */}
       <CtaBand
-        tone="band"
+        tone="band-deep"
+        art="van"
         section="emergency"
         /* Measured: the reference band pads 0 bottom at every breakpoint. */
         className="pb-0"
@@ -171,6 +194,7 @@ export function HomeBands(): ReactNode {
         headingId="doors-heading"
         heading={doors?.heading}
         items={doorsItems}
+        center
       />
 
       {/* 8. components */}
@@ -180,6 +204,7 @@ export function HomeBands(): ReactNode {
         heading={components?.heading}
         items={componentsItems}
         columns={4}
+        center
       />
 
       {/* 9. facts */}
@@ -203,6 +228,7 @@ export function HomeBands(): ReactNode {
         reverse
         section="community"
         headingId="community-heading"
+        art="house"
         heading={community?.heading}
         body={<Paragraphs body={community?.body} />}
         actions={[{ href: maps.directions, label: community?.cta?.[0] ?? 'Get directions' }]}
@@ -210,7 +236,8 @@ export function HomeBands(): ReactNode {
 
       {/* 12. approach */}
       <SplitFeature
-        media="none"
+        reverse
+        art="door-open"
         section="approach"
         headingId="approach-heading"
         heading={approach?.heading}

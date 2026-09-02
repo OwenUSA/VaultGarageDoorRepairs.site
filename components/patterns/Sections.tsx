@@ -17,6 +17,7 @@ import {
   Reveal,
   type SectionTone,
   type PlaceholderKind,
+  type ArtKind,
 } from '@/components/ui';
 
 /**
@@ -56,17 +57,54 @@ function Actions({ actions, onBand }: { actions?: readonly PatternAction[]; onBa
   );
 }
 
-function Bullets({ items }: { items?: readonly string[] }) {
+/**
+ * The reference draws its check bullets as a filled disc with the tick knocked
+ * out of it, never as a bare glyph — and it has to: an amber tick on white is
+ * 1.5:1, so the mark is carried by the disc, not by the tick. On a light band
+ * the disc is the brand navy; on a dark one it is the amber.
+ */
+function Bullets({
+  items,
+  onBand,
+  single = false,
+}: {
+  items?: readonly string[];
+  onBand: boolean;
+  /** true where the list already sits in one half of a split. */
+  single?: boolean;
+}) {
   if (!items?.length) return null;
   return (
-    <ul className="grid gap-3 sm:grid-cols-2">
+    <ul className={`grid gap-5 ${single ? '' : 'sm:grid-cols-2'}`}>
       {items.map((b) => (
-        <li key={b} className="flex items-start gap-3">
-          <Icon icon={Check} size="sm" className="mt-1 shrink-0 text-cta" />
-          <span className="font-display text-xs font-bold capitalize leading-display">{b}</span>
+        <li key={b} className="flex items-start gap-5">
+          <span
+            aria-hidden="true"
+            className={`mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-circle ${
+              onBand ? 'bg-cta text-cta-ink' : 'bg-accent text-ink-on-band'
+            }`}
+          >
+            <Icon icon={Check} size="sm" />
+          </span>
+          <span className="font-body text-xs font-medium leading-body">{b}</span>
         </li>
       ))}
     </ul>
+  );
+}
+
+/**
+ * The two-tone rule under a centred section heading — amber then navy, the
+ * reference's signature divider. Only under CENTRED heads: left-aligned bands
+ * in the reference carry no rule, and adding one there turns a deliberate
+ * distinction between band types into noise.
+ */
+function HeadRule({ onBand }: { onBand: boolean }) {
+  return (
+    <span aria-hidden="true" className="flex h-1 w-24">
+      <span className="h-full flex-1 bg-cta" />
+      <span className={`h-full flex-1 ${onBand ? 'bg-ink-on-band' : 'bg-accent'}`} />
+    </span>
   );
 }
 
@@ -87,13 +125,18 @@ function SectionHead({
 }) {
   if (!heading && !eyebrow && !body) return null;
   return (
-    <div className={`flex max-w-prose flex-col gap-5 ${center ? 'mx-auto items-center text-center' : ''}`}>
-      {eyebrow ? <Eyebrow className={onBand ? 'text-ink-on-band' : 'text-accent'}>{eyebrow}</Eyebrow> : null}
+    <div
+      className={`flex flex-col gap-5 ${
+        center ? 'mx-auto max-w-[70ch] items-center text-center' : 'max-w-prose'
+      }`}
+    >
+      {eyebrow ? <Eyebrow className={onBand ? 'text-cta' : 'text-accent'}>{eyebrow}</Eyebrow> : null}
       {heading ? (
         <Heading level={2} id={headingId}>
           {heading}
         </Heading>
       ) : null}
+      {center ? <HeadRule onBand={onBand} /> : null}
       {body ? <Prose className={onBand ? 'text-ink-on-band-muted' : 'text-ink-muted'}>{body}</Prose> : null}
     </div>
   );
@@ -137,6 +180,7 @@ export function SplitFeature({
   actions,
   media = '4:3 card',
   mediaLabel,
+  art,
   id,
   section,
   className,
@@ -153,6 +197,8 @@ export function SplitFeature({
   actions?: readonly PatternAction[];
   media?: PlaceholderKind | 'none';
   mediaLabel?: string;
+  /** Which scene the media slot draws. See components/ui/ArtPanel. */
+  art?: ArtKind;
   id?: string;
   /** docs/sections.md our-section-id -> data-section. Required on every band. */
   section?: string;
@@ -169,24 +215,34 @@ export function SplitFeature({
   return (
     <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
       <Container>
-        <div className={`grid items-center gap-11 ${media === 'none' ? '' : cols}`}>
+        {/* A `media="none"` band still has to fill the row. Left as a single
+            column inside a two-column grid it painted half the band empty on
+            three home bands — the reference's own no-photo band (storm damage)
+            puts its bullet list in the second column instead, and so does this. */}
+        <div className={`grid items-center gap-11 ${media === 'none' && !bullets?.length ? '' : cols}`}>
           {media !== 'none' ? (
             <Reveal className={reverse ? second : first}>
               <Placeholder
                 kind={media}
+                art={art}
                 tone={onBand ? 'band-deep' : 'surface'}
                 label={mediaLabel ?? 'Garage door placeholder'}
               />
             </Reveal>
           ) : null}
-          <Reveal className={reverse ? first : second}>
+          <Reveal className={media === 'none' ? '' : reverse ? first : second}>
             <div className="flex flex-col gap-7">
               <SectionHead eyebrow={eyebrow} heading={heading} body={body} headingId={headingId} onBand={onBand} />
-              <Bullets items={bullets} />
+              {media === 'none' ? null : <Bullets items={bullets} onBand={onBand} />}
               {children}
               <Actions actions={actions} onBand={onBand} />
             </div>
           </Reveal>
+          {media === 'none' && bullets?.length ? (
+            <Reveal>
+              <Bullets items={bullets} onBand={onBand} single />
+            </Reveal>
+          ) : null}
         </div>
       </Container>
     </Section>
@@ -203,6 +259,7 @@ export function CtaBand({
   heading,
   body,
   actions,
+  art = 'van',
   id,
   section,
   className,
@@ -214,6 +271,8 @@ export function CtaBand({
   heading: ReactNode;
   body?: ReactNode;
   actions?: readonly PatternAction[];
+  /** The scene behind the card. See components/ui/ArtPanel. */
+  art?: ArtKind;
   id?: string;
   /** docs/sections.md our-section-id -> data-section. Required on every band. */
   section?: string;
@@ -221,28 +280,40 @@ export function CtaBand({
   className?: string;
   headingId?: string;
 }) {
-  const onBand = isBand(tone);
   return (
     <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
       <Container>
         <Reveal>
-          <div
-            className={
-              layout === 'center'
-                ? 'flex flex-col items-center gap-7'
-                : 'flex flex-col items-start gap-7 lg:flex-row lg:items-center lg:justify-between'
-            }
-          >
-            <SectionHead
-              eyebrow={eyebrow}
-              heading={heading}
-              body={body}
-              headingId={headingId}
-              onBand={onBand}
-              center={layout === 'center'}
-            />
-            <div className="shrink-0">
-              <Actions actions={actions} onBand={onBand} />
+          {/* The reference's waterproofing band is a CARD inside the section,
+              not the section itself: a drawn scene bleeding out of the right
+              edge with the copy sitting on a navy wash over the left of it.
+              The wash is `overlay-strong` and covers the whole card rather than
+              half, because a gradient that fades to nothing puts the last line
+              of body copy on bare artwork at exactly the width where the split
+              lands. */}
+          <div className="relative overflow-hidden rounded-xl">
+            <div aria-hidden="true" className="absolute inset-0">
+              <Placeholder kind="full-bleed band" tone="band-deep" fill art={art} label="" />
+              <div className="absolute inset-0 bg-[image:var(--gradient-hero)] opacity-90" />
+            </div>
+            <div
+              className={`relative p-9 xl:p-12 ${
+                layout === 'center'
+                  ? 'flex flex-col items-center gap-7'
+                  : 'flex flex-col items-start gap-7 lg:flex-row lg:items-center lg:justify-between'
+              }`}
+            >
+              <SectionHead
+                eyebrow={eyebrow}
+                heading={heading}
+                body={body}
+                headingId={headingId}
+                onBand
+                center={layout === 'center'}
+              />
+              <div className="shrink-0">
+                <Actions actions={actions} onBand />
+              </div>
             </div>
           </div>
         </Reveal>
@@ -301,23 +372,54 @@ export function SectionIntro({
  * The duplicate run is aria-hidden so the list is announced once.
  */
 export function Marquee({ items, section }: { items: readonly string[]; section?: string }) {
+  /* The reference alternates SOLID and OUTLINED words along the ticker and
+     separates them with an amber chevron. The outline is decoration on a word
+     that is also present in solid form elsewhere in the run, so the reduced
+     legibility of stroked type is not carrying any information on its own. */
+  const run = (dup: boolean) =>
+    items.map((item, i) => (
+      <span
+        key={`${dup ? 'b' : 'a'}-${item}`}
+        aria-hidden={dup ? 'true' : undefined}
+        className="flex shrink-0 items-center gap-11"
+      >
+        <span
+          className={`whitespace-nowrap font-display text-3xl font-bold uppercase leading-display ${
+            i % 2 === 0
+              ? 'text-accent'
+              : 'text-transparent [-webkit-text-stroke:1.5px_var(--color-accent)]'
+          }`}
+        >
+          {item}
+        </span>
+        {/* A drawn chevron, not the &#10148; glyph. As text the amber separator
+            scored 1.43:1 against this light band on all 20 of its instances —
+            `contrast.mjs` rightly scores a character as text no matter how
+            decorative it is. Drawn, it is a graphic with a navy edge that
+            carries the contrast, and it keeps the reference's amber. */}
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          className="h-6 w-6 shrink-0"
+          fill="var(--color-amber)"
+          stroke="var(--color-accent)"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        >
+          <path d="M5 3 L20 12 L5 21 Z" />
+        </svg>
+      </span>
+    ));
+
   return (
-    <section data-section={section} aria-label="Service highlights" className="overflow-hidden bg-cta py-3 text-cta-ink">
+    <section
+      data-section={section}
+      aria-label="Service highlights"
+      className="overflow-hidden border-y-4 border-cta bg-surface py-5"
+    >
       <div className="flex w-max animate-marquee gap-11 motion-reduce:animate-none">
-        {items.map((item) => (
-          <span key={`a-${item}`} className="whitespace-nowrap font-display text-2xl font-bold uppercase leading-display">
-            {item}
-          </span>
-        ))}
-        {items.map((item) => (
-          <span
-            key={`b-${item}`}
-            aria-hidden="true"
-            className="whitespace-nowrap font-display text-2xl font-bold uppercase leading-display"
-          >
-            {item}
-          </span>
-        ))}
+        {run(false)}
+        {run(true)}
       </div>
     </section>
   );
@@ -398,27 +500,52 @@ export function StepRow({
     <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
       <Container>
         <div className="flex flex-col gap-11">
-          <SectionHead eyebrow={eyebrow} heading={heading} headingId={headingId} onBand={onBand} />
-          <ol className="grid gap-9 sm:grid-cols-2 xl:grid-cols-4">
-            {steps.map((s, i) => (
-              <li key={s.title}>
-                <Reveal>
-                  <div className="flex h-full flex-col gap-5">
-                    <span
-                      aria-hidden="true"
-                      className="flex h-11 w-11 items-center justify-center rounded-circle bg-cta font-display text-2xl font-bold leading-flat text-cta-ink"
-                    >
-                      {i + 1}
-                    </span>
-                    <Heading level={4} as={3}>
-                      {s.title}
-                    </Heading>
-                    <Prose className={onBand ? 'text-ink-on-band-muted' : 'text-ink-muted'}>{s.body}</Prose>
-                  </div>
-                </Reveal>
-              </li>
-            ))}
-          </ol>
+          <SectionHead eyebrow={eyebrow} heading={heading} headingId={headingId} onBand={onBand} center />
+          {/* The reference's zigzag: a dashed spine with the step cards
+              alternating above and below it. The spine and the offsets only
+              exist from xl — below that the steps stack and a horizontal spine
+              would be drawing a line through nothing. */}
+          <div className="relative">
+            <span
+              aria-hidden="true"
+              className={`absolute inset-x-0 top-1/2 hidden border-t-2 border-dashed xl:block ${
+                onBand ? 'border-border-on-band' : 'border-border-strong'
+              }`}
+            />
+            <ol className="grid gap-9 sm:grid-cols-2 xl:grid-cols-4">
+              {steps.map((s, i) => {
+                const above = i % 2 === 0;
+                return (
+                  <li key={s.title} className={above ? 'xl:pb-32' : 'xl:pt-32'}>
+                    <Reveal>
+                      <div
+                        className={`relative flex h-full flex-col gap-3 border-2 border-cta p-7 ${
+                          onBand ? 'bg-band-deep' : 'bg-surface'
+                        }`}
+                      >
+                        <span className="font-display text-xl font-bold uppercase leading-display text-accent">
+                          Step {i + 1}
+                        </span>
+                        <Heading level={4} as={3}>
+                          {s.title}
+                        </Heading>
+                        <Prose className={onBand ? 'text-ink-on-band-muted' : 'text-ink-muted'}>
+                          {s.body}
+                        </Prose>
+                        {/* the tick down to (or up from) the spine */}
+                        <span
+                          aria-hidden="true"
+                          className={`absolute left-1/2 hidden h-16 w-0.5 -translate-x-1/2 bg-cta xl:block ${
+                            above ? 'top-full' : 'bottom-full'
+                          }`}
+                        />
+                      </div>
+                    </Reveal>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
         </div>
       </Container>
     </Section>
@@ -468,17 +595,35 @@ export function FeatureRow({
                 {heading}
               </Heading>
             ) : null}
+            {/* The reference's stat tiles: a navy chip carrying the value, with
+                the amber sitting behind it as a hard offset rather than a blur,
+                and the label below the tile in the page ink. The counters that
+                animate in the reference are gone for good — every number they
+                count to is a business fact nobody has supplied (see the header
+                comment). */}
             <dl className="grid w-full gap-9 sm:grid-cols-2 lg:grid-cols-3">
               {facts.map((f) => (
-                <div key={f.label} className="flex flex-col items-center gap-3 text-center">
+                /* dt BEFORE dd in the markup, because a description list is
+                   only valid that way, and `flex-col-reverse` to put the tile
+                   on top where the reference has it. Reordering the DOM to get
+                   the visual order would make the list invalid to a screen
+                   reader for the sake of a layout that CSS already handles. */
+                <div
+                  key={f.label}
+                  className="flex flex-col-reverse items-center gap-5 text-center"
+                >
                   <dt
-                    className={`font-display text-3xs font-semibold uppercase leading-display tracking-tracked ${
-                      onBand ? 'text-ink-on-band-muted' : 'text-ink-muted'
+                    className={`font-display text-sm font-bold uppercase leading-display tracking-tracked ${
+                      onBand ? 'text-ink-on-band' : 'text-ink'
                     }`}
                   >
                     {f.label}
                   </dt>
-                  <dd className="font-display text-2xl font-bold leading-display">{f.value}</dd>
+                  <dd className="m-0 flex min-h-[92px] w-full max-w-[260px] items-center justify-center rounded-xl bg-accent px-5 py-5 shadow-[6px_6px_0_var(--color-amber)]">
+                    <span className="font-display text-2xl font-bold leading-display text-ink-on-band">
+                      {f.value}
+                    </span>
+                  </dd>
                 </div>
               ))}
             </dl>
@@ -497,21 +642,30 @@ export type GridItem = {
   href?: string;
   media?: PlaceholderKind | 'none';
   mediaLabel?: string;
+  /** Which scene the card's media slot draws. See components/ui/ArtPanel. */
+  art?: ArtKind;
 };
 
 function ItemCard({ item, onBand }: { item: GridItem; onBand: boolean }) {
   const inner = (
-    <Card variant="signature" className="flex h-full flex-col overflow-hidden">
+    /* The amber top edge is what makes a plain white card read as part of this
+       site rather than as a default card. It is a border rather than a bar so
+       it cannot fall out of alignment with the card's own corner radius. */
+    <Card
+      variant="signature"
+      className="flex h-full flex-col overflow-hidden border-t-4 border-cta"
+    >
       {item.media && item.media !== 'none' ? (
         <Placeholder
           kind={item.media}
+          art={item.art}
           tone={onBand ? 'band-deep' : 'surface'}
           className="rounded-none"
           label={item.mediaLabel ?? `${item.title} placeholder`}
         />
       ) : null}
-      <div className="flex flex-1 flex-col gap-3 p-6">
-        <Heading level={4} as={3} className="text-ink">
+      <div className="flex flex-1 flex-col gap-3 p-7">
+        <Heading level={4} as={3} className="text-accent">
           {item.title}
         </Heading>
         {item.body ? <Prose className="flex-1 text-ink-muted">{item.body}</Prose> : null}
@@ -560,6 +714,7 @@ export function CardGrid({
   items,
   columns = 3,
   stackUntil = 'sm',
+  center = false,
   id,
   section,
   className,
@@ -573,6 +728,9 @@ export function CardGrid({
   columns?: 2 | 3 | 4;
   /** Where the grid starts splitting. See `colsFor`. */
   stackUntil?: 'sm' | 'lg';
+  /** Centre the head and give it the two-tone rule, as the reference does on
+      its grid bands but not on its split bands. */
+  center?: boolean;
   id?: string;
   /** docs/sections.md our-section-id -> data-section. Required on every band. */
   section?: string;
@@ -585,7 +743,14 @@ export function CardGrid({
     <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
       <Container>
         <div className="flex flex-col gap-11">
-          <SectionHead eyebrow={eyebrow} heading={heading} body={body} headingId={headingId} onBand={onBand} />
+          <SectionHead
+            eyebrow={eyebrow}
+            heading={heading}
+            body={body}
+            headingId={headingId}
+            onBand={onBand}
+            center={center}
+          />
           <ul className={`grid gap-9 ${colsFor(columns, stackUntil)}`}>
             {items.map((item) => (
               <li key={item.title} className="h-full">
@@ -609,6 +774,7 @@ export function CardCarousel({
   body,
   items,
   perView = { base: 1, md: 2, lg: 3 },
+  center = false,
   id,
   section,
   className,
@@ -620,6 +786,8 @@ export function CardCarousel({
   body?: ReactNode;
   items: readonly GridItem[];
   perView?: { base: 1 | 2 | 3 | 4; md?: 1 | 2 | 3 | 4; lg?: 1 | 2 | 3 | 4 };
+  /** Centre the head and give it the two-tone rule. */
+  center?: boolean;
   id?: string;
   /** docs/sections.md our-section-id -> data-section. Required on every band. */
   section?: string;
@@ -632,7 +800,14 @@ export function CardCarousel({
     <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
       <Container>
         <div className="flex flex-col gap-11">
-          <SectionHead eyebrow={eyebrow} heading={heading} body={body} headingId={headingId} onBand={onBand} />
+          <SectionHead
+            eyebrow={eyebrow}
+            heading={heading}
+            body={body}
+            headingId={headingId}
+            onBand={onBand}
+            center={center}
+          />
           <Carousel perView={perView} label={typeof heading === 'string' ? heading : 'Items'}>
             {items.map((item) => (
               <ItemCard key={item.title} item={item} onBand={onBand} />
@@ -672,8 +847,16 @@ export function TabbedGrid({
   return (
     <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
       <Container>
-        <div className="flex flex-col gap-11">
-          <SectionHead eyebrow={eyebrow} heading={heading} headingId={headingId} onBand={onBand} />
+        {/* The reference's services band puts the heading and the tab switch in
+            a narrow left rail with the panel filling the rest of the row, rather
+            than stacking a heading over a full-width tab strip. At 1024 and
+            below the rail sits above the panel and the tabs go horizontal —
+            a vertical tab list in a 360px column is a column of full-width
+            buttons pretending to be a rail. */}
+        <div className="grid gap-11 xl:grid-cols-[minmax(0,320px)_1fr] xl:items-start">
+          <div className="flex flex-col gap-7">
+            <SectionHead eyebrow={eyebrow} heading={heading} headingId={headingId} onBand={onBand} />
+          </div>
           <Tabs
             items={groups.map((g) => ({
               label: g.label,

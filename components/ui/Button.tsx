@@ -26,7 +26,14 @@ import type { ComponentPropsWithoutRef, ReactNode } from 'react';
  *   arrow       --color-solid                                 — carousel control
  * ────────────────────────────────────────────────────────────────────────
  */
-export type ButtonVariant = 'call' | 'solid' | 'solid-band' | 'submit' | 'large' | 'arrow';
+export type ButtonVariant =
+  | 'call'
+  | 'solid'
+  | 'solid-band'
+  | 'outline-band'
+  | 'submit'
+  | 'large'
+  | 'arrow';
 
 const base =
   'inline-flex items-center justify-center gap-3 font-display font-bold uppercase leading-display ' +
@@ -34,19 +41,35 @@ const base =
   'disabled:opacity-50 disabled:pointer-events-none';
 
 const variants: Record<ButtonVariant, string> = {
-  /** THE call CTA. The only filled chromatic action on any page. */
-  call: 'rounded-none bg-cta text-cta-ink text-xs px-9 py-3 hover:bg-cta-hover',
-  /** Secondary action on a light band — neutral fill, never the primary. */
-  solid: 'rounded-none bg-solid text-solid-ink text-xs px-9 py-3 hover:bg-ink-muted',
-  /** Secondary action on a dark band — the light neutral, inverted. */
+  /**
+   * THE call CTA. The only filled chromatic action on any page.
+   *
+   * The 2px brand border is load-bearing, not decoration. The amber fill is
+   * 1.5:1 against a white page — no lightness of amber clears the 3:1 that a
+   * control needs to separate from its background — so the separation comes
+   * from the boundary instead. The reference never solves this because its
+   * amber buttons only ever sit inside a navy container; ours has to work on
+   * white too.
+   */
+  call: 'rounded-none border-2 border-accent bg-cta text-cta-ink text-xs px-9 py-3 hover:bg-cta-hover',
+  /** Secondary action on a light band — the brand navy fill. */
+  solid: 'rounded-none bg-solid text-solid-ink text-xs px-9 py-3 hover:bg-accent-deep',
+  /** Secondary action on a dark band — amber, which is what carries there. */
   'solid-band':
-    'rounded-none bg-solid-band text-solid-band-ink text-xs px-9 py-3 hover:bg-border',
+    'rounded-none bg-solid-band text-solid-band-ink text-xs px-9 py-3 hover:bg-cta-hover',
   /** Form submit — measured 42px, square padding, sentence case. */
-  submit: 'rounded-none bg-solid text-solid-ink text-xs normal-case px-4 py-4 hover:bg-ink-muted',
+  submit: 'rounded-none bg-cta text-cta-ink text-xs normal-case px-4 py-4 hover:bg-cta-hover',
   /** Large CTA — the one 20px label row in the type census. */
-  large: 'rounded-none bg-solid text-solid-ink text-lg px-9 py-3 hover:bg-ink-muted',
+  large: 'rounded-none bg-solid text-solid-ink text-lg px-9 py-3 hover:bg-accent-deep',
+  /**
+   * Outlined action ON a dark band. Exists so a band can carry a second
+   * action without a second FILL: two amber fills side by side read as two
+   * primaries, and the call CTA has to stay the only one.
+   */
+  'outline-band':
+    'rounded-none border-2 border-ink-on-band bg-transparent text-ink-on-band text-xs px-9 py-3 hover:bg-cta hover:border-cta hover:text-cta-ink',
   /** Carousel arrow — the one round control on the site. */
-  arrow: 'rounded-circle bg-solid text-solid-ink p-3 hover:bg-ink-muted',
+  arrow: 'rounded-circle bg-solid text-solid-ink p-3 hover:bg-accent-deep',
 };
 
 type BaseProps = { variant?: ButtonVariant; children: ReactNode; className?: string };

@@ -26,6 +26,24 @@ import { nap, hours, primaryNav, site } from '@/lib/site';
  * <768 and the desktop contact bar starts at 1024, which would otherwise leave
  * the 768 band with no call button at all.
  */
+/**
+ * Mark — the logo glyph. A sectional door under an arch, which is the shape the
+ * reference's roofline mark occupies in the same slot. Drawn rather than
+ * imported: no wordmark file has been supplied yet, and an empty logo slot is
+ * the most conspicuous hole a header can have.
+ */
+function Mark() {
+  return (
+    <svg viewBox="0 0 40 40" aria-hidden="true" className="h-10 w-10 shrink-0">
+      <circle cx="20" cy="20" r="20" fill="var(--color-accent)" />
+      <path d="M6 20 L20 9 L34 20 Z" fill="var(--color-amber)" />
+      <rect x="10" y="20" width="20" height="12" fill="var(--color-neutral-0)" />
+      <rect x="10" y="24" width="20" height="1.6" fill="var(--color-accent)" />
+      <rect x="10" y="28" width="20" height="1.6" fill="var(--color-accent)" />
+    </svg>
+  );
+}
+
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   /* TWO states, not one. `mounted` is presence (visibility, tab order, the
@@ -111,53 +129,102 @@ export function SiteHeader() {
         data-scrolled={scrolled ? 'true' : 'false'}
         className="sticky top-0 z-[var(--z-header)] transition-shadow duration-[var(--duration-base)] ease-standard data-[scrolled=true]:shadow-card"
       >
-        {/* bar 1 — ribbon (41px @1440), desktop only */}
-        <div className="hidden bg-band-deep text-ink-on-band lg:block">
+        {/* bar 1 — ribbon (41px @1440), desktop only. The reference's red strip:
+            one sentence, underlined, centred, and it is the only red on the
+            site so it stays the loudest thing above the fold. */}
+        <div className="hidden bg-ribbon text-ribbon-ink lg:block">
           <Container className="flex h-bar-ribbon items-center justify-center">
-            <span className="font-display text-xs font-bold uppercase leading-display">
+            <a
+              href={nap.phoneHref}
+              className="inline-flex items-center gap-3 font-display text-xs font-bold uppercase leading-display underline underline-offset-2"
+            >
               {site.tagline}
-            </span>
+              <span aria-hidden="true">&#10148;</span>
+            </a>
           </Container>
         </div>
 
-        {/* bar 2 — brand + contact (78px @1440), folded into bar 3 below lg */}
-        <div className="hidden bg-page-bg text-ink lg:block">
-          <Container className="flex h-bar-contact items-center justify-between">
-            <Link
-              href="/"
-              className="inline-flex min-h-[44px] items-center font-display text-2xl font-bold uppercase leading-display"
-            >
-              {site.name}
+        {/* bar 2 — brand + contact (78px @1440), folded into bar 3 below lg.
+            The roofline watermark is the reference's house-silhouette band,
+            redrawn as garage-door facades. Decorative: aria-hidden, and it
+            never sits under type dark enough to cost contrast (4% opacity). */}
+        <div className="relative hidden overflow-hidden bg-page-bg text-ink lg:block">
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 1440 78"
+            preserveAspectRatio="xMidYMax slice"
+            className="pointer-events-none absolute inset-0 h-full w-full"
+          >
+            <g fill="var(--color-accent)" fillOpacity="0.08">
+              {Array.from({ length: 14 }, (_, i) => {
+                const x = i * 104;
+                return (
+                  <g key={i}>
+                    <path d={`M${x} 78 L${x} 40 L${x + 44} 16 L${x + 88} 40 L${x + 88} 78 Z`} />
+                    <rect x={x + 18} y={52} width={52} height={26} fill="var(--color-neutral-0)" />
+                  </g>
+                );
+              })}
+            </g>
+          </svg>
+          <Container className="relative flex h-bar-contact items-center justify-between">
+            <Link href="/" className="inline-flex min-h-[44px] items-center gap-4">
+              <Mark />
+              <span className="font-display text-2xl font-bold uppercase leading-display text-accent">
+                {site.name}
+              </span>
             </Link>
-            <div className="flex items-center gap-9">
+            <div className="flex items-center gap-7">
               <span className="font-body text-xs leading-body text-ink-muted">{hours.short}</span>
-              <ButtonLink variant="call" href={nap.phoneHref}>
-                <Icon icon={Phone} size="sm" />
-                {nap.phone}
+              {/* The reference's two-part pill: an icon chip in the brand navy
+                  with the amber action sitting inside it. */}
+              <span className="inline-flex items-center gap-3 bg-accent p-2">
+                <span className="inline-flex h-9 w-9 items-center justify-center text-ink-on-band">
+                  <Icon icon={Phone} size="sm" />
+                </span>
+                <ButtonLink variant="call" href={nap.phoneHref} className="border-0 px-7">
+                  {nap.phone}
+                </ButtonLink>
+              </span>
+              <ButtonLink variant="call" href="/contact" className="hidden xl:inline-flex">
+                Request a callback
               </ButtonLink>
             </div>
           </Container>
         </div>
 
-        {/* bar 3 — nav (46px @1440) / the single 110px bar at <=1024 */}
-        <div className="bg-band text-ink-on-band">
-          <Container className="flex h-header items-center justify-between gap-5 lg:h-bar-nav">
+        {/* bar 3 — nav (46px @1440) / the single 110px bar at <=1024. The amber
+            underline is the reference's; the current item inverts to the page
+            colour, which is also how it stays legible without relying on the
+            underline alone. */}
+        <div className="border-b-4 border-cta bg-nav text-ink-on-band">
+          <Container className="flex h-header items-center justify-between gap-5 lg:h-bar-nav lg:justify-center">
             <Link
               href="/"
-              className="inline-flex min-h-[44px] items-center font-display text-lg font-bold uppercase leading-display lg:hidden"
+              className="inline-flex min-h-[44px] items-center gap-3 font-display text-lg font-bold uppercase leading-display lg:hidden"
             >
+              <Mark />
               {site.name}
             </Link>
 
             <nav aria-label="Primary" className="hidden lg:block">
-              <ul className="flex items-center gap-9">
-                {primaryNav.map((item) => (
-                  <li key={item.path}>
-                    <TextLink href={item.path} variant="nav">
-                      {item.label}
-                    </TextLink>
-                  </li>
-                ))}
+              <ul className="flex items-center">
+                {[{ path: '/', label: 'Home' }, ...primaryNav].map((item) => {
+                  const current = pathname === item.path;
+                  return (
+                    <li key={item.path}>
+                      <TextLink
+                        href={item.path}
+                        variant="nav"
+                        className={`px-7 ${
+                          current ? 'bg-page-bg font-bold text-accent no-underline' : ''
+                        }`}
+                      >
+                        {item.label}
+                      </TextLink>
+                    </li>
+                  );
+                })}
               </ul>
             </nav>
 

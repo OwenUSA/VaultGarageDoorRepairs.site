@@ -52,10 +52,10 @@ export function ContactBlock({
         tone={tone}
         id={id}
         data-section={section}
-        className="pt-0 xl:pb-section-y-tight"
+        className="texture-brick overflow-hidden pt-0 xl:pb-section-y-tight"
         aria-labelledby={headingId}
       >
-      <Container>
+      <Container className="relative">
         {/* Measured: contact-new is 1645 @1024 and 677 @1440 on every profiled
             exemplar — it stacks through 1024, not through 768. */}
         <div className="grid gap-11 xl:grid-cols-2">
