@@ -13,7 +13,7 @@ export type ButtonSize = 'default' | 'large';
 
 const base =
   'inline-flex items-center justify-center gap-3 font-display font-bold uppercase leading-display ' +
-  'transition-colors duration-base ease-standard ' +
+  'transition-colors duration-[var(--duration-base)] ease-standard ' +
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ' +
   'disabled:opacity-50 disabled:pointer-events-none';
 
@@ -60,7 +60,7 @@ export function ButtonLink({
   children,
   ...rest
 }: BaseProps & { href: string } & Omit<ComponentPropsWithoutRef<'a'>, 'href'>) {
-  const external = /^(https?:|tel:|mailto:)/.test(href);
+  const external = /^(https?:|tel:)/.test(href);
   const cls = `${base} ${variants[variant]} ${className}`;
   if (external) {
     return (

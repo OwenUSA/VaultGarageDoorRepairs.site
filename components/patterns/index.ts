@@ -27,7 +27,7 @@
  *   roofing-service              -> TabbedGrid
  *   blankpage                    -> ContentColumn + ProseBlock
  *   contact-new / contact-one    -> ContactBlock + ContactForm
- *   map-sec                      -> ServiceAreaMap
+ *   map-sec                      -> BusinessMap (D-02: city grid deleted)
  *   faq-two                      -> FaqBlock
  *   HEADER                       -> SiteHeader
  *   FOOTER                       -> SiteFooter
@@ -60,7 +60,7 @@ export type { HeroVariant } from './Hero';
 
 export { ContactBlock } from './ContactBlock';
 export { ContactForm } from './ContactForm';
-export { ServiceAreaMap } from './ServiceAreaMap';
+export { BusinessMap } from './BusinessMap';
 export { FaqBlock } from './FaqBlock';
 
 export { SiteHeader } from './SiteHeader';

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Phone, Mail } from 'lucide-react';
+import { Phone, Clock, MapPin } from 'lucide-react';
 import { Container, Icon, TextLink, Heading } from '@/components/ui';
 import { site, nap, hours, footerNav } from '@/lib/site';
 
@@ -15,9 +15,9 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-band-deep text-on-band">
+    <footer data-section="footer" className="bg-band-deep text-on-band">
       <Container className="py-section-y">
-        <div className="grid gap-11 lg:grid-cols-4">
+        <div className="grid gap-11 lg:grid-cols-3">
           <div className="flex flex-col gap-5">
             <Link href="/" className="font-display text-2xl font-bold uppercase leading-display">
               {site.name}
@@ -31,10 +31,12 @@ export function SiteFooter() {
                 </TextLink>
               </li>
               <li className="flex items-center gap-3">
-                <Icon icon={Mail} size="sm" className="text-cta" />
-                <TextLink href={`mailto:${nap.email}`} variant="footer">
-                  {nap.email}
-                </TextLink>
+                <Icon icon={Clock} size="sm" className="text-cta" />
+                <span className="font-body text-xs leading-body text-on-band-muted">{hours.label}</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <Icon icon={MapPin} size="sm" className="mt-1 shrink-0 text-cta" />
+                <span className="font-body text-xs leading-body text-on-band-muted">{nap.address}</span>
               </li>
             </ul>
           </div>
@@ -62,7 +64,7 @@ export function SiteFooter() {
             {site.name} © {year}. All rights reserved.
           </p>
           <p className="font-body text-3xs leading-body text-on-band-muted">
-            {hours.emergency} · Service-area business, no storefront.
+            {nap.serviceArea}
           </p>
         </Container>
       </div>

@@ -10,11 +10,11 @@ import type { ReactNode } from 'react';
 export type LinkVariant = 'nav' | 'footer' | 'inline';
 
 const variants: Record<LinkVariant, string> = {
-  nav: 'font-display font-regular text-xs uppercase leading-display transition-colors duration-fast ease-standard hover:text-cta',
+  nav: 'font-display font-regular text-xs uppercase leading-display transition-colors duration-[var(--duration-fast)] ease-standard hover:text-cta',
   footer:
-    'font-display font-medium text-xs leading-display transition-colors duration-fast ease-standard hover:text-cta',
+    'font-display font-medium text-xs leading-display transition-colors duration-[var(--duration-fast)] ease-standard hover:text-cta',
   inline:
-    'font-body text-xs leading-body text-accent underline underline-offset-2 transition-colors duration-fast ease-standard hover:text-accent-hover',
+    'font-body text-xs leading-body text-accent underline underline-offset-2 transition-colors duration-[var(--duration-fast)] ease-standard hover:text-accent-hover',
 };
 
 export function TextLink({
@@ -29,7 +29,7 @@ export function TextLink({
   children: ReactNode;
 }) {
   const cls = `${variants[variant]} ${className}`;
-  if (/^(https?:|tel:|mailto:)/.test(href)) {
+  if (/^(https?:|tel:)/.test(href)) {
     return (
       <a href={href} className={cls}>
         {children}

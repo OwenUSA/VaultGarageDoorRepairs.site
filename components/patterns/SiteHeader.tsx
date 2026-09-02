@@ -44,20 +44,18 @@ export function SiteHeader() {
 
   return (
     <header
+      data-section="header"
       data-scrolled={scrolled ? 'true' : 'false'}
-      className={`sticky top-0 z-header transition-shadow duration-base ease-standard ${
+      className={`sticky top-0 z-[var(--z-header)] transition-shadow duration-[var(--duration-base)] ease-standard ${
         scrolled ? 'shadow-card' : 'shadow-none'
       }`}
     >
       {/* bar 1 — emergency ribbon (41px @1440) */}
       <div className="hidden bg-band-deep text-on-band lg:block">
         <Container className="flex h-bar-ribbon items-center justify-center">
-          <Link
-            href="/emergency-garage-door-repair"
-            className="font-display text-xs font-bold uppercase leading-display transition-colors duration-fast ease-standard hover:text-cta"
-          >
-            {hours.emergency}
-          </Link>
+          <span className="font-display text-xs font-bold uppercase leading-display">
+            {site.tagline}
+          </span>
         </Container>
       </div>
 
@@ -68,7 +66,7 @@ export function SiteHeader() {
             {site.name}
           </Link>
           <div className="flex items-center gap-9">
-            <span className="font-body text-xs leading-body text-ink-muted">{hours.office}</span>
+            <span className="font-body text-xs leading-body text-ink-muted">{hours.short}</span>
             <ButtonLink variant="phone" href={nap.phoneHref}>
               <Icon icon={Phone} size="sm" />
               {nap.phone}
@@ -118,7 +116,7 @@ export function SiteHeader() {
         aria-modal="true"
         aria-label="Site menu"
         hidden={!open}
-        className="fixed inset-0 z-drawer lg:hidden"
+        className="fixed inset-0 z-[var(--z-drawer)] lg:hidden"
       >
         <button
           type="button"
@@ -140,7 +138,7 @@ export function SiteHeader() {
                   <Link
                     href={item.path}
                     onClick={() => setOpen(false)}
-                    className="font-display text-lg font-regular uppercase leading-display transition-colors duration-fast ease-standard hover:text-cta"
+                    className="font-display text-lg font-regular uppercase leading-display transition-colors duration-[var(--duration-fast)] ease-standard hover:text-cta"
                   >
                     {item.label}
                   </Link>

@@ -26,11 +26,11 @@ export function TextLink({
   'href'
 >) {
   const cls = cn(
-    'transition-colors duration-fast ease-standard',
+    'transition-colors duration-[var(--duration-fast)] ease-standard',
     tones[tone],
     className,
   );
-  if (/^(https?:|tel:|mailto:|#)/.test(href)) {
+  if (/^(https?:|tel:|#)/.test(href)) {
     return (
       <a href={href} className={cls} {...rest}>
         {children}

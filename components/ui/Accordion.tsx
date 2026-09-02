@@ -33,12 +33,12 @@ export function Accordion({
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => setOpen(isOpen ? null : i)}
-                className="flex w-full items-center justify-between gap-5 p-6 text-left font-display text-sm font-bold leading-display transition-colors duration-fast ease-standard hover:text-accent"
+                className="flex w-full items-center justify-between gap-5 p-6 text-left font-display text-sm font-bold leading-display transition-colors duration-[var(--duration-fast)] ease-standard hover:text-accent"
               >
                 <span>{item.q}</span>
                 <Icon
                   icon={ChevronDown}
-                  className={`shrink-0 transition-transform duration-base ease-standard ${
+                  className={`shrink-0 transition-transform duration-[var(--duration-base)] ease-standard ${
                     isOpen ? 'rotate-180' : ''
                   }`}
                 />

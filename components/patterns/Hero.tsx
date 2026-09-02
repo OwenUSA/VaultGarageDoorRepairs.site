@@ -63,7 +63,7 @@ export function Hero({
       {/* full-bleed media slot behind the copy — placeholder, tracked gap */}
       <div aria-hidden="true" className="absolute inset-0">
         <Placeholder kind="full-bleed band" tone="band-deep" fill label={mediaLabel} />
-        <div className="absolute inset-0 bg-gradient-hero" />
+        <div className="absolute inset-0 bg-[image:var(--gradient-hero)]" />
       </div>
 
       <Container className="relative">

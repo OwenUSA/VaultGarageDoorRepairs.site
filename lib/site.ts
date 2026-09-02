@@ -1,16 +1,17 @@
 /**
- * lib/site.ts — the SINGLE source of every CONFIG FACTS value.
+ * lib/site.ts — the SINGLE source of every CONSTANTS value in CLAUDE.md.
  *
- * Every row in CLAUDE.md CONFIG FACTS is authoritative and must appear
- * identically everywhere it appears. Nothing here may be duplicated as a
- * literal in a component, a page, a metadata block, an alt text or schema.
+ * Every fact here is FICTIONAL AND DELIBERATE (see CLAUDE.md section 0) and is
+ * listed in docs/PRE-LAUNCH.md as must-replace-before-public. Nothing here may
+ * be duplicated as a literal in a component, a page, metadata, alt text or
+ * schema.
  *
- * Nothing in CONFIG FORBIDDEN may ever be added to this file:
+ * Never added to this file (D-03, D-12, D-13, D-14, D-17):
+ *   no electronic-mail address of any kind, and no sign-up block of any kind
  *   no reviews, testimonials, star ratings, aggregateRating
  *   no license numbers, bonded/insured or any licensing claim
- *   no price claims, "starting at", figures, discounts, coupons
- *   no warranties, guarantees, "satisfaction guaranteed"
- *   no certifications, manufacturer authorizations, partnerships, awards
+ *   no prices, "starting at", figures, discounts, coupons
+ *   no warranties, guarantees, certifications, awards, partnerships
  *   no years-in-business claims, job counts, technician counts
  *   no named real people, staff photos, staff bios
  */
@@ -21,33 +22,47 @@ export const site = {
   domain: 'vaultgaragedoorrepairs.site',
   url: 'https://vaultgaragedoorrepairs.site',
   vertical: 'garage door repair',
-  tagline: 'Garage door repair, installation and maintenance.',
+  /** CONSTANTS -> TAGLINE */
+  tagline: 'Locked shut or wide open, it gets diagnosed before it gets quoted.',
   description:
-    'Garage door spring repair, opener repair and installation, off-track and cable repair, panel replacement, new door installation and routine maintenance. Same-day and emergency dispatch, 24/7.',
+    'Garage door spring repair, opener repair and installation, cable, roller and track repair, panel replacement, off-track correction, new door installation, commercial and roll-up doors, and annual maintenance.',
 } as const;
 
-/** CONFIG FACTS -> nap. Placeholder. Service-area only — never a street address. */
+/** CONSTANTS -> PHONE / ADDRESS / MAP_COORDS / SERVICE_AREA. Phone only (D-03). */
 export const nap = {
   name: 'Vault Garage Door Repairs',
-  phone: '(555) 010-0199',
-  phoneHref: 'tel:+15550100199',
-  email: 'service@vaultgaragedoorrepairs.site',
-  /** Single service-area business. No storefront address is shown, anywhere. */
-  hasStorefront: false,
-  serviceAreaOnly: true,
-  locality: 'City',
-  region: 'State',
+  phone: '(918) 555-0117',
+  phoneHref: 'tel:+19185550117',
+  street: '4418 Kestrel Hollow',
+  locality: 'Broken Arrow',
+  region: 'OK',
+  postalCode: '74012',
   country: 'US',
+  address: '4418 Kestrel Hollow, Broken Arrow, OK 74012',
+  /** CONSTANTS -> MAP_COORDS. The address is fake; never geocode it (D-07). */
+  coords: '36.0526,-95.7908',
+  latitude: 36.0526,
+  longitude: -95.7908,
+  /** CONSTANTS -> SERVICE_AREA. The single surviving service-area sentence (D-02). */
+  serviceArea: 'Serving Broken Arrow and the greater Tulsa metro.',
 } as const;
 
-/** CONFIG FACTS -> hours */
+/** D-08 — both maps are embedded by coordinates in a keyless iframe. */
+export const maps = {
+  embed: (zoom: number) => `https://www.google.com/maps?q=${nap.coords}&z=${zoom}&output=embed`,
+  directions: `https://www.google.com/maps/dir/?api=1&destination=${nap.coords}`,
+} as const;
+
+/** CONSTANTS -> HOURS. One block, all seven days. No 24/7 claim (D-06). */
 export const hours = {
-  emergency: '24/7 emergency service, 7 days a week',
-  office: 'Office Mon-Sat 8am-6pm',
-  /** CONFIG FACTS -> response */
-  response: 'Same-day and emergency dispatch',
-  officeSpec: [
-    { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], opens: '08:00', closes: '18:00' },
+  label: '7 days, 7:00 AM - 7:00 PM',
+  short: 'Open 7 days, 7am to 7pm',
+  spec: [
+    {
+      days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      opens: '07:00',
+      closes: '19:00',
+    },
   ],
 } as const;
 
@@ -56,179 +71,143 @@ export type Service = {
   title: string;
   short: string;
   summary: string;
-  /** Route this service is reachable at. Some are folded, per the gate ruling. */
+  /** Every service is an in-page anchor on /services. No per-service routes (D-01). */
   href: string;
 };
 
-/**
- * CONFIG FACTS -> services. Exactly six. Nothing may be added here that is not
- * in CONFIG FACTS, and no service may be invented to fill a layout slot.
- *
- * Gate ruling: opener repair has no route of its own (row 25 was dropped). It is
- * folded into /residential-garage-door-services and stays reachable there.
- */
+/** CLAUDE.md pre-answered list - exactly these eight, in this order. */
 export const services: readonly Service[] = [
   {
     slug: 'spring-repair',
-    title: 'Garage Door Spring Repair',
+    title: 'Spring Repair and Replacement',
     short: 'Spring Repair',
     summary:
-      'Broken torsion and extension springs replaced so the door lifts under its own balance again.',
-    href: '/residential-garage-door-services/spring-repair',
+      'Broken torsion and extension springs replaced and rebalanced so the door lifts under its own weight again.',
+    href: '/services#spring-repair',
   },
   {
     slug: 'opener-repair',
-    title: 'Opener Repair & Installation',
-    short: 'Opener Repair & Installation',
+    title: 'Opener Repair and Installation',
+    short: 'Opener Repair',
     summary:
-      'Diagnosis, repair and installation of garage door openers, drives, sensors and remotes.',
-    href: '/residential-garage-door-services#opener-repair',
+      'Openers, drives, safety sensors, remotes and keypads diagnosed, repaired or replaced.',
+    href: '/services#opener-repair',
   },
   {
-    slug: 'off-track-cable-repair',
-    title: 'Off-Track & Cable Repair',
-    short: 'Off-Track / Cable Repair',
+    slug: 'cable-roller-track',
+    title: 'Cable, Roller and Track Repair',
+    short: 'Cable / Roller / Track',
     summary:
-      'Doors that have jumped the track or snapped a lift cable, realigned and re-cabled.',
-    href: '/residential-garage-door-services/off-track-cable-repair',
+      'Frayed lift cables, worn rollers and bent or spread track put back into alignment.',
+    href: '/services#cable-roller-track',
   },
   {
     slug: 'panel-replacement',
     title: 'Panel Replacement',
     short: 'Panel Replacement',
     summary:
-      'Damaged or dented sections swapped out without replacing the whole door.',
-    href: '/residential-garage-door-services/panel-replacement',
+      'Damaged or dented sections swapped out without replacing a door that is otherwise sound.',
+    href: '/services#panel-replacement',
+  },
+  {
+    slug: 'off-track-correction',
+    title: 'Off-Track and Misaligned Door Correction',
+    short: 'Off-Track Correction',
+    summary:
+      'Doors that have jumped the track or are binding on one side reseated and squared up.',
+    href: '/services#off-track-correction',
   },
   {
     slug: 'new-door-installation',
-    title: 'New Door Installation',
+    title: 'New Residential Door Installation',
     short: 'New Door Installation',
+    summary: 'Full residential installation, measured, fitted, balanced and tested on site.',
+    href: '/services#new-door-installation',
+  },
+  {
+    slug: 'commercial-roll-up',
+    title: 'Commercial and Roll-Up Doors',
+    short: 'Commercial and Roll-Up',
     summary:
-      'Full garage door installation, measured, fitted, balanced and tested on site.',
-    href: '/residential-garage-door-services/new-door-installation',
+      'Sectional, roll-up and high-cycle commercial doors serviced around the working day.',
+    href: '/services#commercial-roll-up',
   },
   {
     slug: 'maintenance-tune-up',
-    title: 'Routine Maintenance & Tune-Up',
-    short: 'Maintenance & Tune-Up',
+    title: 'Annual Maintenance and Tune-Up',
+    short: 'Maintenance and Tune-Up',
     summary:
-      'Scheduled inspection, lubrication, balance and hardware tightening to keep a door running.',
-    href: '/residential-garage-door-services/maintenance-tune-up',
+      'Scheduled inspection, lubrication, balance check and hardware tightening once a year.',
+    href: '/services#maintenance-tune-up',
   },
 ] as const;
 
-/**
- * The resolved 17-row route table (docs/05-route-map.md).
- * sitemap.ts and the nav both read from here — one source, no drift.
- */
-export type RouteRow = {
-  path: string;
-  label: string;
-  mode: 'CLONE' | 'SYNTHESIZE';
-  templateClass: 'home' | 'service-outer' | 'service-inner' | 'form-page' | 'generic-content';
-  priority: number;
-};
+/** ROUTES - exactly five (D-01). Adding one is out of scope. */
+export type RouteRow = { path: string; label: string; priority: number };
 
 export const routes: readonly RouteRow[] = [
-  { path: '/', label: 'Home', mode: 'CLONE', templateClass: 'home', priority: 1.0 },
-  { path: '/emergency-garage-door-repair', label: 'Emergency Repair', mode: 'CLONE', templateClass: 'service-outer', priority: 0.9 },
-  { path: '/residential-garage-door-services', label: 'Residential Services', mode: 'CLONE', templateClass: 'service-outer', priority: 0.9 },
-  { path: '/residential-garage-doors', label: 'Residential Doors', mode: 'CLONE', templateClass: 'service-outer', priority: 0.8 },
-  { path: '/residential-garage-door-services/maintenance-tune-up', label: 'Maintenance & Tune-Up', mode: 'CLONE', templateClass: 'service-inner', priority: 0.7 },
-  { path: '/residential-garage-door-services/spring-repair', label: 'Spring Repair', mode: 'CLONE', templateClass: 'service-inner', priority: 0.7 },
-  { path: '/residential-garage-door-services/panel-replacement', label: 'Panel Replacement', mode: 'CLONE', templateClass: 'service-inner', priority: 0.7 },
-  { path: '/residential-garage-door-services/new-door-installation', label: 'New Door Installation', mode: 'CLONE', templateClass: 'service-inner', priority: 0.7 },
-  { path: '/residential-garage-door-services/off-track-cable-repair', label: 'Off-Track & Cable Repair', mode: 'CLONE', templateClass: 'service-outer', priority: 0.7 },
-  { path: '/commercial-garage-door-services', label: 'Commercial Services', mode: 'CLONE', templateClass: 'service-outer', priority: 0.9 },
-  { path: '/commercial-garage-door-services/inspection', label: 'Commercial Inspection', mode: 'CLONE', templateClass: 'service-inner', priority: 0.7 },
-  { path: '/commercial-garage-door-services/repair', label: 'Commercial Repair', mode: 'CLONE', templateClass: 'service-inner', priority: 0.7 },
-  { path: '/commercial-garage-door-services/maintenance-program', label: 'Maintenance Program', mode: 'CLONE', templateClass: 'service-outer', priority: 0.7 },
-  { path: '/contact', label: 'Contact', mode: 'SYNTHESIZE', templateClass: 'form-page', priority: 0.8 },
-  { path: '/service-areas', label: 'Service Areas', mode: 'SYNTHESIZE', templateClass: 'generic-content', priority: 0.6 },
-  { path: '/faqs', label: 'FAQs', mode: 'SYNTHESIZE', templateClass: 'generic-content', priority: 0.5 },
-  { path: '/privacy-policy', label: 'Privacy Policy', mode: 'SYNTHESIZE', templateClass: 'generic-content', priority: 0.3 },
+  { path: '/', label: 'Home', priority: 1.0 },
+  { path: '/about', label: 'About', priority: 0.8 },
+  { path: '/services', label: 'Services', priority: 0.9 },
+  { path: '/contact', label: 'Contact', priority: 0.8 },
+  { path: '/privacy', label: 'Privacy Policy', priority: 0.3 },
 ] as const;
 
-/** Primary navigation. Subset of `routes`, ordered for the header. */
 export const primaryNav = [
-  { path: '/residential-garage-door-services', label: 'Residential' },
-  { path: '/commercial-garage-door-services', label: 'Commercial' },
-  { path: '/residential-garage-doors', label: 'Doors' },
-  { path: '/emergency-garage-door-repair', label: 'Emergency' },
-  { path: '/service-areas', label: 'Service Areas' },
-  { path: '/faqs', label: 'FAQs' },
+  { path: '/about', label: 'About' },
+  { path: '/services', label: 'Services' },
   { path: '/contact', label: 'Contact' },
 ] as const;
 
 export const footerNav = [
-  {
-    heading: 'Services',
-    links: services.map((s) => ({ path: s.href, label: s.short })),
-  },
+  { heading: 'Services', links: services.map((s) => ({ path: s.href, label: s.short })) },
   {
     heading: 'Company',
     links: [
-      { path: '/service-areas', label: 'Service Areas' },
-      { path: '/faqs', label: 'FAQs' },
+      { path: '/about', label: 'About' },
+      { path: '/services', label: 'Services' },
       { path: '/contact', label: 'Contact' },
-      { path: '/privacy-policy', label: 'Privacy Policy' },
+      { path: '/privacy', label: 'Privacy Policy' },
     ],
   },
-  {
-    heading: 'Commercial',
-    links: [
-      { path: '/commercial-garage-door-services', label: 'Commercial Services' },
-      { path: '/commercial-garage-door-services/inspection', label: 'Inspection' },
-      { path: '/commercial-garage-door-services/repair', label: 'Repair' },
-      { path: '/commercial-garage-door-services/maintenance-program', label: 'Maintenance Program' },
-    ],
-  },
+] as const;
+
+/** D-05 - the preferred-callback-window options on the contact form. */
+export const callbackWindows: readonly string[] = [
+  'Morning, 7am to 11am',
+  'Midday, 11am to 3pm',
+  'Afternoon, 3pm to 7pm',
+  'Any time today',
+  'The next day that works',
 ] as const;
 
 /**
- * Service areas. Placeholder locality names — CONFIG nap is `placeholder` and a
- * single service-area business, so these are generic until the client supplies
- * real ones. No street address is implied by any of them.
+ * FAQ - in-page on /services only. Generic garage-door technical content.
+ * Nothing about response time, pricing, warranty or credentials.
  */
-export const serviceAreas: readonly string[] = [
-  'Downtown',
-  'North Side',
-  'South Side',
-  'East End',
-  'West End',
-  'Riverside',
-  'Highland Park',
-  'Oak Ridge',
-  'Fairview',
-  'Lakeside',
-  'Brookfield',
-  'Meadowbrook',
-] as const;
-
 export const faqs: readonly { q: string; a: string }[] = [
   {
-    q: 'Do you offer emergency garage door service?',
-    a: `${hours.emergency}. ${hours.response} is available when a door is stuck, off-track or will not secure.`,
+    q: 'Why does my garage door reverse before it reaches the floor?',
+    a: 'Nine times out of ten it is the safety sensors either side of the opening - misaligned, dirty, or with a loose wire. The other common cause is a down-force setting that is too tight for a door that has lost some of its balance.',
   },
   {
-    q: 'What are your office hours?',
-    a: `${hours.office}. Emergency dispatch runs outside those hours, every day.`,
+    q: 'What is the difference between torsion and extension springs?',
+    a: 'Torsion springs sit on a shaft above the opening and wind up as the door closes. Extension springs run along the horizontal tracks and stretch instead. Both store the energy that makes a heavy door feel light, and both are under load whether the door is up or down.',
   },
   {
-    q: 'Which garage door problems do you handle?',
-    a: 'Spring repair, opener repair and installation, off-track and cable repair, panel replacement, new door installation, and routine maintenance and tune-ups.',
+    q: 'The door has become very loud. Is that a fault?',
+    a: 'Noise usually points at hardware rather than the opener. Worn rollers, dry hinges, loose track bolts and an unbalanced door each have their own sound. A grinding noise from the top of the opening is worth looking at sooner rather than later.',
   },
   {
-    q: 'Do you have a showroom I can visit?',
-    a: 'No. We are a service-area business and work on site at your property rather than from a storefront.',
+    q: 'Can one damaged panel be replaced on its own?',
+    a: 'Often yes, if the rest of the door is straight and the section is still made in a matching profile. Where the door has taken a hit hard enough to twist the struts or the track, replacing the section alone will not hold.',
   },
   {
-    q: 'How soon can someone come out?',
-    a: `${hours.response}. Call ${nap.phone} and we will book the earliest slot available.`,
+    q: 'How often should a garage door be serviced?',
+    a: 'Once a year for a door in normal residential use, and more often for a door cycled several times a day. A service is an inspection, a lubrication, a balance check and a re-torque of the hardware that vibration loosens.',
   },
   {
-    q: 'Can a single damaged panel be replaced?',
-    a: 'Often yes. Panel replacement swaps the damaged section rather than the whole door where the rest of the door is sound.',
+    q: 'Is it safe to keep using a door with a broken spring?',
+    a: 'No. With a spring broken the opener is lifting the full weight of the door, which is what bends track, snaps cables and burns out a motor. Leave the door down and disengage the opener until it has been looked at.',
   },
 ] as const;

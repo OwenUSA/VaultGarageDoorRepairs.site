@@ -8,7 +8,7 @@ const labelCls = 'block font-display font-semibold text-3xs uppercase mb-3';
 
 const controlCls =
   'w-full rounded-xs border border-border bg-elevated text-ink font-body text-xs leading-body p-4 ' +
-  'transition-colors duration-fast ease-standard ' +
+  'transition-colors duration-[var(--duration-fast)] ease-standard ' +
   'placeholder:text-ink-muted ' +
   'hover:border-accent ' +
   'focus:border-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ' +

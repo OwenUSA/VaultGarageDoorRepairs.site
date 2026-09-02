@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Phone, Mail, Clock, MapPin } from 'lucide-react';
+import { Phone, Clock, MapPin } from 'lucide-react';
 import {
   Container,
   Section,
@@ -53,7 +53,7 @@ export function ContactBlock({
               {title ?? 'Book a garage door visit'}
             </Heading>
             <Prose className="text-on-band-muted">
-              {body ?? `${hours.response}. Tell us what the door is doing and we will get someone out.`}
+              {body ?? `Open ${hours.label}. Tell us what the door is doing and we will call you back.`}
             </Prose>
 
             <ul className="flex flex-col gap-5">
@@ -66,23 +66,17 @@ export function ContactBlock({
                 </span>
               </li>
               <li className="flex items-start gap-5">
-                <Icon icon={Mail} className="mt-1 shrink-0 text-cta" />
-                <TextLink href={`mailto:${nap.email}`} variant="footer">
-                  {nap.email}
-                </TextLink>
-              </li>
-              <li className="flex items-start gap-5">
                 <Icon icon={Clock} className="mt-1 shrink-0 text-cta" />
                 <Prose className="text-on-band-muted">
-                  {hours.emergency}
-                  <br />
-                  {hours.office}
+                  {hours.label}
                 </Prose>
               </li>
               <li className="flex items-start gap-5">
                 <Icon icon={MapPin} className="mt-1 shrink-0 text-cta" />
                 <Prose className="text-on-band-muted">
-                  Service-area business — we come to you. No showroom visits.
+                  {nap.address}
+                  <br />
+                  {nap.serviceArea}
                 </Prose>
               </li>
             </ul>

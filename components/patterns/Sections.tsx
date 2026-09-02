@@ -317,7 +317,7 @@ export function Breadcrumb({ trail }: { trail: readonly { label: string; path: s
                   ) : (
                     <Link
                       href={t.path}
-                      className="font-display text-xs font-regular uppercase leading-display text-ink-muted transition-colors duration-fast ease-standard hover:text-accent"
+                      className="font-display text-xs font-regular uppercase leading-display text-ink-muted transition-colors duration-[var(--duration-fast)] ease-standard hover:text-accent"
                     >
                       {t.label}
                     </Link>
@@ -481,7 +481,7 @@ function ItemCard({ item, onBand }: { item: GridItem; onBand: boolean }) {
     </Card>
   );
   return item.href ? (
-    <Link href={item.href} className="block h-full transition-transform duration-base ease-standard hover:-translate-y-1">
+    <Link href={item.href} className="block h-full transition-transform duration-[var(--duration-base)] ease-standard hover:-translate-y-1">
       {inner}
     </Link>
   ) : (

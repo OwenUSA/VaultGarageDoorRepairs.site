@@ -41,33 +41,11 @@
    * deep surface            #08090e           85         vault-ink
    * overlay                 rgba(0,0,0,.2)    64         vault-ink / 20%
    * -------------------------------------------------------------------- */
-  --color-page-bg: var(--paper);
-  --color-surface: var(--steel-50);
-  --color-elevated: var(--paper);
-  --color-band: var(--vault-navy);
-  --color-band-deep: var(--vault-ink);
-  --color-ink: var(--vault-ink);
-  --color-ink-muted: var(--steel-500);
-  --color-ink-on-band: var(--paper);
-  --color-ink-on-band-muted: rgba(255, 255, 255, 0.72);
-  --color-accent: var(--signal-amber);
-  --color-accent-hover: #d98806; /* signal-amber shaded */
-  --color-cta: var(--signal-amber); /* target #fecc32 button fill */
-  --color-cta-ink: var(--vault-navy); /* target #263e86 button label */
-  --color-link: var(--vault-blue);
-  --color-link-hover: var(--vault-blue-deep);
-  --color-border: var(--steel-200);
-  --color-border-on-band: rgba(255, 255, 255, 0.18);
-  --color-overlay: rgba(11, 18, 32, 0.2);
-  --color-overlay-strong: rgba(11, 18, 32, 0.65);
-  --color-focus: var(--vault-blue);
 
   /* ---- TYPE FAMILIES ---------------------------------------------------
    * Both OFL 1.1, both on Google Fonts — verified in the Prompt 2 licence
    * check. next/font injects these variables; no substitution, no binaries.
    * -------------------------------------------------------------------- */
-  --font-display: var(--font-roboto-condensed), "Roboto Condensed", sans-serif;
-  --font-body: var(--font-rubik), "Rubik", sans-serif;
 
   /* ---- TYPE SIZE LADDER — measured: 14 15 16 18 19 20 21 24 28 32 60 --- */
   --fs-3xs: 0.875rem; /* 14 — eyebrow, label, fine print */
@@ -131,25 +109,8 @@
   --container-gutter: var(--space-5); /* 15 */
 
   /* ---- RADII ----------------------------------------------------------- */
-  --radius-none: 0px; /* every button variant */
-  --radius-xs: 4px; /* form controls */
-  --radius-sm: 5px;
-  --radius-md: 8px;
-  --radius-lg: 10px;
-  --radius-xl: 20px; /* 750 uses — dominant card radius */
-  --radius-2xl: 30px;
-  --radius-card: 5px 20px 5px 5px; /* 251 uses — signature corner */
-  --radius-circle: 50%;
-  --radius-full: 100%;
 
   /* ---- SHADOWS --------------------------------------------------------- */
-  --shadow-card: 0 0 10px rgba(11, 18, 32, 0.1);
-  --shadow-elevated: -1px 1px 4px rgba(11, 18, 32, 0.1),
-    4px 4px 50px rgba(11, 18, 32, 0.25);
-  --shadow-float: 4px 4px 24px rgba(11, 18, 32, 0.25);
-  --shadow-inverse: -4px -4px 15px rgba(11, 18, 32, 0.15);
-  --shadow-soft: 4px 4px 15px rgba(11, 18, 32, 0.1);
-  --shadow-diffuse: 0 4px 54px rgba(11, 18, 32, 0.05);
 
   /* ---- GRADIENTS — the target uses these as tints, not transitions ----- */
   --tint-light: linear-gradient(
@@ -183,7 +144,6 @@
    * The profile found no scroll-linked motion, no GSAP, no split-text.
    * IntersectionObserver + transition only. Nothing else is permitted.
    * -------------------------------------------------------------------- */
-  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-fast: 150ms;
   --duration-base: 250ms;
   --duration-slow: 400ms;
@@ -196,5 +156,158 @@
     --duration-base: 0ms;
     --duration-slow: 0ms;
     --reveal-distance: 0px;
+  }
+}
+
+/* ============================================================================
+ * @theme — Tailwind v4 CSS-first token layer (STACK: Tailwind v4, no JS config).
+ *
+ * Every utility class the site uses resolves to a key in here. The primitives
+ * above stay in :root because their names are outside a v4 namespace
+ * (--fs-*, --lh-*, --fw-*, --ls-*, --space-*, --container-*, --z-*,
+ * --duration-*, --bar-*, gradients) and are consumed either by an alias below
+ * or by an arbitrary value such as `z-[var(--z-header)]`.
+ *
+ * NOVEL-class token conformance is measured against THIS block.
+ * LEAD OWNS THIS FILE. Section agents never edit it — they request a change.
+ * ========================================================================= */
+@theme {
+  /* ---- BREAKPOINTS — read from the reference CSS in Prompt 1 ----------- */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1440px;
+
+  /* ---- COLOR ROLES ---------------------------------------------------- */
+  --color-page-bg: var(--paper);
+  --color-surface: var(--steel-50);
+  --color-elevated: var(--paper);
+  --color-band: var(--vault-navy);
+  --color-band-deep: var(--vault-ink);
+  --color-ink: var(--vault-ink);
+  --color-ink-muted: var(--steel-500);
+  --color-ink-on-band: var(--paper);
+  --color-ink-on-band-muted: rgba(255, 255, 255, 0.72);
+  --color-accent: var(--signal-amber);
+  --color-accent-hover: #d98806; /* signal-amber shaded */
+  --color-cta: var(--signal-amber); /* target #fecc32 button fill */
+  --color-cta-ink: var(--vault-navy); /* target #263e86 button label */
+  --color-link: var(--vault-blue);
+  --color-link-hover: var(--vault-blue-deep);
+  --color-border: var(--steel-200);
+  --color-border-on-band: rgba(255, 255, 255, 0.18);
+  --color-overlay: rgba(11, 18, 32, 0.2);
+  --color-overlay-strong: rgba(11, 18, 32, 0.65);
+  --color-focus: var(--vault-blue);
+
+  /* raw palette, addressable as utilities where a role does not fit */
+  --color-paper: var(--paper);
+  --color-steel-50: var(--steel-50);
+  --color-steel-200: var(--steel-200);
+  --color-steel-500: var(--steel-500);
+
+  /* ---- TYPE FAMILIES --------------------------------------------------- */
+  --font-display: var(--font-roboto-condensed), "Roboto Condensed", sans-serif;
+  --font-body: var(--font-rubik), "Rubik", sans-serif;
+
+  /* ---- TYPE SIZE LADDER ------------------------------------------------ */
+  --text-3xs: var(--fs-3xs);
+  --text-2xs: var(--fs-2xs);
+  --text-xs: var(--fs-xs);
+  --text-sm: var(--fs-sm);
+  --text-md: var(--fs-md);
+  --text-lg: var(--fs-lg);
+  --text-xl: var(--fs-xl);
+  --text-2xl: var(--fs-2xl);
+  --text-3xl: var(--fs-3xl);
+  --text-4xl: var(--fs-4xl);
+  --text-5xl: var(--fs-5xl);
+  --text-6xl: var(--fs-6xl);
+
+  /* ---- WEIGHTS --------------------------------------------------------- */
+  --font-weight-regular: var(--fw-regular);
+  --font-weight-medium: var(--fw-medium);
+  --font-weight-semibold: var(--fw-semibold);
+  --font-weight-bold: var(--fw-bold);
+
+  /* ---- LINE HEIGHT / LETTER SPACING ------------------------------------ */
+  --leading-display: var(--lh-display);
+  --leading-body: var(--lh-body);
+  --leading-flat: var(--lh-flat);
+  --tracking-normal: var(--ls-normal);
+  --tracking-tracked: var(--ls-tracked);
+  --tracking-tight: var(--ls-tight);
+
+  /* ---- SPACING — the measured scale, 1..14 plus the named rhythm ------- */
+  --spacing-0: 0px;
+  --spacing-1: var(--space-1);
+  --spacing-2: var(--space-2);
+  --spacing-3: var(--space-3);
+  --spacing-4: var(--space-4);
+  --spacing-5: var(--space-5);
+  --spacing-6: var(--space-6);
+  --spacing-7: var(--space-7);
+  --spacing-8: var(--space-8);
+  --spacing-9: var(--space-9);
+  --spacing-10: var(--space-10);
+  --spacing-11: var(--space-11);
+  --spacing-12: var(--space-12);
+  --spacing-13: var(--space-13);
+  --spacing-14: var(--space-14);
+  --spacing-section-y: var(--section-y);
+  --spacing-section-y-hero: var(--section-y-hero);
+  --spacing-section-y-tight: var(--section-y-tight);
+  --spacing-gutter: var(--container-gutter);
+  --spacing-header: var(--header-height);
+  --spacing-header-lg: var(--header-height-lg);
+  --spacing-bar-ribbon: var(--bar-ribbon);
+  --spacing-bar-contact: var(--bar-contact);
+  --spacing-bar-nav: var(--bar-nav);
+
+  /* ---- CONTAINER WIDTHS (max-w-*) ------------------------------------- */
+  --container-prose: 72ch;
+
+  /* ---- RADII ----------------------------------------------------------- */
+  --radius-none: 0px; /* every button variant */
+  --radius-xs: 4px; /* form controls */
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 20px; /* 750 uses — dominant card radius */
+  --radius-2xl: 30px;
+  --radius-card: 5px 20px 5px 5px; /* 251 uses — signature corner */
+  --radius-circle: 50%;
+  --radius-full: 100%;
+
+  /* ---- SHADOWS --------------------------------------------------------- */
+  --shadow-card: 0 0 10px rgba(11, 18, 32, 0.1);
+  --shadow-elevated: -1px 1px 4px rgba(11, 18, 32, 0.1),
+    4px 4px 50px rgba(11, 18, 32, 0.25);
+  --shadow-float: 4px 4px 24px rgba(11, 18, 32, 0.25);
+  --shadow-inverse: -4px -4px 15px rgba(11, 18, 32, 0.15);
+  --shadow-soft: 4px 4px 15px rgba(11, 18, 32, 0.1);
+  --shadow-diffuse: 0 4px 54px rgba(11, 18, 32, 0.05);
+
+  /* ---- ASPECT RATIOS --------------------------------------------------- */
+  --aspect-hero: 16 / 7;
+  --aspect-card: 4 / 3;
+  --aspect-media: 16 / 9;
+  --aspect-portrait: 3 / 4;
+
+  /* ---- MOTION ----------------------------------------------------------
+   * The profile found no scroll-linked motion and no timeline library.
+   * IntersectionObserver + transition only. Durations are consumed as
+   * z-/duration-[var(--duration-*)] so prefers-reduced-motion can zero them.
+   * -------------------------------------------------------------------- */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
   }
 }

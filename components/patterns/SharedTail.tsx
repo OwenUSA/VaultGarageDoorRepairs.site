@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { ServiceAreaMap } from './ServiceAreaMap';
+import { BusinessMap } from './BusinessMap';
 import { ContactBlock } from './ContactBlock';
 
 /**
@@ -29,7 +29,7 @@ export function SharedTail({
 }) {
   return (
     <>
-      <ServiceAreaMap />
+      <BusinessMap />
       {middle}
       <ContactBlock title={contactTitle} />
     </>

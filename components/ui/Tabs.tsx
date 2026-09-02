@@ -39,7 +39,7 @@ export function Tabs({
             aria-controls={`${base}-p-${i}`}
             tabIndex={active === i ? 0 : -1}
             onClick={() => setActive(i)}
-            className={`px-9 py-3 font-display text-xs font-bold uppercase leading-display transition-colors duration-base ease-standard ${
+            className={`px-9 py-3 font-display text-xs font-bold uppercase leading-display transition-colors duration-[var(--duration-base)] ease-standard ${
               active === i ? 'bg-cta text-cta-ink' : 'bg-transparent hover:text-cta'
             }`}
           >

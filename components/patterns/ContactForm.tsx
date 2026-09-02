@@ -1,28 +1,51 @@
+// STUB: no submission target
 'use client';
 
 import { useRef, useState } from 'react';
 import { Button, Card, TextInput, TextArea, Select, Heading, Prose } from '@/components/ui';
-import { services } from '@/lib/site';
+import { services, callbackWindows, nap } from '@/lib/site';
 
-type Status = 'idle' | 'sending' | 'sent' | 'error';
-
-const REQUIRED = ['name', 'phone', 'email', 'service', 'message'] as const;
+type Status = 'idle' | 'done';
 
 /**
- * ContactForm — reimplemented, not cloned from Gravity Forms.
+ * ContactForm — D-05. Five fields: name, phone, service needed, preferred
+ * callback window, message.
  *
- * Posts to /api/contact, which is the ONLY place SMTP is touched. Credentials
- * live in env vars server-side (SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_PASS /
- * CONTACT_TO_EMAIL) and are never referenced in client code, never hardcoded
- * and never logged.
+ * There is NO backend and no transport of any kind. Validation is entirely
+ * client-side; a valid submit swaps the form for a "we'll call you back" state
+ * and writes a stub notice to the console. Nothing leaves the browser.
  *
- * Accessibility contract (applied by the lead from docs/requests/contact.md):
- *   - empty required controls get aria-invalid + aria-describedby on submit,
- *     and focus moves to the first one
- *   - the result region is role="alert" for a failure, role="status" for a send
- * The server still validates and returns 422; this is an addition, not a
- * replacement for it.
+ * Phone validation is ten digits, permissive on paste (spaces, dashes,
+ * parentheses, a leading 1 and a leading +1 are all stripped before counting)
+ * and formatted to (NNN) NNN-NNNN on blur.
+ *
+ * Accessibility: empty or invalid required controls get aria-invalid plus a
+ * hint the control is described by, and focus moves to the first offender. The
+ * failure region is role="alert"; the success region is role="status".
  */
+
+const REQUIRED = ['name', 'phone', 'service', 'window', 'message'] as const;
+
+const LABELS: Record<string, string> = {
+  name: 'Name',
+  phone: 'Phone',
+  service: 'Service needed',
+  window: 'Preferred callback window',
+  message: 'Message',
+};
+
+/** Permissive: keep digits only, then drop a US country-code 1. */
+export function digitsOf(raw: string) {
+  const d = raw.replace(/\D+/g, '');
+  return d.length === 11 && d.startsWith('1') ? d.slice(1) : d;
+}
+
+export function formatPhone(raw: string) {
+  const d = digitsOf(raw);
+  if (d.length !== 10) return raw;
+  return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
+}
+
 export function ContactForm({ variant = 'inline' }: { variant?: 'inline' | 'standalone' }) {
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string | null>(null);
@@ -30,70 +53,97 @@ export function ContactForm({ variant = 'inline' }: { variant?: 'inline' | 'stan
   const formRef = useRef<HTMLFormElement>(null);
 
   const isInvalid = (id: string) => invalid.includes(id);
-  /** Field renders the hint with this id, so point the control at it. */
-  const describedBy = (id: string) => (isInvalid(id) ? id + '-hint' : undefined);
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const data = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
 
-    const missing = REQUIRED.filter((k) => !String(data[k] ?? '').trim());
-    setInvalid(missing);
-    if (missing.length) {
-      setStatus('error');
-      setError('Please fill in the highlighted fields so we can call you back.');
-      const first = form.querySelector<HTMLElement>('#' + missing[0]);
-      first?.focus();
+    const bad = REQUIRED.filter((k) => !String(data[k] ?? '').trim());
+    if (!bad.includes('phone') && digitsOf(String(data.phone ?? '')).length !== 10) {
+      bad.push('phone');
+    }
+
+    setInvalid(bad);
+    if (bad.length) {
+      setError(
+        bad.length === 1 && bad[0] === 'phone' && String(data.phone ?? '').trim()
+          ? 'That phone number is not ten digits. Check it and try again.'
+          : 'Please fill in the highlighted fields so we can call you back.',
+      );
+      form.querySelector<HTMLElement>('#' + bad[0])?.focus();
       return;
     }
 
-    setStatus('sending');
+    // STUB: there is no submission target. Nothing is sent anywhere.
+    console.warn(
+      'STUB: contact form has no submission target. Nothing was transmitted. ' +
+        'Wire a callback-request destination before launch.',
+    );
     setError(null);
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error('Request failed');
-      setStatus('sent');
-      form.reset();
-    } catch {
-      setStatus('error');
-      setError('That did not send. Please call us instead and we will pick it up straight away.');
-    }
+    setStatus('done');
+    form.reset();
   }
 
   const req = (id: string) => ({
     required: true,
     'aria-invalid': isInvalid(id) ? true : undefined,
-    'aria-describedby': describedBy(id),
-    hint: isInvalid(id) ? 'This one is needed.' : undefined,
+    'aria-describedby': isInvalid(id) ? id + '-hint' : undefined,
+    hint: isInvalid(id) ? `${LABELS[id]} is needed.` : undefined,
   });
 
-  /**
-   * The `standalone` band (`hero-new.inner-form`) is NOT a stacked card.
-   * Measured at 1440: the four short fields sit on ONE row as quarter-widths
-   * (x 178 / 454 / 731 / 1007, each 255x68), the message is full width
-   * (1084x128) and the footer button is 42px — 423px for the whole band.
-   * `inline` (the home hero aside) is a genuinely narrow column and keeps the
-   * stacked layout, which already measures on target.
-   */
   const standalone = variant === 'standalone';
+
+  if (status === 'done') {
+    return (
+      <Card variant="elevated" className={standalone ? 'p-9' : 'p-7'}>
+        <div role="status" className="flex flex-col gap-5">
+          <Heading level={3} className="text-ink">
+            We will call you back
+          </Heading>
+          <Prose className="text-ink-muted">
+            Your callback request is noted. We will ring you in the window you picked. If the door
+            is open and will not close, call {nap.phone} now rather than waiting.
+          </Prose>
+          <Button type="button" variant="submit" onClick={() => setStatus('idle')}>
+            Send another
+          </Button>
+        </div>
+      </Card>
+    );
+  }
 
   const shortFields = (
     <>
       <TextInput label="Name" id="name" autoComplete="name" {...req('name')} />
-      <TextInput label="Phone" id="phone" type="tel" autoComplete="tel" {...req('phone')} />
-      <TextInput label="Email" id="email" type="email" autoComplete="email" {...req('email')} />
-      <Select label="What do you need?" id="service" defaultValue="" {...req('service')}>
+      <TextInput
+        label="Phone"
+        id="phone"
+        type="tel"
+        inputMode="tel"
+        autoComplete="tel"
+        onBlur={(e) => {
+          e.currentTarget.value = formatPhone(e.currentTarget.value);
+        }}
+        {...req('phone')}
+      />
+      <Select label="Service needed" id="service" defaultValue="" {...req('service')}>
         <option value="" disabled>
           Select a service
         </option>
         {services.map((s) => (
           <option key={s.slug} value={s.slug}>
             {s.title}
+          </option>
+        ))}
+      </Select>
+      <Select label="Preferred callback window" id="window" defaultValue="" {...req('window')}>
+        <option value="" disabled>
+          Select a window
+        </option>
+        {callbackWindows.map((w) => (
+          <option key={w} value={w}>
+            {w}
           </option>
         ))}
       </Select>
@@ -109,7 +159,7 @@ export function ContactForm({ variant = 'inline' }: { variant?: 'inline' | 'stan
         noValidate
       >
         <Heading level={3} className="text-ink">
-          Request a visit
+          Request a callback
         </Heading>
 
         {standalone ? (
@@ -117,9 +167,7 @@ export function ContactForm({ variant = 'inline' }: { variant?: 'inline' | 'stan
         ) : (
           <div className="grid gap-6 sm:grid-cols-2">{shortFields}</div>
         )}
-        {/* Measured: the target's message field is 1084x128 including its label.
-            rows=5 overshoots by ~76px in the wide band; the narrow inline column
-            keeps 5 because it already measures on target. */}
+
         <TextArea
           label="What is the door doing?"
           id="message"
@@ -127,30 +175,15 @@ export function ContactForm({ variant = 'inline' }: { variant?: 'inline' | 'stan
           {...req('message')}
         />
 
-        {/* honeypot — not a CAPTCHA, just a cheap bot filter.
-            Uses sr-only rather than an off-canvas px offset: a raw px literal
-            is a system-compliance violation, and sr-only is still filled by
-            bots while staying out of the accessibility tree. */}
-        <div aria-hidden="true" className="sr-only">
-          <label htmlFor="company">Company</label>
-          <input id="company" name="company" tabIndex={-1} autoComplete="off" />
-        </div>
-
-        <Button type="submit" variant="submit" disabled={status === 'sending'}>
-          {status === 'sending' ? 'Sending…' : 'Request a visit'}
+        <Button type="submit" variant="submit">
+          Request a callback
         </Button>
 
-        {status === 'error' && error ? (
+        {error ? (
           <div role="alert">
             <Prose className="text-ink">{error}</Prose>
           </div>
         ) : null}
-
-        <div aria-live="polite" role="status">
-          {status === 'sent' ? (
-            <Prose className="text-ink">Thanks — we have got it and will be in touch shortly.</Prose>
-          ) : null}
-        </div>
       </form>
     </Card>
   );

@@ -42,9 +42,9 @@ import { nap, hours, services, site } from '@/lib/site';
  * All photography is a <Placeholder> inside the patterns — a tracked gap.
  */
 export const metadata: Metadata = {
-  title: 'Garage Door Repair, Installation & Maintenance',
+  title: 'Garage Door Repair, Installation and Maintenance',
   description:
-    'Garage door spring repair, opener repair and installation, off-track and cable repair, panel replacement, new door installation and routine maintenance. Same-day and emergency dispatch.',
+    site.description,
   alternates: { canonical: '/' },
 };
 
@@ -56,7 +56,7 @@ const heroBullets = [
   'Springs, cables, rollers and tracks',
   'Openers, drives, sensors and remotes',
   'Single panels swapped without a full door',
-  'Emergency dispatch, day or night',
+  'Diagnosed on site before anything is quoted',
 ] as const;
 
 /** steps — the four-step process band. */
@@ -67,7 +67,7 @@ const processSteps = [
   },
   {
     title: 'We book the earliest slot',
-    body: `${hours.response}. Stuck, off-track and unsecured doors move to the front of the queue, because an open garage is a security problem before it is a repair. Everything else is booked into the next slot that suits you, with a window rather than a whole day sat waiting in.`,
+    body: `We are open ${hours.label}, and we book you into a window rather than a whole day sat waiting in. You are told on the call which parts are going on the van and what the visit is likely to involve, so nothing about the appointment is a surprise. TODO(fact): typical lead time from call to visit.`,
   },
   {
     title: 'On-site diagnosis',
@@ -84,25 +84,25 @@ const residentialItems = [
   {
     title: 'Spring Repair',
     body: 'Torsion and extension springs replaced and re-tensioned so the door carries its own weight again.',
-    href: '/residential-garage-door-services/spring-repair',
+    href: '/services#spring-repair',
     media: 'none' as const,
   },
   {
     title: 'Opener Repair & Installation',
     body: 'Drives, logic boards, safety sensors and remotes diagnosed, repaired or replaced.',
-    href: '/residential-garage-door-services#opener-repair',
+    href: '/services#opener-repair',
     media: 'none' as const,
   },
   {
     title: 'Off-Track & Cable Repair',
     body: 'Doors that have jumped the track or snapped a lift cable, realigned, re-cabled and re-tested.',
-    href: '/residential-garage-door-services/off-track-cable-repair',
+    href: '/services#off-track-cable-repair',
     media: 'none' as const,
   },
   {
     title: 'Maintenance & Tune-Up',
     body: 'Inspection, lubrication, balance and hardware tightening on a schedule that suits the door.',
-    href: '/residential-garage-door-services/maintenance-tune-up',
+    href: '/services#maintenance-tune-up',
     media: 'none' as const,
   },
 ] as const;
@@ -111,25 +111,25 @@ const commercialItems = [
   {
     title: 'Commercial Repair',
     body: 'Roll-up and sectional doors on loading bays and service yards, back in motion the same visit where parts allow.',
-    href: '/commercial-garage-door-services/repair',
+    href: '/services#commercial-roll-up',
     media: 'none' as const,
   },
   {
     title: 'Commercial Inspection',
     body: 'Travel, force, balance and safety reversal checked door by door and written up for your records.',
-    href: '/commercial-garage-door-services/inspection',
+    href: '/services#commercial-roll-up',
     media: 'none' as const,
   },
   {
     title: 'Maintenance Program',
     body: 'Planned visits across a whole site so doors are serviced before they strand a vehicle.',
-    href: '/commercial-garage-door-services/maintenance-program',
+    href: '/services#commercial-roll-up',
     media: 'none' as const,
   },
   {
     title: 'New Door Installation',
     body: 'Measured, fitted, balanced and tested on site, sized to the opening you actually have.',
-    href: '/residential-garage-door-services/new-door-installation',
+    href: '/services#new-door-installation',
     media: 'none' as const,
   },
 ] as const;
@@ -139,7 +139,7 @@ const marqueeItems = [
   'Garage Door Repair',
   'Springs & Cables',
   'Openers & Remotes',
-  'Emergency Dispatch',
+  'Panels & Tracks',
 ] as const;
 
 /** slatedroof-new — the door-style carousel. Categories, never brands. */
@@ -220,7 +220,7 @@ const emergencyChecklist = [
 /** services — the six CONFIG FACTS services, straight from lib/site.ts. */
 const serviceItems = services.map((s) => ({
   title: s.title,
-  body: `${s.summary} Booked as a scheduled visit, or same day when the door cannot be left.`,
+  body: s.summary,
   href: s.href,
   media: 'none' as const,
 }));
@@ -232,17 +232,17 @@ const serviceItems = services.map((s) => ({
  * facts drawn from CONFIG FACTS. Intentional structural deviation.
  */
 const facts = [
-  { label: 'Emergency cover', value: hours.emergency },
-  { label: 'Response', value: hours.response },
-  { label: 'Office hours', value: hours.office },
+  { label: 'Hours', value: hours.label },
+  { label: 'Service area', value: nap.serviceArea },
+  { label: 'Phone', value: nap.phone },
 ] as const;
 
 /** emergency — dark band, phone-led. */
 const emergencyBullets = [
-  'One call, one technician, one visit where parts allow',
-  'Doors made safe before anything else is discussed',
+  'The door is made safe before anything else is discussed',
+  'You are told what is wrong before a price is discussed',
   'Openers isolated so the door can be worked by hand',
-  'Follow-up booked before we leave the drive',
+  'Anything spotted but not touched is said out loud',
   'Parts we do not carry ordered from the drive, not the office',
 ] as const;
 
@@ -256,9 +256,9 @@ export default function Page() {
           form. The tail carries the second one, exactly as the target does. */}
       <Hero
         variant="full"
-        eyebrow="Garage door repair, day or night"
-        title="A garage door that works, back the same day"
-        subtitle={`${hours.emergency}. ${hours.response} when a door is stuck, off-track or will not secure.`}
+        eyebrow="Garage door repair and installation"
+        title="The fault is found before the work is quoted"
+        subtitle={`${site.tagline} Open ${hours.label}. ${nap.serviceArea}`}
         bullets={heroBullets}
         primaryCta={{ href: '/contact', label: 'Book a visit' }}
         secondaryCta={{ href: nap.phoneHref, label: `Call ${nap.phone}` }}
@@ -284,9 +284,9 @@ export default function Page() {
           'Single service-area business',
           'We come to you, no showroom',
           'Residential and commercial doors',
-          'Emergency and scheduled work',
+          'Scheduled and unplanned callouts',
         ]}
-        actions={[{ href: '/residential-garage-door-services', label: 'See the services' }]}
+        actions={[{ href: '/services', label: 'See the services' }]}
         media="portrait card"
         mediaLabel="Garage door service van placeholder"
         headingId="about-heading"
@@ -340,7 +340,7 @@ export default function Page() {
         tone="surface"
         eyebrow="Parts and hardware"
         heading="The components that fail first"
-        body="These are the parts a door actually fails on, and the ones we carry on the van. Most same-day repairs come down to one of these six going out of tolerance, and the rest come down to two of them at once."
+        body="These are the parts a door actually fails on, and the ones we carry on the van. Most repairs come down to one of these six going out of tolerance, and the rest come down to two of them at once."
         items={componentItems}
         perView={{ base: 1, md: 2, lg: 4 }}
         headingId="components-heading"
@@ -354,10 +354,10 @@ export default function Page() {
         mediaLabel="Garage door stuck off its track placeholder"
         eyebrow="When it cannot wait"
         heading="A door that will not close is a security problem"
-        body="If the garage is open to the street, the door is off its track or a spring has gone, that is an emergency call rather than a scheduled one. Say so when you ring and it is treated that way."
+        body="If the garage is open to the street, the door is off its track or a spring has gone, say so when you ring. It changes what goes on the van and what gets looked at first."
         bullets={emergencyChecklist}
         actions={[
-          { href: '/emergency-garage-door-repair', label: 'Emergency repair' },
+          { href: '/contact', label: 'Book a visit' },
           { href: nap.phoneHref, label: `Call ${nap.phone}` },
         ]}
         headingId="urgent-heading"
@@ -369,7 +369,7 @@ export default function Page() {
         tone="band"
         eyebrow="Services"
         heading="Everything we are called out for"
-        body="Six things account for nearly every call. Each one has its own page with what the fault looks like and what a visit involves."
+        body="Eight things account for nearly every call. Each one is set out on the services page with what the fault looks like and what a visit involves."
         items={serviceItems}
         columns={3}
         headingId="services-heading"
@@ -384,9 +384,9 @@ export default function Page() {
       <SplitFeature
         tone="band-deep"
         media="none"
-        eyebrow="Emergency dispatch"
-        heading="Stuck door tonight? Ring it in"
-        body={`${hours.emergency}. If the door has trapped a vehicle or left the garage open to the street, we will get someone moving rather than book you in for the morning. Say on the call that the door is stuck or the garage is unsecured and it is treated as an emergency from that moment, not after a survey.`}
+        eyebrow="Doors that cannot be left"
+        heading="A stuck door is worth a phone call"
+        body={`We are open ${hours.label}. If the door has trapped a vehicle or left the garage open to the street, tell us that on the call — it decides what we bring and what we look at first. TODO(fact): out-of-hours cover, if any.`}
         bullets={emergencyBullets}
         actions={[
           { href: nap.phoneHref, label: `Call ${nap.phone}` },
@@ -402,8 +402,8 @@ export default function Page() {
         reverse
         eyebrow="In the neighbourhood"
         heading="Work that stays in the area we cover"
-        body="We are a single service-area business, so the doors we fix are on the streets we drive every day. That is the whole reason a same-day slot is possible at all — nobody is travelling three counties to reach you, and nobody is quoting a week out because the van is somewhere else."
-        actions={[{ href: '/service-areas', label: 'Where we work' }]}
+        body={`${nap.serviceArea} The doors we work on are on the streets we drive every day, which is why the van is stocked for the doors this area actually has rather than for a catalogue.`}
+        actions={[{ href: '/contact', label: 'Get in touch' }]}
         media="square slot"
         mediaLabel="Neighbourhood garage doors placeholder"
         headingId="community-heading"
@@ -429,7 +429,7 @@ export default function Page() {
             eyebrow="Why we work this way"
             heading="A door either runs safely or it does not"
             body="Overhead doors are the heaviest moving thing on most properties, and they are under tension whether or not anyone is looking at them. That is why every visit ends with balance, travel and safety reversal re-tested rather than just the broken part swapped. It is also why we would rather tell you a door needs a second visit than hand back something that only looks fixed."
-            actions={[{ href: '/faqs', label: 'Read the FAQs' }]}
+            actions={[{ href: '/services#faq', label: 'Read the FAQs' }]}
             headingId="approach-heading"
             id="approach"
             splitAt="xl"
