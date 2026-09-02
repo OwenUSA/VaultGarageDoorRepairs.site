@@ -80,7 +80,7 @@ the seed and the type scale are exactly as Prompt 5+9 left them.
 | `tsc --noEmit` | 0 errors |
 | `contrast.mjs` | **PASS — 0 FAIL**, 1695 scored, 3 UNMEASURABLE (all the disabled carousel arrow) |
 | `rendertruth.mjs` | **1 finding**, down from 174 — an off-track carousel card, instrument artifact, floored in known-divergence 10.3 |
-| `diff.mjs` | 177 rows · 55 FAIL · 62 PASS · 26 BLOCKED |
+| `diff.mjs` | 181 rows · 56 FAIL · 62 PASS · 28 BLOCKED |
 | NOVEL token conformance | 10 rows, **0 violations** |
 | email sweep | EMAIL SWEEP CLEAN |
 | locations sweep | clean — no `/locations`, no city array; `areaServed` is the single locality |
@@ -102,13 +102,23 @@ still no primary-filled button variant. Measured chroma: accent 0.3804 > primary
 
 - `diff.mjs` never re-captures. Run `capture.mjs --side ours` after every rebuild.
 - Never run `pnpm build` while a server holds 3105. Order: kill the holder, build, start.
-  `pnpm start` fails with a bare exit 1 if the port is held, and the failure is quiet.
+  `pnpm start` fails with a bare `ELIFECYCLE exit code 1` if the port is held, and in a
+  background task that failure is silent.
+- **Kill the LISTENER, not the first netstat line.** `TIME_WAIT` sockets accumulate on 3105
+  and sort ahead of the `LISTENING` row, with PID `0`, so `netstat | head -1` kills nothing
+  and leaves the old server serving the old build. This happened here and cost four gate
+  runs. Always:
+
+  ```bash
+  netstat -ano | grep -E ":3105\s+.*LISTENING"   # must print exactly one PID
+  ```
+
+  All gate numbers in this file were re-verified from `rm -rf .next && pnpm build` with
+  exactly one confirmed listener. See known-divergence 10.6.
 
 ## Open items for 10+11
 
 - `docs/asset-prompts.md` does not exist yet. It needs the applied hues by name: primary
   184 teal `#023530`, accent 4 crimson `#983756`, winning seed 9611.
-- The `/privacy` `s02-...` UNPAIRED row (known-divergence 10.5) — a probably-truncated
-  ref-section-id in `docs/sections.md`, worth one look.
 - `docs/PRE-LAUNCH.md` still needs the two A-4 blockers worded as *"performance never
   measured"* and *"keyboard access is spec-verified only, never hand-tested"*.

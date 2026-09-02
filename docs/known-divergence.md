@@ -340,7 +340,7 @@ is a match rather than a floor — recorded here only so nobody adds one and cal
 
 ## 10. Prompt 6+7 — floors booked by the build wave
 
-Measured after the wave: **177 rows · 55 FAIL · 62 PASS · 26 BLOCKED**, against 119 rows /
+Measured after the wave: **181 rows · 56 FAIL · 62 PASS · 28 BLOCKED**, against 119 rows /
 12 FAIL when the five routes were stubs. Every NOVEL row (10) is at **0 token violations**.
 `ITERATION_CAP = 1` was spent once, on the pass described in 10.2.
 
@@ -354,8 +354,8 @@ both forbid.
 
 | field | FAIL rows | mean deviation | why it is floored |
 |---|---|---|---|
-| `box.h` | 46 | 44.8% | Section height. Our copy is written to the reference's *character count* (Prompt 3, +/-10%), not to its rendered height, and the reference's heaviest bands are JS-unrolled carousels and repeated cards whose runtime never initialises on the saved copy — see section 3 above. Chasing height means padding sections with air or cutting copy to fit, and Prompt 3 forbids rewriting copy to close a metric. |
-| `display` | 31 | 100% | The reference band wrapper is a mix of `block` and `flex` (row). Ours is uniformly `block`. **Measured both ways** — see 10.2. |
+| `box.h` | 47 | 44.5% | Section height. Our copy is written to the reference's *character count* (Prompt 3, +/-10%), not to its rendered height, and the reference's heaviest bands are JS-unrolled carousels and repeated cards whose runtime never initialises on the saved copy — see section 3 above. Chasing height means padding sections with air or cutting copy to fit, and Prompt 3 forbids rewriting copy to close a metric. |
+| `display` | 32 | 100% | The reference band wrapper is a mix of `block` and `flex` (row). Ours is uniformly `block`. **Measured both ways** — see 10.2. |
 | `buttons` / `cards` | 27 / 14 | 87.5% / 100% | Element *counts* inside the band. `buttons` diverges because our bands carry the call CTA the decision register requires and the reference band often carried none; `cards` diverges because our grid items are `Card` components where the theme used bare divs. Both are content and component-vocabulary decisions, not geometry. |
 
 ### 10.2 The one fix attempt, and what it bought
@@ -375,7 +375,7 @@ Spent as a single pass over the shared section shell, since every residual was s
    because the reference's flex bands are `flex-ROW` (61 new `flexDir` mismatches) and 24 of
    its bands are genuinely `block`. There is no single value that matches both sets.
    Reverted — reverting your own regression is not a second attempt — and the band stays
-   `block`. **Floored: `display`, 31 rows.** Do not re-attempt without per-band reference
+   `block`. **Floored: `display`, 32 rows.** Do not re-attempt without per-band reference
    reads, which is exactly the wrapper-tree imitation A-12 rules out.
 
 Net across the pass: **61 FAIL -> 55 FAIL, 53 PASS -> 62 PASS.**
@@ -441,13 +441,48 @@ chased.
 
 ### 10.5 Rows the instrument cannot score on this run
 
-- **26 BLOCKED** — `/contact` and `/privacy` at 390 and 768, plus several `/services`
+- **28 BLOCKED** — `/contact` and `/privacy` at 390 and 768, plus several `/services`
   anchors at 768. The reference side has no capture at those widths for those bands, so
   there is nothing to compare against. Pre-existing instrument state, not a build result.
 - **7 UNPAIRED DELETED** rows — the two partnership-logo strips, the three testimonial
   bands and the `/privacy` accessibility widget. Correct: they are deleted by D-13 / D-14 /
   D-15 and reported once as REMOVED, never measured.
-- **1 UNPAIRED ADAPTED** row — `/privacy` `s02-a-fricker-roofing-and-waterproofi` does not
-  join to our `privacy-body`, whose `data-section` is declared and correct. The
-  ref-section-id in `docs/sections.md` looks truncated relative to what the probe emits.
-  Contract-side, predates this wave, and worth one look before the acceptance sweep.
+- **0 UNPAIRED ADAPTED** on the verified run. An earlier run showed `/privacy`
+  `s02-a-fricker-roofing-and-waterproofi` unpaired; on a clean build the `/privacy` @1440
+  capture segments 3 bands rather than 2 and the row pairs correctly. The earlier reading
+  was an artifact of the stale server described in 10.6, not a contract defect.
+
+### 10.6 A stale server served four gate runs, and this is how it was caught
+
+Worth writing down because it is the same class of failure as the stale-capture trap, one
+layer further out, and it defeats the obvious checks for the same reason: nothing is wrong
+on the wire.
+
+The kill-before-build step used
+
+```bash
+netstat -ano | grep -E ":3105\s" | head -1 | awk '{print $5}' | xargs taskkill //PID {} //F
+```
+
+`head -1` takes whatever line comes first. After a few gate runs the port accumulates
+dozens of `TIME_WAIT` sockets, and those sort ahead of the `LISTENING` line — their PID
+column reads `0`. So the kill silently targeted nothing, the old server kept the port, the
+next `pnpm start` failed to bind with a bare `ELIFECYCLE exit code 1` in a background task,
+and the gates went on measuring the PREVIOUS build against a live, correct-looking server:
+right title, right stylesheet, HTTP 200 on every route.
+
+It surfaced only because a background task reported a non-zero exit, and the check that
+settled it was `.next/BUILD_ID` being NEWER than the gate artifacts it supposedly produced.
+
+**The fix, and the rule for every future run:** filter for the listener explicitly, and
+assert exactly one, before trusting any number.
+
+```bash
+netstat -ano | grep -E ":3105\s+.*LISTENING"      # must print exactly one PID
+```
+
+All four gates in this commit were re-run from `rm -rf .next && pnpm build` with exactly one
+verified listener. The re-run reproduced `contrast.mjs` PASS / 0 FAIL and `rendertruth.mjs`
+1 finding exactly, and moved the diff totals from 177/55/62/26 to **181/56/62/28** — the
+`/privacy` segmentation difference above. The numbers in this file and in `docs/RESUME.md`
+are the re-run's.

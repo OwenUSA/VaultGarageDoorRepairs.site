@@ -1,9 +1,9 @@
 # docs/divergence.md — ranked divergence table
 
-Generated 2026-09-02T12:37:19.270Z by `src/diff.mjs`.
+Generated 2026-09-02T12:49:28.066Z by `src/diff.mjs`.
 Rewritten each convergence loop. Ranked worst-first, normalized against each row's own threshold.
 
-Rows: 177 · FAIL: 55 · PASS: 62 · BLOCKED: 26
+Rows: 181 · FAIL: 56 · PASS: 62 · BLOCKED: 28
 
 ## Top 10
 
@@ -74,6 +74,7 @@ route | section | bp | class | metric | value | threshold | status | advisory
 /contact | s02-contact-form | 1440 | ADAPTED | structural deviation % | 6.45 | 5 | FAIL | advisory: innerCols ref=3 ours=2 (33.33%), innerRows ref=3 ours=1 (66.67%), innerCount ref=4 ours=2 (50%)
 / | s15-committed-to-preserving-our-ho | 390 | ADAPTED | structural deviation % | 6.36 | 5 | FAIL | advisory: innerRows ref=2 ours=1 (50%), innerCount ref=3 ours=2 (33.33%)
 / | s12-roofing-done-with-integrity | 768 | ADAPTED | structural deviation % | 6.27 | 5 | FAIL | advisory: none diverge
+/privacy | s02-a-fricker-roofing-and-waterpro | 1440 | ADAPTED | structural deviation % | 5.74 | 5 | FAIL | advisory: none diverge
 /about | s02-our-services | 390 | ADAPTED | structural deviation % | 5.55 | 5 | FAIL | advisory: none diverge
 / | s15-committed-to-preserving-our-ho | 1440 | ADAPTED | structural deviation % | 5.54 | 5 | FAIL | advisory: innerRows ref=2 ours=1 (50%), innerCount ref=3 ours=2 (33.33%)
 /about | s02-our-services | 768 | ADAPTED | structural deviation % | 5.19 | 5 | FAIL | advisory: none diverge
@@ -193,11 +194,14 @@ route | section | bp | class | metric | value | threshold | status | advisory
 /contact | map | 1440 | NOVEL | token violations | 0 | 0 | PASS | -
 /privacy | header | 390 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
 /privacy | header | 390 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
+/privacy | privacy-body | 390 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
+/privacy | privacy-body | 390 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
 /privacy | footer | 390 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
 /privacy | footer | 390 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
 /privacy | header | 768 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
 /privacy | header | 768 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
+/privacy | privacy-body | 768 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
+/privacy | privacy-body | 768 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
 /privacy | footer | 768 | ADAPTED | token violations (advisory, no reference side) | 0 | - | REPORTED | -
 /privacy | footer | 768 | ADAPTED | structural deviation % | null | 5 | BLOCKED | -
 /privacy | s00 | 1440 | DELETED | no counterpart in build | null | - | UNPAIRED | -
-/privacy | s02-a-fricker-roofing-and-waterpro | 1440 | ADAPTED | no counterpart in build | null | - | UNPAIRED | -
