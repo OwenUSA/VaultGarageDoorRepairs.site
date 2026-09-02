@@ -5,9 +5,10 @@
   "scripts": {
     "dev": "next dev -p 3105",
     "build": "next build",
-    "start": "next start -p 3105",
+    "start": "node scripts/start-standalone.mjs",
     "typecheck": "tsc --noEmit",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postbuild": "node scripts/postbuild-standalone.mjs"
   },
   "dependencies": {
     "next": "15.5.4",
