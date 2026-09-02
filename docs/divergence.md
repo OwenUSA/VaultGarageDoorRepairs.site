@@ -1,6 +1,6 @@
 # docs/divergence.md — ranked divergence table
 
-Generated 2026-09-02T12:49:28.066Z by `src/diff.mjs`.
+Generated 2026-09-02T12:54:18.421Z by `src/diff.mjs`.
 Rewritten each convergence loop. Ranked worst-first, normalized against each row's own threshold.
 
 Rows: 181 · FAIL: 56 · PASS: 62 · BLOCKED: 28

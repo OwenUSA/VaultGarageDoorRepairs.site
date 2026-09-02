@@ -486,3 +486,90 @@ verified listener. The re-run reproduced `contrast.mjs` PASS / 0 FAIL and `rende
 1 finding exactly, and moved the diff totals from 177/55/62/26 to **181/56/62/28** — the
 `/privacy` segmentation difference above. The numbers in this file and in `docs/RESUME.md`
 are the re-run's.
+
+---
+
+## 11. Prompt 10+11 — the acceptance sweep, and the final floor list
+
+Run from `pnpm build` on a server with **exactly one verified listener** on 3105
+(§10.6), with `.harness/cap/ours` deleted and re-captured before any gate, and with the
+unfiltered `diff.mjs` run **last**. Every number below is from that run.
+
+### 11.1 The floors, complete — nothing here is a defect and nothing here is reopened
+
+| # | floor | scale | cause | recorded |
+|---|---|---|---|---|
+| 1 | **Colour is excluded from every diff, threshold and iteration, permanently** | all 47 ADAPTED rows | The palette is randomized at token-write time (A-7), so resolved colour, background-colour, border-colour, gradient stops and shadow colour are stripped from the structural comparator. Divergence from the reference's hues is the *intent*, not a residual. Non-colour border and shadow geometry — widths, offsets, blur, spread, radii — is still scored. | A-8, §1 |
+| 2 | `box.h` | **47 FAIL rows, mean 44.5%** | Section height. Copy is written to the reference's character count (±10%, and `similarity.mjs` holds 32/32 measured sections inside it), never to its rendered height; the reference's heaviest bands are JS-unrolled carousels whose runtime never initialises on the saved copy. Closing it means padding bands with air or cutting copy to fit a number. | §10.1, §3 |
+| 3 | `display` | **32 FAIL rows, mean 100%** | The reference band wrapper mixes `block` and `flex`-**row**; ours is uniformly `block`. Measured both ways — see 4. | §10.1 |
+| 4 | the reverted `display: flex` fix | — | The first comparator read showed `ref=flex ours=block` on 37 rows and looked like one mechanical fix. Applying `flex flex-col` moved the total **the wrong way, 61 FAIL → 64**: the reference's flex bands are flex-**ROW** (61 new `flexDir` mismatches) and 24 more of its bands are genuinely `block`. **No single value matches both sets.** Reverted — reverting your own regression is not a second attempt — and the field is floored. Do not re-attempt without per-band reference reads, which is the wrapper-tree imitation A-12 forbids. | §10.2 |
+| 5 | `buttons` / `cards` | **27 / 14 FAIL rows, 87.5% / 100%** | Element *counts*. `buttons` diverges because every band of ours carries the call CTA D-04 requires and the reference band often carried none; `cards` because our grid items are `Card` components where the theme used bare divs. Component vocabulary, not geometry. | §10.1 |
+| 6 | `overflow` | **14 FAIL rows, 100%** | Not named in §10.1; added here for completeness. Our carousels are real `overflow-x: auto` scrollers, which is what makes them keyboard-reachable; the reference's equivalents are unrolled static stacks on the saved copy because no JS runs. The value differs *because* ours works. | new |
+| 7 | the off-track carousel card | **1 rendertruth finding, permanent** | `text-legibility / 1440 sep 0 "Full-view aluminium and glass"` — the fourth card in the home `doors` scroller. **The check screenshots a text box and measures its dominant painted tones; a card scrolled out of the visible track photographs as one flat tone, which is indistinguishable from text painted in its own background colour.** That indistinguishability is the point of the check — it is what caught Atlas's invisible CTA — so the check is right and cannot be narrowed without blinding it. Clearing it means deleting the carousel or showing all five cards at once, both of which are a different band. Floored, not closed. | §10.3 |
+| 8 | 28 BLOCKED rows | `/contact` + `/privacy` at 390 and 768, several `/services` anchors at 768 | The reference side has no capture at those widths for those bands. Instrument state that predates the build wave. | §10.5 |
+| 9 | 7 UNPAIRED **DELETED** rows | two partnership-logo strips, three testimonial bands, the `/privacy` accessibility widget | Correct and required: D-13 / D-14 / D-15 delete them, and a DELETED row is reported once as REMOVED and never measured. **0 UNPAIRED ADAPTED rows.** | §10.5 |
+| 10 | 3 `UNMEASURABLE` contrast rows | the carousel's *disabled* arrow button | `disabled:opacity-50` with an empty accessible name. Genuinely unmeasurable rather than failing. Recorded, not chased. | §10.4 |
+| 11 | placeholder assets | 15 photographic slots + the logo | Every image on the site is a drawn `<Placeholder>` at the correct box. Prompts are written in `docs/asset-prompts.md` (text only, OVERRIDE 2); drop-in is the terminal step (OVERRIDE 3). | §4 |
+
+**There is NO font-substitution floor on this site**, and that is a result rather than an
+omission. Both text faces the reference actually uses — **Roboto Condensed** (display) and
+**Rubik** (body) — are Google-hosted OFL faces, so `next/font/google` loads *the same
+faces*, not lookalikes. D-11's substitution clause never fires here and no text-metric delta
+is booked. Every `box.h` row above is real geometry, not font drift. See §2.
+
+### 11.2 The five shell defects, and the sentence that generalises them
+
+The most valuable thing this site produced is not the clone. It is five defects that were
+**latent in a shell that had already passed its gates**, and that could not fire until the
+routes carried content. All five are the Atlas class: a value *declared* correctly, or
+declared plausibly, and *painting* wrong.
+
+| # | defect | blast radius | how it hid |
+|---|---|---|---|
+| 1 | **`text-on-band` / `text-on-band-muted` were not token classes.** The tokens are `--color-ink-on-band` / `--color-ink-on-band-muted`, so the utilities are `text-ink-on-band` / `text-ink-on-band-muted`. The non-existent class did nothing and the text inherited `text-ink`. | near-black copy on the teal band at **1.46:1**, every dark band, **all five routes — 198 contrast FAILs** | A misspelled Tailwind class is silent. Nothing errors, nothing warns, and the element still renders. |
+| 2 | **The eyebrow used the CTA accent on dark bands.** `text-cta` `#983756` on `--color-band` `#023530` measures **1.94:1**. | every dark band on every route | It looked deliberate — an accent colour on an accent element — and read as a design choice rather than a contrast failure. |
+| 3 | **Form labels painted white on white.** `labelCls` set no colour, so a label inside the elevated form card inherited `text-ink-on-band` from the dark `ContactBlock` band around it: **1:1, 120 rows**. | the contact form on `/`, `/about`, `/services`, `/contact` | **Fixing 1 and 2 is what exposed it.** While the inherited colour was *also* wrong, two bugs cancelled and the label was accidentally visible. A gate run before the first two fixes would have reported this one clean. |
+| 4 | **`Reveal` shipped an `opacity: 0` IntersectionObserver against its own spec.** `docs/behavior/08` says in as many words that the reference initialises no motion library on any page, that `Reveal` "is a no-op wrapper and must stay one", and that `opacity: 0` as an initial state is the worst available failure mode on a page whose purpose is a phone number. The shell shipped the observer anyway. | **165 text boxes** measured as "no visible text" | A spec that is written and not executed is decoration. Nothing in the build compared the component to the document that specified it. |
+| 5 | **Nine WCAG 2.5.8 tap targets under 44px at 390** — the map's "Get directions" link at 360×22, both breadcrumb crumbs at 40×18, and the two tab controls at 146×38. | `/`, `/about`, `/services`, `/contact` | The *wrapper* was large enough in every case. Only the element that receives the tap counts, which is why A-14 puts the minimum on `a[href^="tel:"]` itself rather than on a container. |
+
+**Say it plainly: Prompt 5's shell gate passed green because no band carried text yet.**
+`SiteHeader` and `SiteFooter` happened to spell the token class correctly, and they were the
+only components with words in them at the time. **A green shell does not mean green
+sections** — it means the shell has not been asked the question yet. The gate is only as
+wide as the content it runs over, so a shell gate must be re-run after the first band
+carries copy.
+
+A sixth entry belongs with these because it is the same shape one layer out: **the stale
+server of §10.6**, where four gate runs reported success while measuring a build that no
+longer existed. Every one of these six is a check that returned a healthy answer to the
+wrong question. The misspelled class, the cancelling label bug, the unexecuted spec, the
+wrapper-sized tap target and the stale listener all had a green signal in front of them at
+the moment they were wrong.
+
+### 11.3 The two gates that were dropped, and what is therefore unknown
+
+A-4 dropped them and **nothing was substituted**. Both are recorded as pre-public blockers
+in `docs/PRE-LAUNCH.md`, worded exactly:
+
+- **"performance never measured"** — Lighthouse was not run on any route. No LCP, CLS, TBT
+  or bundle-weight number exists for this site. Do not infer one from the build output.
+- **"keyboard access is spec-verified only, never hand-tested"** — the tab path was walked
+  programmatically against `docs/behavior/`: 45 steps each on `/` @390, `/contact` @1440 and
+  `/services` @1440, with the skip link first, zero focus escapes, zero focused elements
+  lacking a visible focus style, and the map bypass reached before the iframe on both maps.
+  **A scripted tab walk is not a person with a keyboard**; it cannot judge whether the order
+  makes sense or whether a focus indicator is actually findable.
+
+### 11.4 One NAP observation, recorded rather than closed
+
+Gate 4 passes on values: every rendered phone, address and hours **value** traces to
+`lib/site.ts`, and there is exactly one rendered phone string, one `tel:` href and one
+address string across all five routes. Two *forms* of the hours exist — the NAP label
+`7 days, 7:00 AM - 7:00 PM` from `lib/site.ts`, and the prose form `7:00 AM to 7:00 PM`
+used inside body copy — and **the times agree exactly**, so this is not the sibling's
+drifted-duplicate defect (an en dash and a hyphen carrying two different strings). It is
+recorded because the prose form is typed as a literal in `content/copy.ts` and once in
+`components/routes/HomeBands.tsx:87-88` rather than derived, which is the condition that
+allows a drift later. **Not fixed here:** changing it edits rendered copy length after the
+final diff, and `ITERATION_CAP` is spent. Fix it at asset drop-in, when the affected bands
+are being re-diffed anyway.
