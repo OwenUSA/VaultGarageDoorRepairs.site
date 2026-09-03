@@ -745,8 +745,8 @@ const privacy: RouteCopy = {
           body: 'A submitted request is used for one purpose: to return your call, discuss the symptom you described, and where appropriate arrange a visit. It is not added to a marketing list, because no marketing list exists. It is not used to build a profile of you. It is not enriched with data from any third-party source. It is not sold, rented, licensed, bartered, or shared with anybody in exchange for anything, and we do not run any programme under which that could happen by accident.',
         },
         {
-          heading: 'The form has no submission target',
-          body: 'This needs stating plainly because it is unusual. In the version of the site you are reading, the callback form is not wired to a backend. Submitting it validates the fields in your browser and shows you a confirmation message; nothing leaves your device, nothing is transmitted to a server, and nothing is stored anywhere. If that changes, this section changes with it and the change will be dated. Until then, the only reliable way to reach us is the telephone number printed on every page.',
+          heading: 'The callback form does not submit to a server',
+          body: 'This needs stating plainly because it is unusual. Submitting the form validates the fields in your browser and shows you a confirmation message; nothing leaves your device, nothing is transmitted to a server, and nothing is stored anywhere. If that changes, this section changes with it and the change will be dated. Until then, the only reliable way to reach us is the telephone number printed on every page.',
         },
         {
           heading: 'Cookies',
@@ -766,7 +766,7 @@ const privacy: RouteCopy = {
         },
         {
           heading: 'How long anything is kept',
-          body: 'Because the form has no submission target, there is no submitted-request store to retain and nothing to delete. Records that arise from an actual job, such as notes made on a visit, are kept for as long as they are useful for the work and for whatever period applicable law requires of a trading business. If a backend is ever added to this form, a specific retention period will be published in this section before it goes live.',
+          body: 'Because the form does not submit to a server, there is no submitted-request store to retain and nothing to delete. Records that arise from an actual job, such as notes made on a visit, are kept for as long as they are useful for the work and for whatever period applicable law requires of a trading business. If a backend is ever added to this form, a specific retention period will be published in this section before it goes live.',
         },
         {
           heading: 'Children',
@@ -829,7 +829,7 @@ const privacy: RouteCopy = {
         },
         {
           heading: 'Where information is held',
-          body: 'This website is served from infrastructure that may be located outside the state or outside the country, which is ordinary for any hosted site and is a consequence of how the internet works rather than a decision about your information. Because the callback form has no submission target, nothing you type into it travels to that infrastructure or anywhere else. Notes and photographs from an actual job stay with the business rather than being uploaded to a third-party system.',
+          body: 'This website is served from infrastructure that may be located outside the state or outside the country, which is ordinary for any hosted site and is a consequence of how the internet works rather than a decision about your information. Because the callback form does not submit to a server, nothing you type into it travels to that infrastructure or anywhere else. Notes and photographs from an actual job stay with the business rather than being uploaded to a third-party system.',
         },
         {
           heading: 'Accessibility of this policy',
