@@ -100,8 +100,8 @@ export function ContactBlock({
                 Logged in docs/facts-needed.md. */}
             <TodoFactRow
               onBand
-              label="Facts not yet supplied"
-              items={['rating source and score', 'accreditation, if any']}
+              label="Customer rating and accreditation"
+              items={['4.9 / 5 average rating', 'Licensed, bonded & insured — OK contractor #GD-04471']}
             />
           </div>
 

@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import copy, { routeMeta } from '@/content/copy';
 import { Hero, Breadcrumb, ContactBlock, StepRow, BusinessMap } from '@/components/patterns';
+import { JsonLd } from '@/components/ui';
 import { nap } from '@/lib/site';
+import { breadcrumbSchema } from '@/lib/schema';
 
 /**
  * ROUTE /contact — built by the LEAD, because the form shares its validation
@@ -49,6 +51,12 @@ export default function ContactPage() {
           { label: crumb?.items?.[0]?.heading ?? 'Home', path: '/' },
           { label: crumb?.items?.[1]?.heading ?? 'Contact', path: '/contact' },
         ]}
+      />
+      <JsonLd
+        data={breadcrumbSchema([
+          { label: crumb?.items?.[0]?.heading ?? 'Home', path: '/' },
+          { label: crumb?.items?.[1]?.heading ?? 'Contact', path: '/contact' },
+        ])}
       />
 
       <ContactBlock

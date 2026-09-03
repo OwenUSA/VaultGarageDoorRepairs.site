@@ -42,6 +42,13 @@ export const metadata: Metadata = {
     title: site.name,
     description: site.description,
     url: site.url,
+    images: [{ url: '/placeholders/logo-wordmark.svg', width: 160, height: 64, alt: site.name }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: site.name,
+    description: site.description,
+    images: ['/placeholders/logo-wordmark.svg'],
   },
   robots: { index: true, follow: true },
 };

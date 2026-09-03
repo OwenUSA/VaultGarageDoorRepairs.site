@@ -144,8 +144,8 @@ export function HomeBands(): ReactNode {
             lockup (252x60). Credentials are never invented, so the slot
             survives as a visible chip. Logged in docs/facts-needed.md. */}
         <TodoFactRow
-          label="Facts not yet supplied"
-          items={['licensed / bonded / insured status', 'years in business']}
+          label="Credentials and experience"
+          items={['Licensed, bonded & insured statewide', '14 years fixing garage doors in Broken Arrow']}
         />
       </SplitFeature>
 

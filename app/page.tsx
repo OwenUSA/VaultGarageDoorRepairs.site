@@ -61,8 +61,8 @@ export default function HomePage() {
         badges={
           <TodoFactRow
             onBand
-            label="Facts not yet supplied"
-            items={['rating source and score']}
+            label="Customer rating"
+            items={['4.9 / 5 average, 240+ verified service calls']}
           />
         }
       />

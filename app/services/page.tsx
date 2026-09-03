@@ -2,8 +2,9 @@ import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import copy, { routeMeta } from '@/content/copy';
 import { nap, faqs } from '@/lib/site';
+import { faqSchema } from '@/lib/schema';
 import { Hero, CardGrid, SplitFeature, FaqBlock, CtaBand, SharedTail, type GridItem } from '@/components/patterns';
-import type { ArtKind } from '@/components/ui';
+import { JsonLd, type ArtKind } from '@/components/ui';
 
 /**
  * ROUTE /services
@@ -129,6 +130,7 @@ export default function ServicesPage(): ReactNode {
         title={s('faq')?.heading}
         items={faqs.map((f) => ({ q: f.q, a: f.a }))}
       />
+      <JsonLd data={faqSchema()} />
 
       <CtaBand
         tone="band"

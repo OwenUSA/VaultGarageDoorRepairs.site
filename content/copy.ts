@@ -22,6 +22,8 @@
  * `lib/site.ts`, which is the single source for the CONSTANTS.
  */
 
+import { site } from '@/lib/site';
+
 export type SectionClass = 'ADAPTED' | 'NOVEL';
 
 export type Section = {
@@ -115,9 +117,9 @@ const contactBand = (refSection: string): Section => ({
 
 const home: RouteCopy = {
   meta: {
-    title: 'Vault Garage Door Repairs | Broken Arrow, OK Garage Door Repair',
+    title: 'Garage Door Repair in Broken Arrow, OK | Vault',
     description:
-      'Garage door repair in Broken Arrow and the greater Tulsa metro. Springs, openers, cables, rollers, track, panels and commercial roll-up doors. You are told what is wrong and why before any figure is discussed. Open seven days, 7am to 7pm.',
+      "Garage door repair in Broken Arrow and the greater Tulsa metro: springs, openers, cables, track and panels. Diagnosed before it's quoted. Open 7 days, 7am-7pm.",
   },
   sections: [
     header('s00'),
@@ -346,7 +348,7 @@ const about: RouteCopy = {
   meta: {
     title: 'About Vault Garage Door Repairs | Broken Arrow, OK',
     description:
-      'How we work on a garage door call: the symptom in your words, a callback inside a window you pick, a hand test on site, and the reason named before any figure. Broken Arrow and the greater Tulsa metro, seven days a week.',
+      'How Vault Garage Door Repairs handles a call in Broken Arrow, OK: your description, a callback window you pick, a hands-on check, the cause named before any figure.',
   },
   sections: [
     header('s00'),
@@ -426,9 +428,9 @@ const REF_DETAIL = 's04-let-us-handle-your-commercial-roof';
 
 const services: RouteCopy = {
   meta: {
-    title: 'Garage Door Services in Broken Arrow, OK | Vault Garage Door Repairs',
+    title: 'Garage Door Repair Services | Broken Arrow, OK',
     description:
-      'Spring repair, opener repair, cable, roller and track work, panel replacement, off-track correction, new door installation, commercial roll-up doors and annual maintenance. Grouped by what the door is doing, not by what the part is called.',
+      'Spring, opener, cable, roller, track and panel repair, off-track correction, new door installation and maintenance in Broken Arrow, OK and the greater Tulsa metro.',
   },
   sections: [
     header('s00'),
@@ -624,7 +626,7 @@ const contact: RouteCopy = {
   meta: {
     title: 'Contact Vault Garage Door Repairs | Broken Arrow, OK',
     description:
-      'Call (918) 555-0117 or ask for a callback inside a window you choose. Broken Arrow and the greater Tulsa metro, open seven days, 7am to 7pm. You are told what is wrong and why before any figure is discussed.',
+      'Reach Vault Garage Door Repairs in Broken Arrow, OK: call (918) 555-0117 or request a callback window. Open 7 days, 7am to 7pm.',
   },
   sections: [
     header('s00'),
@@ -706,7 +708,7 @@ const privacy: RouteCopy = {
   meta: {
     title: 'Privacy Policy | Vault Garage Door Repairs',
     description:
-      'What this website collects, which is a name, a phone number and a description of a garage door problem, and what it does not: no email address, no analytics, no advertising pixels and no tracking cookies.',
+      'Privacy policy for Vault Garage Door Repairs, serving Broken Arrow, OK: what this site collects (name, phone, problem) and what it does not (no email, no tracking).',
   },
   sections: [
     header('s01'),
@@ -875,12 +877,46 @@ export function routeMeta(route: string): {
   title: { absolute: string };
   description: string;
   alternates: { canonical: string };
+  openGraph: {
+    type: 'website';
+    siteName: string;
+    title: string;
+    description: string;
+    url: string;
+    images: { url: string; width: number; height: number; alt: string }[];
+  };
+  twitter: {
+    card: 'summary_large_image';
+    title: string;
+    description: string;
+    images: string[];
+  };
 } {
   const m = copy.routes[route]?.meta;
   if (!m) throw new Error(`content/copy.ts: no metadata declared for route "${route}"`);
+  // output: "export" + trailingSlash: true serves every route as
+  // <path>/index.html — the canonical/OG url has to match that exactly, or it
+  // advertises a URL nginx never actually serves. Root stays "/".
+  const canonicalPath = route === '/' ? '/' : `${route}/`;
+  const url = new URL(canonicalPath, site.url).toString();
+  const image = { url: '/placeholders/logo-wordmark.svg', width: 160, height: 64, alt: site.name };
   return {
     title: { absolute: m.title },
     description: m.description,
-    alternates: { canonical: route },
+    alternates: { canonical: canonicalPath },
+    openGraph: {
+      type: 'website',
+      siteName: site.name,
+      title: m.title,
+      description: m.description,
+      url,
+      images: [image],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: m.title,
+      description: m.description,
+      images: [image.url],
+    },
   };
 }

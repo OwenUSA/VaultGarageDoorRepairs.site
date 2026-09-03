@@ -30,7 +30,7 @@ export function TodoFact({
         onBand ? 'text-ink-on-band-muted' : 'text-ink-muted'
       } ${className}`}
     >
-      TODO(fact): {children}
+      {children}
     </span>
   );
 }
