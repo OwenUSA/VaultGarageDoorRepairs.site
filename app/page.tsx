@@ -54,6 +54,8 @@ export default function HomePage() {
           'The finding named before any figure',
         ]}
         mediaLabel="Garage door technician at a residential door, Broken Arrow"
+        bgSrc="/placeholders/hero-bg.jpg"
+        bgSrcMobile="/placeholders/hero-bg-alt.jpg"
         /* D-13 / D-14. The reference hero carries a review-rating strip
            (300x39 @1440). Reviews, ratings and review counts are forbidden
            outright, so the slot survives as a visible TODO(fact) chip row.

@@ -43,6 +43,8 @@ export default function AboutPage() {
         body={hero?.body}
         primaryCta={{ href: nap.phoneHref, label: 'Call now' }}
         secondaryCta={{ href: '/services', label: 'See what we work on' }}
+        bgSrc="/placeholders/hero-side-image.jpg"
+        bgSrcMobile="/placeholders/hero-side-image-alt.jpg"
       />
 
       <SplitFeature
@@ -53,9 +55,18 @@ export default function AboutPage() {
         body={who?.body?.map((p) => <p key={p}>{p}</p>)}
         media="4:3 card"
         mediaLabel="Vault Garage Door Repairs technician placeholder"
+        src="/placeholders/who-photo.jpg"
       />
 
-      <StepRow tone="surface" section="how" headingId="how-heading" heading={how?.heading} steps={steps} />
+      <StepRow
+        tone="surface"
+        section="how"
+        headingId="how-heading"
+        heading={how?.heading}
+        steps={steps}
+        bgSrc="/placeholders/how-band-bg.jpg"
+        panelSrcs={['/placeholders/how-panel-1.jpg', '/placeholders/how-panel-2.jpg']}
+      />
 
       <FeatureRow tone="surface" section="facts" headingId="facts-heading" facts={factList} />
 

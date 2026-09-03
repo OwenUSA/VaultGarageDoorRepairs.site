@@ -43,6 +43,8 @@ export default function ContactPage() {
         primaryCta={{ href: nap.phoneHref, label: 'Call now' }}
         mediaLabel="Garage door service van outside a Broken Arrow home"
         id="contact-hero"
+        bgSrc="/placeholders/hero-side-image.jpg"
+        bgSrcMobile="/placeholders/hero-side-image-alt.jpg"
       />
 
       <Breadcrumb
@@ -51,6 +53,9 @@ export default function ContactPage() {
           { label: crumb?.items?.[0]?.heading ?? 'Home', path: '/' },
           { label: crumb?.items?.[1]?.heading ?? 'Contact', path: '/contact' },
         ]}
+        bgSrc="/placeholders/breadcrumb-bg.jpg"
+        bgSrcMobile="/placeholders/breadcrumb-bg-alt.jpg"
+        vehicleSrc="/placeholders/breadcrumb-vehicle.jpg"
       />
       <JsonLd
         data={breadcrumbSchema([

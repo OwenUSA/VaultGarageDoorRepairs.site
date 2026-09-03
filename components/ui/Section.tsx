@@ -32,6 +32,9 @@ export function Section({
   children,
   'aria-labelledby': labelledBy,
   'data-section': dataSection,
+  bgSrc,
+  bgSrcMobile,
+  bgLabel,
 }: {
   tone?: SectionTone;
   rhythm?: SectionRhythm;
@@ -42,7 +45,14 @@ export function Section({
   /** docs/sections.md our-section-id. Identity pairing (PASS 1) joins on this.
       Owned by the lead; every band the wave builds must declare it. */
   'data-section'?: string;
+  /** Real photograph for a full-bleed band background, at the larger
+      breakpoint. One-line swap over the flat tone once photography lands. */
+  bgSrc?: string;
+  /** Real photograph for the smallest breakpoint, if it differs from `bgSrc`. */
+  bgSrcMobile?: string;
+  bgLabel?: string;
 }) {
+  const onBand = tone === 'band' || tone === 'band-deep';
   return (
     <section
       id={id}
@@ -54,6 +64,21 @@ export function Section({
          display + 61 flexDir mismatches. Floored in docs/known-divergence.md. */
       className={`relative ${tones[tone]} ${rhythms[rhythm]} ${className}`}
     >
+      {bgSrc ? (
+        <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden">
+          <picture>
+            {bgSrcMobile ? <source media="(max-width: 767px)" srcSet={bgSrcMobile} /> : null}
+            <img
+              src={bgSrc}
+              alt={bgLabel ?? ''}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover"
+            />
+          </picture>
+          <div className={`absolute inset-0 ${onBand ? 'bg-overlay' : 'bg-page-bg/90'}`} />
+        </div>
+      ) : null}
       {children}
     </section>
   );

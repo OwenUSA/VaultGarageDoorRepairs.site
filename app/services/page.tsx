@@ -69,10 +69,19 @@ export default function ServicesPage(): ReactNode {
   const map = s('map');
   const servicesCta = s('services-cta');
 
-  const servicesItems: GridItem[] = (services?.items ?? []).map((it) => ({
+  const servicesTilePhotos = [
+    '/placeholders/services-tile-1.jpg',
+    '/placeholders/services-tile-2.jpg',
+    '/placeholders/services-tile-3.jpg',
+    '/placeholders/services-tile-4.jpg',
+    '/placeholders/services-tile-5.jpg',
+  ];
+  const servicesItems: GridItem[] = (services?.items ?? []).map((it, i) => ({
     title: it.heading,
     body: it.note ? `${it.body ?? ''} ${it.note}`.trim() : it.body,
     href: `#${leadAnchor[it.heading]}`,
+    media: 'square slot',
+    src: servicesTilePhotos[i],
   }));
 
   return (
@@ -86,6 +95,17 @@ export default function ServicesPage(): ReactNode {
         primaryCta={{ href: nap.phoneHref, label: hero?.cta?.[0] ?? 'Call now' }}
         secondaryCta={{ href: '/contact', label: hero?.cta?.[1] ?? 'Request a callback' }}
         mediaLabel="Garage door service placeholder"
+        bgSrc="/placeholders/services-hero-bg.jpg"
+        bgSrcMobile="/placeholders/services-hero-bg-alt.jpg"
+        aside={
+          <img
+            src="/placeholders/services-hero-photo.jpg"
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="w-full rounded-xl object-cover"
+          />
+        }
       />
 
       <CardGrid
@@ -95,6 +115,8 @@ export default function ServicesPage(): ReactNode {
         body={services?.subheading}
         items={servicesItems}
         columns={3}
+        bgSrc="/placeholders/services-grid-bg.jpg"
+        bgSrcMobile="/placeholders/services-grid-bg-alt.jpg"
       />
 
       {/* One scene per service, keyed by the service's own id rather than
@@ -120,6 +142,7 @@ export default function ServicesPage(): ReactNode {
               { href: '/contact', label: 'Request a callback' },
             ]}
             mediaLabel={`${d?.heading ?? ''} placeholder`}
+            bgSrc="/placeholders/service-detail-bg.jpg"
           />
         );
       })}

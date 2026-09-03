@@ -59,35 +59,66 @@ export function HomeBands(): ReactNode {
      about a door that will not close draws a shut door, the spring card draws
      the spring. A rotating scene would look varied and mean nothing. */
   const servicesArt = ['door', 'hardware', 'interior'] as const;
+  const servicesPhotos = [
+    '/placeholders/services-card-1.jpg',
+    '/placeholders/services-card-2.jpg',
+    '/placeholders/services-card-3.jpg',
+  ];
   const servicesItems: GridItem[] = (services?.items ?? []).map((it, i) => ({
     title: it.heading,
     body: it.note ? `${it.body ?? ''} ${it.note}`.trim() : it.body,
     media: '16:9 media',
     art: servicesArt[i % servicesArt.length],
+    src: servicesPhotos[i],
   }));
 
   /* 5 — tabbed: 2 tabs (Residential, Commercial), each carrying the 4 cards
      (Diagnosis, Repair, Replacement, Maintenance) from copy.items[2..5] */
   const tabbedArt = ['interior', 'hardware', 'panel', 'door-open'] as const;
-  const tabbedCards: GridItem[] = (tabbed?.items ?? [])
-    .slice(2)
-    .map((it, i) => ({
+  const residentialPhotos = [
+    '/placeholders/tabbed-panel-1.jpg',
+    '/placeholders/tabbed-panel-2.jpg',
+    '/placeholders/tabbed-panel-3.jpg',
+    '/placeholders/tabbed-panel-4.jpg',
+  ];
+  const commercialPhotos = [
+    '/placeholders/tabbed-panel-5.jpg',
+    '/placeholders/tabbed-panel-6.jpg',
+    '/placeholders/tabbed-panel-7.jpg',
+    '/placeholders/tabbed-panel-8.jpg',
+  ];
+  const tabbedBase = (tabbed?.items ?? []).slice(2);
+  const buildTabbedCards = (photos: string[]): GridItem[] =>
+    tabbedBase.map((it, i) => ({
       title: it.heading,
       body: it.body,
       media: '16:9 media' as const,
       art: tabbedArt[i % tabbedArt.length],
+      src: photos[i],
+      srcMobile: photos[i]?.replace(/\.jpg$/, '-alt.jpg'),
     }));
+  const residentialCards = buildTabbedCards(residentialPhotos);
+  const commercialCards = buildTabbedCards(commercialPhotos);
 
   /* 6 — marquee: the 10 item headings */
   const marqueeItems = (marquee?.items ?? []).map((it) => it.heading);
 
   /* 7 — doors: 5 items -> CardCarousel */
   const doorsArt = ['door', 'panel', 'door-open', 'house', 'interior'] as const;
+  const doorsPhotos = [
+    '/placeholders/doors-slide-1.jpg',
+    '/placeholders/doors-slide-2.jpg',
+    '/placeholders/doors-slide-3.jpg',
+    '/placeholders/doors-slide-4.jpg',
+    '/placeholders/doors-slide-5.jpg',
+  ];
   const doorsItems: GridItem[] = (doors?.items ?? []).map((it, i) => ({
     title: it.heading,
     body: it.body,
     media: '16:9 media',
     art: doorsArt[i % doorsArt.length],
+    src: doorsPhotos[i],
+    srcMobile: doorsPhotos[i]?.replace(/\.jpg$/, '-alt.jpg'),
   }));
 
   /* 8 — components: 7 heading-only items. The reference band in this slot is a
@@ -95,10 +126,20 @@ export function HomeBands(): ReactNode {
      carry no body copy — heading-only cards with no media collapsed into a row
      of thin chips that read as a tag list rather than a gallery. */
   const componentsArt = ['hardware', 'panel', 'interior', 'door'] as const;
+  const componentsPhotos = [
+    '/placeholders/components-slide-1.jpg',
+    '/placeholders/components-slide-2.jpg',
+    '/placeholders/components-slide-3.jpg',
+    '/placeholders/components-slide-4.jpg',
+    '/placeholders/components-slide-5.jpg',
+    '/placeholders/components-slide-6.jpg',
+  ];
   const componentsItems: GridItem[] = (components?.items ?? []).map((it, i) => ({
     title: it.heading,
     media: '16:9 media',
     art: componentsArt[i % componentsArt.length],
+    src: componentsPhotos[i],
+    srcMobile: componentsPhotos[i]?.replace(/\.jpg$/, '-alt.jpg'),
   }));
 
   /* 9 — facts: 6 heading-only strings paired sensibly, values stay qualitative */
@@ -139,6 +180,13 @@ export function HomeBands(): ReactNode {
         heading={about?.heading}
         body={<Paragraphs body={about?.body} />}
         actions={[{ href: '/about', label: about?.cta?.[0] ?? 'How we work' }]}
+        bgSrc="/placeholders/about-band-bg.jpg"
+        bgSrcMobile="/placeholders/about-band-bg-alt.jpg"
+        gallery={[1, 2, 3, 4, 5, 6, 7, 8].map((n) => ({
+          src: `/placeholders/about-gallery-${n}.jpg`,
+          srcMobile: `/placeholders/about-gallery-${n}-alt.jpg`,
+          alt: '',
+        }))}
       >
         {/* D-14. The reference about band carries a credential / signature
             lockup (252x60). Credentials are never invented, so the slot
@@ -155,6 +203,8 @@ export function HomeBands(): ReactNode {
         headingId="process-heading"
         heading={process?.heading}
         steps={(process?.items ?? []).map((it) => ({ title: it.heading, body: it.body ?? '' }))}
+        bgSrc="/placeholders/process-band-bg.jpg"
+        bgSrcMobile="/placeholders/process-band-bg-alt.jpg"
       />
 
       {/* 4. emergency */}
@@ -171,6 +221,9 @@ export function HomeBands(): ReactNode {
           { href: nap.phoneHref, label: emergency?.cta?.[0] ?? 'Call now' },
           { href: '/contact', label: emergency?.cta?.[1] ?? 'Request a callback' },
         ]}
+        src="/placeholders/emergency-band-bg.jpg"
+        srcMobile="/placeholders/emergency-band-bg-alt.jpg"
+        cornerSrc="/placeholders/emergency-vehicle.jpg"
       />
 
       {/* 5. tabbed */}
@@ -180,8 +233,8 @@ export function HomeBands(): ReactNode {
         headingId="tabbed-heading"
         heading={tabbed?.heading}
         groups={[
-          { label: tabbed?.items?.[0]?.heading ?? 'Residential', items: tabbedCards },
-          { label: tabbed?.items?.[1]?.heading ?? 'Commercial', items: tabbedCards },
+          { label: tabbed?.items?.[0]?.heading ?? 'Residential', items: residentialCards },
+          { label: tabbed?.items?.[1]?.heading ?? 'Commercial', items: commercialCards },
         ]}
       />
 
@@ -195,6 +248,8 @@ export function HomeBands(): ReactNode {
         heading={doors?.heading}
         items={doorsItems}
         center
+        bgSrc="/placeholders/doors-band-bg.jpg"
+        bgSrcMobile="/placeholders/doors-band-bg-alt.jpg"
       />
 
       {/* 8. components */}
@@ -221,6 +276,8 @@ export function HomeBands(): ReactNode {
         heading={urgent?.heading}
         bullets={urgentBullets}
         actions={[{ href: nap.phoneHref, label: 'Call now' }]}
+        bgSrc="/placeholders/urgent-image.jpg"
+        bgSrcMobile="/placeholders/urgent-image-alt.jpg"
       />
 
       {/* 11. community */}
@@ -232,6 +289,10 @@ export function HomeBands(): ReactNode {
         heading={community?.heading}
         body={<Paragraphs body={community?.body} />}
         actions={[{ href: maps.directions, label: community?.cta?.[0] ?? 'Get directions' }]}
+        src="/placeholders/community-photo.jpg"
+        srcMobile="/placeholders/community-photo-alt.jpg"
+        bgSrc="/placeholders/community-band-bg.jpg"
+        bgSrcMobile="/placeholders/community-band-bg-alt.jpg"
       />
 
       {/* 12. approach */}
@@ -242,6 +303,8 @@ export function HomeBands(): ReactNode {
         headingId="approach-heading"
         heading={approach?.heading}
         body={<Paragraphs body={approach?.body} />}
+        src="/placeholders/approach-photo.jpg"
+        srcMobile="/placeholders/approach-photo-alt.jpg"
       />
     </>
   );

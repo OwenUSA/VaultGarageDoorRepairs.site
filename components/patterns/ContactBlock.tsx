@@ -14,6 +14,16 @@ import {
 import { ContactForm } from './ContactForm';
 import { nap, hours } from '@/lib/site';
 
+/** The contact band's photo strip. Shared across every route (route: all). */
+const CONTACT_GALLERY = [
+  '/placeholders/contact-gallery-1.jpg',
+  '/placeholders/contact-gallery-2.jpg',
+  '/placeholders/contact-gallery-3.jpg',
+  '/placeholders/contact-gallery-4.jpg',
+  '/placeholders/contact-gallery-5.jpg',
+  '/placeholders/contact-gallery-6.jpg',
+] as const;
+
 /**
  * PATTERN: contact-new — form-block, dark. h 677 @1440 / 5168 @390
  * PATTERN: contact-one — form-block, dark, standalone. h 1145 @1440
@@ -34,6 +44,9 @@ export function ContactBlock({
   id = 'contact',
   section = 'contact',
   headingId = 'contact-heading',
+  bgSrc = '/placeholders/contact-band-bg.jpg',
+  bgSrcMobile = '/placeholders/contact-band-bg-alt.jpg',
+  gallery = CONTACT_GALLERY,
 }: {
   tone?: SectionTone;
   variant?: 'inline' | 'standalone';
@@ -44,6 +57,11 @@ export function ContactBlock({
   /** docs/sections.md our-section-id -> data-section. Required on every band. */
   section?: string;
   headingId?: string;
+  /** Real photograph for the band's own full-bleed background (route: all). */
+  bgSrc?: string;
+  bgSrcMobile?: string;
+  /** The contact band's 6-photo strip (route: all). */
+  gallery?: readonly string[];
 }) {
   return (
     /* Measured: the reference contact band pads 0 top on every route, and 50
@@ -54,6 +72,8 @@ export function ContactBlock({
         data-section={section}
         className="texture-brick overflow-hidden pt-0 xl:pb-section-y-tight"
         aria-labelledby={headingId}
+        bgSrc={bgSrc}
+        bgSrcMobile={bgSrcMobile}
       >
       <Container className="relative">
         {/* Measured: contact-new is 1645 @1024 and 677 @1440 on every profiled
@@ -103,6 +123,15 @@ export function ContactBlock({
               label="Customer rating and accreditation"
               items={['4.9 / 5 average rating', 'Licensed, bonded & insured — OK contractor #GD-04471']}
             />
+            {gallery?.length ? (
+              <ul className="grid grid-cols-3 gap-3">
+                {gallery.map((g) => (
+                  <li key={g} className="aspect-[3/2] overflow-hidden rounded-lg">
+                    <img src={g} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </div>
 
           <ContactForm variant={variant} />

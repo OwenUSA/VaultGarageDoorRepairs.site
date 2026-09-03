@@ -64,6 +64,8 @@ export function Placeholder({
   label,
   fill = false,
   art,
+  src,
+  srcMobile,
 }: {
   kind?: PlaceholderKind;
   tone?: keyof typeof tones;
@@ -73,6 +75,11 @@ export function Placeholder({
   fill?: boolean;
   /** Override the scene the slot draws. Defaults per `kind`. */
   art?: ArtKind;
+  /** Real photograph for this slot, at the larger breakpoint. One-line swap
+      over the drawn ArtPanel scene — see ArtPanel's header comment. */
+  src?: string;
+  /** Real photograph for the smallest breakpoint, if it differs from `src`. */
+  srcMobile?: string;
 }) {
   return (
     <div
@@ -81,7 +88,20 @@ export function Placeholder({
         fill ? 'absolute inset-0 h-full w-full' : `w-full rounded-xl ${ratios[kind]}`
       } ${className}`}
     >
-      <ArtPanel kind={art ?? artFor[kind]} label={label} fill rounded={false} />
+      {src ? (
+        <picture>
+          {srcMobile ? <source media="(max-width: 767px)" srcSet={srcMobile} /> : null}
+          <img
+            src={src}
+            alt={label ?? ''}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover"
+          />
+        </picture>
+      ) : (
+        <ArtPanel kind={art ?? artFor[kind]} label={label} fill rounded={false} />
+      )}
     </div>
   );
 }

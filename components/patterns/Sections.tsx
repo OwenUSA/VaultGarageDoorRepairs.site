@@ -187,6 +187,11 @@ export function SplitFeature({
   headingId,
   splitAt = 'lg',
   children,
+  src,
+  srcMobile,
+  bgSrc,
+  bgSrcMobile,
+  gallery,
 }: {
   tone?: SectionTone;
   reverse?: boolean;
@@ -207,13 +212,29 @@ export function SplitFeature({
   headingId?: string;
   splitAt?: SplitAt;
   children?: ReactNode;
+  /** Real photograph for the media slot. One-line swap over the drawn scene. */
+  src?: string;
+  srcMobile?: string;
+  /** Real photograph for the band's own full-bleed background. */
+  bgSrc?: string;
+  bgSrcMobile?: string;
+  /** A row of small real-photo thumbnails rendered below the copy. */
+  gallery?: readonly { src: string; srcMobile?: string; alt?: string }[];
 }) {
   const onBand = isBand(tone);
   const cols = splitAt === 'xl' ? 'xl:grid-cols-2' : 'lg:grid-cols-2';
   const first = splitAt === 'xl' ? 'xl:order-1' : 'lg:order-1';
   const second = splitAt === 'xl' ? 'xl:order-2' : 'lg:order-2';
   return (
-    <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
+    <Section
+      tone={tone}
+      id={id}
+      data-section={section}
+      className={className}
+      aria-labelledby={headingId}
+      bgSrc={bgSrc}
+      bgSrcMobile={bgSrcMobile}
+    >
       <Container>
         {/* A `media="none"` band still has to fill the row. Left as a single
             column inside a two-column grid it painted half the band empty on
@@ -227,6 +248,8 @@ export function SplitFeature({
                 art={art}
                 tone={onBand ? 'band-deep' : 'surface'}
                 label={mediaLabel ?? 'Garage door placeholder'}
+                src={src}
+                srcMobile={srcMobile}
               />
             </Reveal>
           ) : null}
@@ -235,6 +258,24 @@ export function SplitFeature({
               <SectionHead eyebrow={eyebrow} heading={heading} body={body} headingId={headingId} onBand={onBand} />
               {media === 'none' ? null : <Bullets items={bullets} onBand={onBand} />}
               {children}
+              {gallery?.length ? (
+                <ul className="grid grid-cols-4 gap-3">
+                  {gallery.map((g) => (
+                    <li key={g.src} className="aspect-[8/5] overflow-hidden rounded-lg">
+                      <picture>
+                        {g.srcMobile ? <source media="(max-width: 767px)" srcSet={g.srcMobile} /> : null}
+                        <img
+                          src={g.src}
+                          alt={g.alt ?? ''}
+                          loading="lazy"
+                          decoding="async"
+                          className="h-full w-full object-cover"
+                        />
+                      </picture>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
               <Actions actions={actions} onBand={onBand} />
             </div>
           </Reveal>
@@ -264,6 +305,9 @@ export function CtaBand({
   section,
   className,
   headingId,
+  src,
+  srcMobile,
+  cornerSrc,
 }: {
   tone?: SectionTone;
   layout?: 'between' | 'center';
@@ -279,6 +323,11 @@ export function CtaBand({
   /** Per-band padding override where the reference band's own value differs. */
   className?: string;
   headingId?: string;
+  /** Real photograph for the card's backdrop. One-line swap over the drawn scene. */
+  src?: string;
+  srcMobile?: string;
+  /** A small real-photo (e.g. the service vehicle) shown in the card's corner. */
+  cornerSrc?: string;
 }) {
   return (
     <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
@@ -293,7 +342,7 @@ export function CtaBand({
               lands. */}
           <div className="relative overflow-hidden rounded-xl">
             <div aria-hidden="true" className="absolute inset-0">
-              <Placeholder kind="full-bleed band" tone="band-deep" fill art={art} label="" />
+              <Placeholder kind="full-bleed band" tone="band-deep" fill art={art} label="" src={src} srcMobile={srcMobile} />
               <div className="absolute inset-0 bg-[image:var(--gradient-hero)] opacity-90" />
             </div>
             <div
@@ -311,8 +360,17 @@ export function CtaBand({
                 onBand
                 center={layout === 'center'}
               />
-              <div className="shrink-0">
+              <div className="shrink-0 flex flex-col items-start gap-5">
                 <Actions actions={actions} onBand />
+                {cornerSrc ? (
+                  <img
+                    src={cornerSrc}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    className="hidden h-16 w-40 rounded-lg object-cover sm:block"
+                  />
+                ) : null}
               </div>
             </div>
           </div>
@@ -429,16 +487,31 @@ export function Marquee({ items, section }: { items: readonly string[]; section?
 export function Breadcrumb({
   trail,
   section,
+  bgSrc,
+  bgSrcMobile,
+  vehicleSrc,
 }: {
   trail: readonly { label: string; path: string }[];
   section?: string;
+  /** Real photograph for the band's own full-bleed background. */
+  bgSrc?: string;
+  bgSrcMobile?: string;
+  /** A small real photograph (the service vehicle) shown at the row's end. */
+  vehicleSrc?: string;
 }) {
   return (
     /* Measured: the reference breadcrumb band pads 20/20, not the 50 the
        `tight` rhythm gives. */
-    <Section tone="surface" rhythm="none" data-section={section} className="py-7">
+    <Section
+      tone="surface"
+      rhythm="none"
+      data-section={section}
+      className="py-7"
+      bgSrc={bgSrc}
+      bgSrcMobile={bgSrcMobile}
+    >
       <Container>
-        <nav aria-label="Breadcrumb">
+        <nav aria-label="Breadcrumb" className="flex items-center justify-between gap-7">
           <ol className="flex flex-wrap items-center gap-3">
             {trail.map((t, i) => {
               const last = i === trail.length - 1;
@@ -465,6 +538,15 @@ export function Breadcrumb({
               );
             })}
           </ol>
+          {vehicleSrc ? (
+            <img
+              src={vehicleSrc}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="hidden h-16 w-36 shrink-0 rounded-lg object-cover sm:block"
+            />
+          ) : null}
         </nav>
       </Container>
     </Section>
@@ -483,6 +565,9 @@ export function StepRow({
   section,
   className,
   headingId,
+  bgSrc,
+  bgSrcMobile,
+  panelSrcs,
 }: {
   tone?: SectionTone;
   eyebrow?: ReactNode;
@@ -494,13 +579,40 @@ export function StepRow({
   /** Per-band padding override where the reference band's own value differs. */
   className?: string;
   headingId?: string;
+  /** Real photograph for the band's own full-bleed background. */
+  bgSrc?: string;
+  bgSrcMobile?: string;
+  /** Up to two small real-photo accents shown beside the heading. */
+  panelSrcs?: readonly string[];
 }) {
   const onBand = isBand(tone);
   return (
-    <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
+    <Section
+      tone={tone}
+      id={id}
+      data-section={section}
+      className={className}
+      aria-labelledby={headingId}
+      bgSrc={bgSrc}
+      bgSrcMobile={bgSrcMobile}
+    >
       <Container>
         <div className="flex flex-col gap-11">
           <SectionHead eyebrow={eyebrow} heading={heading} headingId={headingId} onBand={onBand} center />
+          {panelSrcs?.length ? (
+            <div className="mx-auto flex gap-3">
+              {panelSrcs.map((p) => (
+                <img
+                  key={p}
+                  src={p}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  className="h-24 w-40 rounded-lg object-cover"
+                />
+              ))}
+            </div>
+          ) : null}
           {/* The reference's zigzag: a dashed spine with the step cards
               alternating above and below it. The spine and the offsets only
               exist from xl — below that the steps stack and a horizontal spine
@@ -644,6 +756,9 @@ export type GridItem = {
   mediaLabel?: string;
   /** Which scene the card's media slot draws. See components/ui/ArtPanel. */
   art?: ArtKind;
+  /** Real photograph for the card's media slot. One-line swap over the drawn scene. */
+  src?: string;
+  srcMobile?: string;
 };
 
 function ItemCard({ item, onBand }: { item: GridItem; onBand: boolean }) {
@@ -662,6 +777,8 @@ function ItemCard({ item, onBand }: { item: GridItem; onBand: boolean }) {
           tone={onBand ? 'band-deep' : 'surface'}
           className="rounded-none"
           label={item.mediaLabel ?? `${item.title} placeholder`}
+          src={item.src}
+          srcMobile={item.srcMobile}
         />
       ) : null}
       <div className="flex flex-1 flex-col gap-3 p-7">
@@ -719,6 +836,8 @@ export function CardGrid({
   section,
   className,
   headingId,
+  bgSrc,
+  bgSrcMobile,
 }: {
   tone?: SectionTone;
   eyebrow?: ReactNode;
@@ -737,10 +856,21 @@ export function CardGrid({
   /** Per-band padding override where the reference band's own value differs. */
   className?: string;
   headingId?: string;
+  /** Real photograph for the band's own full-bleed background. */
+  bgSrc?: string;
+  bgSrcMobile?: string;
 }) {
   const onBand = isBand(tone);
   return (
-    <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
+    <Section
+      tone={tone}
+      id={id}
+      data-section={section}
+      className={className}
+      aria-labelledby={headingId}
+      bgSrc={bgSrc}
+      bgSrcMobile={bgSrcMobile}
+    >
       <Container>
         <div className="flex flex-col gap-11">
           <SectionHead
@@ -779,6 +909,8 @@ export function CardCarousel({
   section,
   className,
   headingId,
+  bgSrc,
+  bgSrcMobile,
 }: {
   tone?: SectionTone;
   eyebrow?: ReactNode;
@@ -794,10 +926,21 @@ export function CardCarousel({
   /** Per-band padding override where the reference band's own value differs. */
   className?: string;
   headingId?: string;
+  /** Real photograph for the band's own full-bleed background. */
+  bgSrc?: string;
+  bgSrcMobile?: string;
 }) {
   const onBand = isBand(tone);
   return (
-    <Section tone={tone} id={id} data-section={section} className={className} aria-labelledby={headingId}>
+    <Section
+      tone={tone}
+      id={id}
+      data-section={section}
+      className={className}
+      aria-labelledby={headingId}
+      bgSrc={bgSrc}
+      bgSrcMobile={bgSrcMobile}
+    >
       <Container>
         <div className="flex flex-col gap-11">
           <SectionHead

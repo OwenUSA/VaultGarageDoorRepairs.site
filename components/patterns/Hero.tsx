@@ -32,6 +32,8 @@ export function Hero({
   section,
   splitAt = 'lg',
   display = false,
+  bgSrc,
+  bgSrcMobile,
 }: {
   variant?: HeroVariant;
   eyebrow?: string;
@@ -60,6 +62,10 @@ export function Hero({
   splitAt?: SplitAt;
   /** h1 sizing. The home hero measures 58/700 @1440; every other h1 measures 42. */
   display?: boolean;
+  /** Real photograph for the hero's full-bleed background. One-line swap over
+      the drawn ArtPanel scene. */
+  bgSrc?: string;
+  bgSrcMobile?: string;
 }) {
   /* Section rhythm follows the measured ladder: 50/50 at 390-1024, 75/75 at
      1440 (q.mjs section service-outer 1 1024 -> pad=50 0 50 0). */
@@ -86,7 +92,15 @@ export function Hero({
             runs across the door's own near-white panels at ~2:1. The roofline
             scene is uniformly dark at any crop, so it reads as a picture behind
             the words instead of competing with them. */}
-        <Placeholder kind="full-bleed band" art="house" tone="band-deep" fill label={mediaLabel} />
+        <Placeholder
+          kind="full-bleed band"
+          art="house"
+          tone="band-deep"
+          fill
+          label={mediaLabel}
+          src={bgSrc}
+          srcMobile={bgSrcMobile}
+        />
         <div className="absolute inset-0 bg-[image:var(--gradient-hero)] opacity-80" />
         <div className="absolute inset-0 bg-overlay" />
       </div>
