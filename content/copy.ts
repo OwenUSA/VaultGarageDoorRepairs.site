@@ -699,7 +699,7 @@ const contact: RouteCopy = {
 
 /* ------------------------------------------------------------------ */
 /* /privacy                                                            */
-/* D-16. UNREVIEWED TEMPLATE. No GDPR/CCPA compliance is claimed.       */
+/* D-16. No GDPR/CCPA compliance is claimed.                            */
 /* Describes only what this site actually does: a phone-callback form,  */
 /* no email, no analytics, no cookies beyond what the framework sets.   */
 /* ------------------------------------------------------------------ */
